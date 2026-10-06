@@ -1,0 +1,926 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="theme-color" content="#101c2a">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VIAControl Estudio: Oficina de Proyectos</title>
+<style>
+:root{--bg:#f4f6fb;--card:#fff;--tx:#1b2333;--mu:#667085;--pr:#2457d6;--pr2:#e8eefc;--ok:#157f4b;--okb:#e3f6ec;--ko:#b42318;--kob:#fde8e6;--wa:#b54708;--wab:#fff3e0;--bd:#e2e6ef;--a1:#dbe6ff;--a2:#d9f2e6;--a3:#ffe9cf;--a4:#f0e2ff;--sh:0 2px 8px rgba(20,35,80,.07)}
+@media(prefers-color-scheme:dark){:root{--bg:#0f131b;--card:#1a202c;--tx:#e8ecf4;--mu:#97a1b5;--pr:#7ea3ff;--pr2:#222d49;--ok:#5fd39a;--okb:#14352a;--ko:#ff8a80;--kob:#3a1c1a;--wa:#f5a85c;--wab:#3a2a15;--bd:#2c3547;--a1:#233559;--a2:#16392c;--a3:#4a3317;--a4:#35244f;--sh:none}}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.65 system-ui,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--tx)}
+header{background:var(--card);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:5}
+.top{max-width:1000px;margin:auto;padding:8px 16px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.logo{font-weight:800;margin-right:auto;font-size:18px}
+nav{display:flex;flex-wrap:wrap;gap:4px}
+nav button{border:0;background:none;color:var(--mu);padding:7px 11px;border-radius:8px;font:inherit;font-size:14px;cursor:pointer}
+nav button.on{background:var(--pr2);color:var(--pr);font-weight:700}
+main{max-width:1000px;margin:auto;padding:18px 16px 70px}
+h1{font-size:26px;margin:.2em 0 .4em;line-height:1.25}h2{font-size:21px;margin:1.5em 0 .4em}h3{font-size:17px;margin:.8em 0 .3em}
+p{margin:.5em 0}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:var(--sh)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mu{color:var(--mu);font-size:14px}
+.btn{background:var(--pr);color:#fff;border:0;border-radius:10px;padding:10px 18px;font:inherit;font-weight:600;cursor:pointer}
+.btn.sec{background:var(--pr2);color:var(--pr)}.btn:disabled{opacity:.45;cursor:default}
+.btn.big{padding:13px 22px;font-size:17px;background:#fff;color:#1d3fa1}.btn.ghost{background:rgba(255,255,255,.18);color:#fff}
+.btn.good{background:var(--ok);color:#fff}.btn.bad{background:var(--ko);color:#fff}
+.bar{height:9px;background:var(--pr2);border-radius:6px;overflow:hidden;margin:6px 0}.bar i{display:block;height:100%;background:var(--pr);transition:width .3s}
+.bar.g i{background:var(--ok)}.bar.r i{background:var(--ko)}.bar.y i{background:var(--wa)}
+.tag{display:inline-block;font-size:12px;padding:2px 9px;border-radius:10px;background:var(--pr2);color:var(--pr);margin:0 4px 4px 0;font-weight:600}.tag.ok{background:var(--okb);color:var(--ok)}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.row.end{margin-top:26px}.row.sp{justify-content:space-between}
+select{font:inherit;padding:9px;border-radius:9px;border:1px solid var(--bd);background:var(--card);color:var(--tx);max-width:100%}
+table{border-collapse:collapse;width:100%;font-size:15px}td,th{border-bottom:1px solid var(--bd);padding:8px 6px;text-align:left}
+.hero{background:linear-gradient(135deg,#1d3fa1,#4a7bff 60%,#7a5cff);color:#fff;border-radius:18px;padding:26px;display:flex;gap:16px;align-items:center;justify-content:space-between;margin-bottom:16px}
+.hero h1{margin:0 0 6px;font-size:30px}.hero p{margin:0 0 6px;opacity:.95;max-width:520px}.hr{font-size:78px}
+.stat .bigx{font-size:32px;font-weight:800;line-height:1.2}.stat .bigx.s{font-size:17px;line-height:1.35}
+.chgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
+.chc{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:16px;cursor:pointer;box-shadow:var(--sh);transition:transform .12s}
+.chc:hover{transform:translateY(-3px);border-color:var(--pr)}.chc.done{border-color:var(--ok)}
+.cn{font-size:30px;display:flex;align-items:center;gap:8px}.cn small{font-size:13px;color:var(--mu);font-weight:700}
+.chc h3{margin:.3em 0}.meta{margin-top:8px}
+/* lectura */
+.crumb{margin-bottom:8px}.crumb a{color:var(--pr);text-decoration:none}
+.lesson{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:22px 24px;box-shadow:var(--sh)}
+.lh{display:flex;gap:14px;align-items:flex-start;margin-bottom:8px}.ic2{font-size:44px;line-height:1}
+.lead{background:var(--pr2);border-radius:12px;padding:12px 14px;margin:6px 0 4px;font-size:17px}
+.lesson h2{border-bottom:2px solid var(--pr2);padding-bottom:5px}
+.cc{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin:12px 0}
+.cx{background:var(--pr2);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:4px}
+.cx:nth-child(4n+2){background:var(--a2)}.cx:nth-child(4n+3){background:var(--a3)}.cx:nth-child(4n+4){background:var(--a4)}
+.cx .ic{font-size:26px;font-weight:800;line-height:1.1}.cx span{font-size:14px;color:var(--mu)}
+.call{border-radius:12px;padding:12px 14px;margin:14px 0;border-left:5px solid var(--pr);background:var(--pr2)}
+.call.ex{border-color:var(--ok);background:var(--okb)}.call.wa{border-color:var(--wa);background:var(--wab)}.call.eg{border-color:#8a5cf5;background:var(--a4)}
+.call>b{display:block;margin-bottom:3px}
+.vs{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;margin:14px 0}
+.vc{background:var(--a1);border-radius:12px;padding:12px 16px}.vc.alt{background:var(--a3)}.vc h3{margin-top:0}.vc ul{margin:0;padding-left:18px}.vc li{margin:4px 0}
+.steps{display:grid;gap:8px;margin:12px 0}.st{display:flex;gap:12px;align-items:flex-start;background:var(--pr2);border-radius:12px;padding:10px 12px}
+.st i{flex:none;width:30px;height:30px;border-radius:50%;background:var(--pr);color:#fff;font-style:normal;font-weight:800;display:flex;align-items:center;justify-content:center}
+.st span{display:block;color:var(--mu);font-size:14.5px}
+.sum{background:linear-gradient(135deg,var(--okb),var(--pr2));border-radius:14px;padding:12px 18px;margin-top:22px}.sum ul{margin:6px 0 0;padding-left:20px}
+.fig{margin:16px 0;background:var(--bg);border-radius:14px;padding:10px}.fig svg{width:100%;height:auto;display:block}
+svg .t{font-size:12.5px;fill:var(--tx)}svg .tb{font-size:13.5px;font-weight:700;fill:var(--tx)}svg .tm{font-size:12px;fill:var(--mu)}
+svg .s0{fill:var(--a4);stroke:#8a5cf5;stroke-width:1.5}svg .s1{fill:var(--a1);stroke:var(--pr);stroke-width:1.5}svg .s2{fill:var(--a2);stroke:var(--ok);stroke-width:1.5}svg .s3{fill:var(--a3);stroke:var(--wa);stroke-width:1.5}
+svg .ln{stroke:var(--mu);stroke-width:1.6;fill:none}svg .ax{stroke:var(--mu);stroke-width:1.5}
+svg .dot{fill:var(--card);stroke:var(--pr);stroke-width:3}svg .ring{fill:none;stroke:var(--bd);stroke-width:3;stroke-dasharray:6 6}
+svg .nd{stroke-width:2}
+svg .pv{fill:none;stroke:var(--pr);stroke-width:3}svg .ev{fill:none;stroke:var(--ok);stroke-width:3}svg .ac{fill:none;stroke:var(--ko);stroke-width:3}
+details.cx summary,details.st summary{list-style:none;cursor:pointer;display:flex;flex-direction:column;gap:4px}
+details.st summary{flex-direction:row;gap:12px;align-items:flex-start}
+details summary::-webkit-details-marker{display:none}
+details.cx{padding:12px}details.cx[open]{grid-column:1/-1}
+.cx em,.st em{font-style:normal;font-size:12px;font-weight:700;color:var(--pr);margin-top:2px}
+details[open]>summary em{display:none}
+.dt{margin-top:10px;padding-top:10px;border-top:1px dashed var(--bd);font-size:15.5px;line-height:1.65}
+details.st{flex-direction:column;align-items:stretch;gap:0}
+details.st .dt{margin-left:42px}
+details.cx:hover,details.st:hover{box-shadow:0 0 0 2px var(--pr2)}
+.toc{background:var(--bg);border-radius:12px;padding:10px 14px;margin:12px 0;display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font-size:14px}
+.toc a{color:var(--pr);text-decoration:none;font-weight:600}.toc a:hover{text-decoration:underline}
+.lesson p{font-size:16.5px}
+/* flash y cuestionario */
+.flash{min-height:190px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-size:21px;cursor:pointer;user-select:none;background:linear-gradient(135deg,var(--pr2),var(--a4));border-radius:18px;padding:22px;margin:12px 0;box-shadow:var(--sh)}
+.flash.back{background:linear-gradient(135deg,var(--okb),var(--a1))}
+.qh{display:flex;justify-content:space-between;align-items:center}
+.opt{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;border:1.5px solid var(--bd);background:var(--card);color:var(--tx);padding:11px 12px;border-radius:11px;margin:8px 0;font:inherit;cursor:pointer}
+.opt i{flex:none;width:26px;height:26px;border-radius:7px;background:var(--pr2);color:var(--pr);font-style:normal;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:13px}
+.opt:hover:not(:disabled){border-color:var(--pr)}.opt.sel{border-color:var(--pr);background:var(--pr2)}
+.opt.ok{background:var(--okb);border-color:var(--ok)}.opt.ko{background:var(--kob);border-color:var(--ko)}
+.exp{background:var(--pr2);border-radius:10px;padding:10px 12px;margin-top:8px;font-size:15px}
+.okt{color:var(--ok)}
+.res{display:flex;gap:18px;align-items:center}.rg{position:relative;width:96px;height:96px;flex:none}.rg b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:20px}
+.rb{fill:none;stroke:var(--pr2);stroke-width:8}.rf{fill:none;stroke:var(--ok);stroke-width:8;stroke-linecap:round}
+.card{overflow-x:auto}.reqc ul{margin:0 0 8px;padding-left:20px}.reqc li{margin:6px 0}.lk{display:flex;flex-direction:column;padding:8px 0;border-bottom:1px solid var(--bd)}.lk a{color:var(--pr);font-weight:600;text-decoration:none;word-break:break-word}.lkc .row{margin-top:8px}.lkc a.btn{text-decoration:none;font-size:14px}@media(max-width:560px){td,th{font-size:13.5px;padding:6px 4px}.hero{flex-direction:column;align-items:flex-start}.hr{display:none}.lesson{padding:16px}}
+</style>
+<style id="tema">/* ===== Tema VIAControl ===== */
+:root{--bg:#f4f5f7;--card:#fff;--tx:#101c2a;--mu:#5a6470;--pr:#1d3250;--pr2:#e8ecf2;--ac:#c98a3d;--acb:#f8eedf;--bd:#dfe3ea;--wa:#9a6218;--wab:#fbf0dc;--a1:#e8ecf2;--a2:#f8eedf;--a3:#edf0f4;--a4:#f3e6d0;--btn:#101c2a;--btn-tx:#fff;--sh:0 2px 10px rgba(16,28,42,.07)}
+@media(prefers-color-scheme:dark){:root{--bg:#0b141f;--card:#132033;--tx:#e9eef5;--mu:#93a1b3;--pr:#e2b06a;--pr2:#1d2c43;--ac:#d99b4c;--acb:#34291a;--bd:#28374d;--wa:#e2b06a;--wab:#34291a;--a1:#1b2b42;--a2:#3a2d1a;--a3:#203049;--a4:#33291b;--btn:#d99b4c;--btn-tx:#101c2a;--sh:none}}
+body{background:var(--bg);color:var(--tx);letter-spacing:.005em}
+header{border-bottom:0;box-shadow:0 3px 0 var(--ac),0 6px 16px rgba(16,28,42,.06)}
+.top{padding:8px 16px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;color:var(--tx)}
+.logo img{height:34px;width:auto;background:#fff;padding:4px 10px;border-radius:9px;display:block}
+.logo span{font-size:14px;font-weight:700;color:var(--mu);border-left:2px solid var(--ac);padding-left:10px}
+nav button{font-weight:600}
+nav button.on{background:var(--pr2);color:var(--pr);box-shadow:inset 0 -3px 0 var(--ac)}
+h1{letter-spacing:-.01em}
+.btn{background:var(--btn);color:var(--btn-tx);box-shadow:0 1px 0 rgba(0,0,0,.08)}
+.btn.sec{background:var(--pr2);color:var(--pr);box-shadow:none}
+.btn.big{background:var(--ac);color:#101c2a}.btn.ghost{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.35)}
+.btn.good{background:var(--ok);color:#fff}.btn.bad{background:var(--ko);color:#fff}
+.bar{background:var(--pr2)}.bar i{background:var(--ac)}.bar.g i{background:var(--ok)}.bar.r i{background:var(--ko)}.bar.y i{background:var(--wa)}
+.tag{background:var(--pr2);color:var(--pr)}.tag.ok{background:var(--okb);color:var(--ok)}
+.hero{background-image:radial-gradient(circle at 92% -10%,rgba(201,138,61,.45),transparent 52%),linear-gradient(135deg,#101c2a,#344456);border-bottom:4px solid var(--ac);box-shadow:0 8px 24px rgba(16,28,42,.18)}
+.hero h1{letter-spacing:-.02em}
+.stat{border-top:3px solid var(--ac)}
+.chc:hover{border-color:var(--ac)}.chc.done{border-color:var(--ok)}
+.lesson h2{border-bottom:2px solid var(--ac);display:inline-block;padding-right:18px}
+.lead{background:var(--acb);border-left:5px solid var(--ac)}
+.call{background:var(--pr2);border-left-color:var(--pr)}.call.eg{background:var(--acb);border-left-color:var(--ac)}
+.cx .ic{color:var(--pr)}
+.st i{background:var(--btn);color:var(--btn-tx)}
+.vc{background:var(--a1)}.vc.alt{background:var(--a2)}
+.sum{background:linear-gradient(135deg,var(--okb),var(--acb))}
+.fig{background:var(--bg)}
+svg .s0{fill:var(--a4);stroke:var(--ac)}svg .s1{fill:var(--a1);stroke:var(--pr)}svg .s2{fill:var(--a3);stroke:var(--mu)}svg .s3{fill:var(--a2);stroke:#a56a1f}
+svg .dot{stroke:var(--ac)}
+.flash{background:linear-gradient(135deg,var(--pr2),var(--acb));border:1px solid var(--bd)}.flash.back{background:linear-gradient(135deg,var(--okb),var(--a1))}
+.opt i{background:var(--pr2);color:var(--pr)}.opt:hover:not(:disabled){border-color:var(--ac)}.opt.sel{border-color:var(--ac);background:var(--acb)}
+.exp{background:var(--pr2)}
+.toc a{color:var(--pr)}
+.crumb a{color:var(--pr)}
+.lk a{color:var(--pr)}
+details.cx:hover,details.st:hover{box-shadow:0 0 0 2px var(--ac)}
+.cx em,.st em{color:var(--ac)}
+::selection{background:var(--ac);color:#101c2a}
+@media(max-width:560px){.logo span{display:none}.logo img{height:30px}}
+</style>
+<style>.aviso{background:var(--acb);border:1px solid var(--ac);border-left:6px solid var(--ac);border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:14.5px;line-height:1.55}.aviso p{margin:6px 0 0}.foot{max-width:1000px;margin:0 auto;padding:0 16px 40px;color:var(--mu);font-size:12.5px;text-align:center}</style>
+</head>
+<body>
+<header><div class="top"><div class="logo"><img alt="VIAControl" src="data:image/png;base64,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"><span>Oficina de Proyectos</span></div><nav id="nav"></nav></div></header>
+<main id="app"></main>
+<footer class="foot">Material de estudio independiente, solo informativo. No afiliado ni respaldado por PMI®. Marcas de sus respectivos titulares.</footer>
+<script>
+/* ============ EXPLICACIONES AL HACER CLIC ============ */
+const DETAILS={
+"Temporal":"<b>Temporal no significa corto.</b> Significa que tiene un inicio y un final definidos. Un proyecto puede durar tres semanas o diez años; lo que importa es que termina. Termina cuando se alcanzan los objetivos, cuando ya no hay presupuesto o tiempo, cuando el cliente ya no lo necesita o cuando se decide cancelarlo. <i>Ejemplo:</i> construir un hospital es un proyecto (tiene fin); operar el hospital es una operación (continúa). Ojo: el resultado del proyecto sí puede durar décadas; lo temporal es el esfuerzo.",
+"Único":"El producto, servicio o resultado es <b>distinto</b> a todo lo hecho antes, aunque se parezca. Dos casas con el mismo plano son proyectos diferentes porque cambian el terreno, el clima, el equipo, los proveedores y los riesgos. Que sea único es lo que obliga a planificar: no se puede aplicar una receta idéntica.",
+"Elaboración progresiva":"Es ir <b>detallando el plan a medida que se tiene más información</b>. Al inicio sabes lo general (“un sistema de reportes”); a mitad ya sabes qué reportes y con qué datos. No es improvisar ni cambiar el alcance sin control: es refinar. En proyectos ágiles ocurre en cada iteración; en predictivos, mediante planificación por olas (detallar el corto plazo y dejar el largo plazo en alto nivel).",
+"Crea valor":"El éxito final no se mide solo por entregar a tiempo y en presupuesto, sino por el <b>beneficio que genera</b> (ahorro, ingresos, cumplimiento, satisfacción). Un proyecto perfecto en tiempo y costo que nadie usa es un fracaso en valor. Por eso la PMO pregunta no solo “¿se entregó?”, sino “¿se logró el beneficio prometido?”. El PMBOK 8 pone el <b>valor</b> como uno de sus seis principios.",
+"Integración":"Coordina todas las demás áreas para que el proyecto funcione como un todo. Incluye el acta de constitución, el plan para la dirección del proyecto, la dirección y el control del trabajo, y sobre todo el <b>control integrado de cambios</b>: ningún cambio de alcance, costo o plazo se aprueba aislado, porque afecta a los demás. Es la responsabilidad más característica del director de proyecto.",
+"Alcance":"Define <b>qué se hará y qué no</b>. Se documenta en el enunciado del alcance y se descompone en la <b>EDT/WBS</b> (estructura de desglose del trabajo), que divide el entregable final en paquetes de trabajo manejables. El riesgo típico es el <i>scope creep</i>: agregar cosas sin control. La defensa es una línea base de alcance y un proceso formal de cambios.",
+"Cronograma":"Define <b>cuándo</b> se hace cada actividad: se listan las actividades, se secuencian, se estiman duraciones y se calcula la <b>ruta crítica</b> (la cadena de actividades que determina la fecha mínima de fin; si una se atrasa, todo el proyecto se atrasa). Se controla comparando lo real con la línea base (ver SPI).",
+"Costos":"Estima cuánto costará, arma el presupuesto (línea base de costos) y lo controla. La herramienta estrella para controlar es el <b>valor ganado</b> (EVM), que compara lo planificado, lo realizado y lo gastado. Incluye reservas para contingencias (riesgos conocidos) y gerenciales (riesgos desconocidos).",
+"Calidad":"Asegura que los entregables cumplan los requisitos y sean <b>aptos para el uso</b>. Prevenir es más barato que corregir: se planifica la calidad, se asegura que los procesos funcionen y se controla con inspecciones y pruebas. A nivel PMO: auditorías, estándares y mejora de procesos. En el PMBOK 8, la calidad aparece como principio: se integra en los procesos y entregables, no se “inspecciona al final”.",
+"Recursos":"Personas, equipos, materiales e instalaciones necesarios. Se trata de conseguirlos, asignarlos y liberarlos a tiempo. A nivel PMO se agrega la <b>gestión de capacidad</b>: sumar la demanda de todos los proyectos para detectar sobreasignación (una persona al 150%) y subutilización, y decidir prioridades.",
+"Comunicaciones":"Asegura que la información correcta llegue a la persona correcta en el momento correcto. Se planifica quién necesita qué, con qué frecuencia y por qué medio. Una regla práctica: cuanto más alto el cargo, menos detalle y más decisiones. Una gran parte del trabajo del director de proyecto es comunicar.",
+"Riesgos":"Un riesgo es un evento incierto que, si ocurre, afecta los objetivos (puede ser amenaza u <b>oportunidad</b>). Se identifica, se analiza (probabilidad × impacto), se planifican respuestas y se monitorea. Respuestas a amenazas: evitar, mitigar, transferir (seguros, contratos), aceptar. A nivel PMO se agrega la vista de <b>portafolio</b>: riesgos que se repiten en muchos proyectos, dependencias y concentración de riesgo.",
+"Adquisiciones":"Compra o contratación de productos y servicios externos: planificar qué comprar, elegir proveedores, firmar contratos y administrarlos. Tipos de contrato: precio fijo (riesgo para el proveedor), costo reembolsable (riesgo para el comprador) y tiempo y materiales (intermedio). La PMO suele estandarizar plantillas y criterios de selección.",
+"Interesados":"Un interesado es cualquier persona o grupo que afecta o es afectado por el proyecto. Se identifican, se analizan (poder, interés, actitud) y se planifica cómo involucrarlos. Un interesado ignorado suele convertirse en un riesgo mayor que uno técnico.",
+"Valor planificado":"<b>PV</b>: cuánto trabajo, valorizado en dinero, <i>debería</i> estar terminado a la fecha de hoy según el plan. Es la referencia: si tu presupuesto era 100 y hoy debería llevarse 40% del trabajo, PV = 40.",
+"Valor ganado":"<b>EV</b>: el valor presupuestado del trabajo que <i>realmente</i> se completó. Si el plan era 100 y realmente se completó 30% del trabajo, EV = 30. Se llama “ganado” porque es lo que el proyecto ya “ganó” al entregar. Es la base para medir tanto el costo como el cronograma.",
+"Costo real":"<b>AC</b>: lo que efectivamente se gastó para hacer el trabajo completado. Si para ese 30% se gastaron 45, AC = 45. Comparado con EV muestra si estás gastando de más o de menos.",
+"EV / AC":"<b>CPI</b> (índice de desempeño del costo). Mide cuánto valor obtienes por cada unidad gastada. Ejemplo: EV=30, AC=45 → CPI=0,67: por cada dólar gastado solo obtienes 67 centavos de trabajo. <b>Menor a 1 = sobre costo; mayor a 1 = bajo costo.</b>",
+"EV / PV":"<b>SPI</b> (índice de desempeño del cronograma). Compara lo realizado con lo planificado. Ejemplo: EV=30, PV=40 → SPI=0,75: se avanza al 75% del ritmo previsto. <b>Menor a 1 = atrasado; mayor a 1 = adelantado.</b>",
+"BAC / CPI":"<b>EAC</b>: estimación al concluir. Si el desempeño de costo actual se mantiene, el costo final será BAC/CPI. Ejemplo: BAC=1000, CPI=0,8 → EAC=1250. Sirve para avisar al patrocinador con anticipación si se necesitará más presupuesto.",
+"Estandarizar":"Definir una forma común de hacer las cosas: ciclo de vida, plantillas, nomenclatura, criterios de aprobación. Permite comparar proyectos y reduce errores. Debe incluir <b>adaptación (tailoring)</b>: no se exige el mismo nivel de documentación a un proyecto de USD 20 mil que a uno de USD 20 millones.",
+"Gobernar":"Establecer <b>quién decide qué</b>: comités, puertas de decisión (stage gates), umbrales de aprobación y rutas de escalamiento. Evita que las decisiones queden sin dueño o se tomen por presión. La gobernanza sin ejecutivos presentes en los comités es teatro.",
+"Reportar":"Entregar visibilidad: estado de proyectos, programas y portafolio con datos comparables. Un buen reporte es breve, usa semáforos con criterios claros y <b>pide decisiones</b>. Un mal reporte es una colección de datos que nadie usa.",
+"Capacitar":"Desarrollar competencias: cursos, coaching, mentoría y certificaciones. Es la función con mayor aceptación de los clientes, porque se percibe como ayuda y no como control.",
+"Gestionar recursos":"Ver capacidad y demanda de toda la organización. Responde preguntas como: ¿podemos tomar este proyecto nuevo sin romper los actuales? ¿quién está sobreasignado? ¿qué habilidades faltan?",
+"Gestionar conocimiento":"Capturar y reutilizar lo aprendido: lecciones aprendidas, repositorio de proyectos pasados, estimaciones reales vs. planeadas, plantillas probadas. El objetivo es no repetir errores y acelerar proyectos futuros.",
+"Priorizar":"Ayudar a decidir qué proyectos hacer y en qué orden según estrategia, valor, riesgo y capacidad. Es una función estratégica: pasa de “gestionar proyectos bien” a “gestionar los proyectos correctos”.",
+"Gestionar beneficios":"Asegurar que el valor prometido en el caso de negocio realmente ocurra: definir beneficios y métricas, asignar un dueño, medirlos después del proyecto y actuar si no aparecen.",
+"Propósito":"Responde “¿para qué existe la PMO?”. Debe poder decirse en una frase y vincularse con un problema de negocio (por ejemplo: “reducir los sobrecostos de proyectos y dar visibilidad al comité ejecutivo”). Un propósito vago produce una PMO sin rumbo.",
+"Alcance de servicios":"Qué hace la PMO y también qué <b>no</b> hace. Delimitarlo evita que se convierta en “la oficina de todo” y define expectativas con los clientes.",
+"Autoridad":"Qué puede decidir o exigir la PMO (por ejemplo, rechazar un proyecto sin caso de negocio, pedir reportes, detener una puerta de decisión). La autoridad la otorga el patrocinador; sin ella la PMO solo puede sugerir.",
+"Patrocinador":"El ejecutivo que respalda la PMO, aporta presupuesto y abre puertas. Debe tener jerarquía suficiente. Si cambia, hay que reconstruir el apoyo.",
+"Métricas de éxito":"Cómo se sabrá si la PMO funciona: por ejemplo, % de proyectos en meta, tiempo de aprobación, satisfacción de clientes, beneficios realizados. Se definen desde el charter para poder demostrar valor después.",
+"Presupuesto":"Cuánto cuesta operar la PMO (personas, herramientas, capacitación) y quién lo paga. Debe poder compararse con el valor que genera.",
+"Ubicación":"Dónde reporta la PMO en la organización. Si reporta al director general o al comité ejecutivo, tiene más autoridad e independencia; si reporta a un área de TI, tiende a verse como una PMO de esa área.",
+"Roles":"Un director de PMO (liderazgo y relación con ejecutivos), analistas o planificadores (datos, cronogramas, reportes), coaches o consultores (apoyo a directores de proyecto), administradores de herramientas y, a veces, directores de proyecto dedicados.",
+"Financiamiento":"Dos modelos: <b>presupuesto central</b> (la organización financia la PMO como una función) o <b>cobro a los proyectos</b> (los proyectos pagan los servicios, lo que obliga a la PMO a justificar su valor). El cobro aumenta la rendición de cuentas pero puede reducir el uso del servicio.",
+"Herramientas":"Software para cronogramas, portafolio, reportes y colaboración. Regla: <b>primero el proceso, después la herramienta</b>. Comprar software antes de definir cómo se trabaja automatiza el desorden.",
+"Metodología":"El marco de trabajo: etapas, entregables, roles y plantillas. Debe permitir <b>adaptación</b> (proyectos grandes vs. pequeños, predictivos vs. ágiles) y estar documentada de forma sencilla.",
+"Hoja de ruta":"El plan por fases para crear y hacer crecer la PMO: qué servicios primero, cuándo medir resultados, cuándo ampliar. Evita el “big bang” y permite ajustar con lo aprendido.",
+"Reportes":"Operar reportes significa definir frecuencia, formato, responsables y fuente de datos. Los datos deben provenir de una <b>única fuente de verdad</b>; los semáforos, de criterios definidos (por ejemplo, rojo si el SPI es menor a 0,85).",
+"Cambios":"Todo cambio pasa por <b>control integrado de cambios</b>: solicitud, evaluación de impacto (alcance, costo, plazo, riesgo), decisión por la instancia con autoridad y actualización de líneas base y documentos. La PMO suele administrar este proceso a nivel portafolio.",
+"Conocimiento":"Al cierre de cada proyecto o fase, se capturan lecciones aprendidas, se archivan los documentos clave y se comparten en una biblioteca accesible. La PMO también organiza sesiones para difundir lo aprendido.",
+"Automatización":"Usar herramientas para generar reportes, recordatorios y tableros automáticamente. Ahorra horas de trabajo manual y reduce errores. La automatización debe ir después de simplificar el proceso.",
+"Analítica predictiva":"Usar datos históricos para anticipar desviaciones: qué proyectos tienen más probabilidad de atrasarse o exceder el costo. Puede apoyarse en inteligencia artificial, siempre revisando que los datos de origen sean confiables.",
+"Agilidad":"Incorporar prácticas ágiles donde corresponda (entregas iterativas, retroalimentación frecuente). La PMO ágil acompaña a los equipos, mide valor entregado y evita imponer procesos pesados.",
+"Escalar":"Extender servicios que funcionan a nuevas áreas o a más proyectos, cuidando que la calidad del servicio no baje. Se hace con evidencia de resultados.",
+"Alta dirección":"Necesita pocas métricas, vinculadas a la estrategia, y decisiones concretas. Evita tecnicismos. Ejemplo: “la PMO ahorró USD 800 mil y redujo 18 días el tiempo de aprobación; solicitamos aprobar 2 analistas más”.",
+"Directores de proyecto":"Necesitan ver qué ganan: menos trabajo repetitivo, plantillas útiles, apoyo en conflictos de prioridad. Si sienten que la PMO solo los controla, resisten.",
+"Áreas de negocio":"Quieren saber cómo las iniciativas apoyan sus metas y cuándo recibirán beneficios. Se les comunica en lenguaje de negocio, no de gestión de proyectos.",
+"Finanzas":"Les importan los beneficios, el ahorro y el ROI. Hay que respaldar las cifras con metodología clara y trabajar con sus datos.",
+"Maneras de trabajar":"Antes “habilidades técnicas”. Incluye conocer y aplicar enfoques predictivos, ágiles e híbridos, y saber elegir el adecuado según el contexto.",
+"Habilidades de poder":"Antes “liderazgo”. Son las habilidades interpersonales: comunicación, negociación, influencia, resolución de conflictos, pensamiento crítico y resolución de problemas.",
+"Visión de negocio":"Entender la estrategia, la industria, los números y cómo el proyecto crea valor. Permite al profesional dialogar con ejecutivos y priorizar con criterio.",
+"Responsabilidad":"Asumir las decisiones y sus consecuencias, cumplir los compromisos, reportar errores propios y respetar las leyes. Ejemplo: si descubres un error tuyo en un reporte ya enviado, lo corriges y avisas.",
+"Respeto":"Tratar con dignidad a todos, respetar las diferencias culturales y los recursos de los demás, negociar de buena fe y no abusar del poder.",
+"Equidad":"Decidir de forma imparcial y evitar conflictos de interés o favoritismo. Ejemplo: no adjudicar un contrato a un familiar sin declararlo.",
+"Honestidad":"Decir la verdad, no engañar ni ocultar información relevante. Ejemplo: informar al patrocinador de un retraso aunque sea incómodo.",
+"Alineación estratégica":"¿Contribuye el proyecto a un objetivo estratégico concreto? Si no se puede trazar, probablemente no debería priorizarse, por muy atractivo que parezca.",
+"Valor financiero":"Beneficio económico esperado frente al costo: ROI, VAN, TIR y payback. Útil para comparar, pero no es el único criterio (hay proyectos obligatorios, regulatorios o estratégicos que no se justifican solo por finanzas).",
+"Riesgo":"Probabilidad e impacto de que algo salga mal, y la exposición total del portafolio. Se busca un equilibrio: demasiados proyectos de bajo riesgo no generan crecimiento; demasiados de alto riesgo ponen en peligro a la organización.",
+"Capacidad":"¿Hay personas, presupuesto y atención ejecutiva para hacerlo bien sin dañar otros proyectos? Un proyecto excelente que no se puede ejecutar por falta de capacidad se difiere.",
+"Retorno sobre inversión":"<b>ROI = beneficio neto / costo</b>, donde beneficio neto = beneficios totales − costo. Si inviertes 100 y el beneficio neto es 40 (por ejemplo, ingresos de 140), el ROI es 40%. Fácil de entender, pero no considera el valor del dinero en el tiempo.",
+"Valor actual neto":"<b>VAN (NPV)</b>: valor presente de los flujos futuros menos la inversión inicial, usando una tasa de descuento. Si es mayor a 0, el proyecto rinde más que el costo de capital. Si es 0, rinde exactamente esa tasa. Sirve para comparar proyectos.",
+"Tasa interna de retorno":"<b>TIR (IRR)</b>: la tasa de descuento que hace que el VAN sea 0. Se interpreta como “el rendimiento anual del proyecto”. Si es mayor a la tasa exigida por la organización, conviene.",
+"Payback":"Tiempo que tarda en recuperarse la inversión. Fácil de entender, pero ignora lo que ocurre después de recuperar la inversión y no considera el valor del dinero en el tiempo."
+};
+const STEPDET={
+"Generar conciencia":"Muchas organizaciones no saben cuánto les cuestan los problemas de gestión de proyectos. Aquí se presentan <b>datos concretos</b>: porcentaje de proyectos atrasados, sobrecostos acumulados, iniciativas sin beneficios. El objetivo es que los ejecutivos vean el problema y quieran resolverlo, no que acepten una solución impuesta.",
+"Identificar interesados":"Mapea quién decide, quién se beneficia, quién puede bloquear y quién debe cambiar su forma de trabajar. Se entrevistan los más influyentes. Un interesado clave omitido suele reaparecer más tarde como oposición.",
+"Evaluar necesidades":"Se escucha a los clientes de la PMO: ¿qué les duele? ¿qué esperan? Técnicas: entrevistas, encuestas, talleres, revisión de proyectos pasados. Se priorizan los dolores más graves y más fáciles de resolver (victorias tempranas).",
+"Evaluar cultura y madurez":"¿Cómo se toman decisiones? ¿Hay tolerancia a controles? ¿Se comparten los problemas o se ocultan? Además se mide madurez con un modelo reconocido para saber desde dónde se parte. Esto define qué tipo de PMO es realista.",
+"Alinear con la estrategia":"Se vincula lo que hará la PMO con los objetivos de la organización. Ejemplo: si la estrategia es crecer vía nuevos productos, la PMO prioriza visibilidad y velocidad del portafolio de innovación.",
+"Decidir (caso de negocio)":"Se presenta el caso de negocio con opciones (no hacer nada, PMO de apoyo, PMO de control...), costos, beneficios, riesgos y recomendación. La decisión de continuar o no se toma con evidencia.",
+"Piloto":"Probar los servicios con uno o dos proyectos voluntarios. Se aprende qué funciona, se corrigen plantillas y se obtienen testimonios positivos que ayudan a la adopción posterior.",
+"Onboarding":"Reunir a directores y equipos, explicar qué servicios ofrece la PMO, qué se espera de ellos, cómo pedir ayuda y qué beneficios obtendrán. Incluye capacitación breve y material de consulta.",
+"Despliegue por oleadas":"Ampliar por grupos de proyectos o áreas, no todos a la vez. Cada oleada incorpora lo aprendido de la anterior. Reduce la resistencia y el riesgo de saturar a la PMO.",
+"Operación estable":"Los servicios funcionan de forma recurrente con indicadores y un calendario claro (reportes mensuales, comités trimestrales). Se pasa de “proyecto de implantación” a “operación”.",
+"Medir":"Definir indicadores de servicio (tiempo de respuesta, satisfacción) y de resultado (proyectos en meta). Sin datos, la mejora es opinión.",
+"Escuchar":"Encuestas cortas, entrevistas y reuniones con clientes internos. Pregunta qué servicios usan, cuáles no y por qué. Cierra el ciclo contando qué se hizo con sus comentarios.",
+"Analizar causa raíz":"Buscar el origen del problema con técnicas como los 5 porqués o el diagrama de Ishikawa. Ejemplo: si los reportes llegan tarde, quizá el problema no es la gente sino que los datos están en 5 sistemas distintos.",
+"Actuar":"Implementar el cambio: simplificar, automatizar, capacitar, eliminar o crear servicios. Se comunica el cambio y se explica por qué se hace.",
+"Verificar":"Comprobar con datos si el cambio funcionó. Si no, se ajusta (ciclo PDCA: planificar, hacer, verificar, actuar).",
+"Formación":"El equipo se está conociendo. Hay cortesía, incertidumbre y dependencia del líder. Se necesita dirección clara, objetivos y roles definidos.",
+"Tormenta":"Aparecen conflictos sobre roles, métodos y poder. Es normal y puede ser productivo si se gestiona. El líder facilita el diálogo y establece reglas de convivencia.",
+"Normalización":"Se acuerdan normas, se desarrolla confianza y comienza la colaboración real. El líder delega más y fortalece la identidad del equipo.",
+"Desempeño":"El equipo trabaja con autonomía, resuelve problemas por sí mismo y logra resultados superiores. El líder remueve obstáculos y reconoce logros.",
+"Definir":"Describir con precisión el beneficio, para quién es, cómo se medirá, cuál es la línea base actual y cuál es la meta. Un beneficio mal definido no puede gestionarse.",
+"Planificar":"Asignar un <b>dueño</b> del beneficio (alguien del negocio, no del proyecto), fechas y actividades para realizarlo (por ejemplo: capacitar usuarios, cambiar procesos). El proyecto entrega la capacidad; el negocio realiza el beneficio.",
+"Realizar":"Ejecutar el proyecto y las actividades de cambio para que el beneficio empiece a materializarse. Se monitorea periódicamente y se corrige el rumbo.",
+"Sostener":"Después del proyecto, el beneficio se mantiene si hay procesos, personas y métricas que lo respalden. La PMO sigue midiendo hasta confirmarlo."
+};
+/* ============ AYUDAS DE DISEÑO ============ */
+const H=t=>`<h2>${t}</h2>`;
+const P=t=>`<p>${t}</p>`;
+const CC=a=>`<div class="cc">${a.map(([i,t,x])=>DETAILS[t]?`<details class="cx"><summary><span class="ic">${i}</span><b>${t}</b><span>${x}</span><em>Ver explicación</em></summary><div class="dt">${DETAILS[t]}</div></details>`:`<div class="cx"><div class="ic">${i}</div><b>${t}</b><span>${x}</span></div>`).join("")}</div>`;
+const CALL=(k,t)=>`<div class="call ${k}"><b>${{tip:"💡 Idea clave",ex:"🎯 Para el examen",wa:"⚠️ Ojo",eg:"📌 Ejemplo"}[k]}</b><div>${t}</div></div>`;
+const VS=(a,b)=>`<div class="vs"><div class="vc"><h3>${a[0]}</h3><ul>${a[1].map(x=>`<li>${x}</li>`).join("")}</ul></div><div class="vc alt"><h3>${b[0]}</h3><ul>${b[1].map(x=>`<li>${x}</li>`).join("")}</ul></div></div>`;
+const STEPS=a=>`<div class="steps">${a.map(([t,x],i)=>STEPDET[t]?`<details class="st"><summary><i>${i+1}</i><div><b>${t}</b><span>${x}</span><em>Ver explicación</em></div></summary><div class="dt">${STEPDET[t]}</div></details>`:`<div class="st"><i>${i+1}</i><div><b>${t}</b><span>${x}</span></div></div>`).join("")}</div>`;
+const SUM=a=>`<div class="sum"><b>Resumen del capítulo</b><ul>${a.map(x=>`<li>${x}</li>`).join("")}</ul></div>`;
+
+/* ============ DIAGRAMAS (SVG) ============ */
+const SV=(w,h,inner)=>`<figure class="fig"><svg viewBox="0 0 ${w} ${h}" role="img">${inner}</svg></figure>`;
+const T=(x,y,t,c,a)=>`<text x="${x}" y="${y}" text-anchor="${a||"middle"}" class="${c||"t"}">${t}</text>`;
+const DG={
+jerarquia:()=>SV(640,250,`
+<rect class="s0" x="170" y="10" width="300" height="42" rx="10"/>${T(320,37,"Estrategia de la organización","tb")}
+<rect class="s1" x="120" y="62" width="400" height="42" rx="10"/>${T(320,89,"Portafolio: lo que conviene invertir","tb")}
+<rect class="s2" x="70" y="114" width="500" height="42" rx="10"/>${T(320,141,"Programas: proyectos relacionados, beneficios conjuntos","tb")}
+<rect class="s3" x="20" y="166" width="600" height="42" rx="10"/>${T(320,193,"Proyectos: entregables temporales y únicos","tb")}
+${T(320,236,"La PMO atraviesa todos los niveles: gobierna, estandariza, apoya y reporta","tm")}`),
+ciclo:()=>SV(660,200,`
+${["Inicio","Planificación","Ejecución","Monitoreo y control","Cierre"].map((n,i)=>`<polygon class="s${i%3+1}" points="${10+i*128},30 ${120+i*128},30 ${138+i*128},75 ${120+i*128},120 ${10+i*128},120 ${28+i*128},75"/>${T(76+i*128,80,n,"tb")}`).join("")}
+${T(330,160,"Cada grupo de procesos se repite en cada fase; el monitoreo y control acompaña a todo el proyecto","tm")}
+<line x1="140" y1="135" x2="520" y2="135" class="ln"/>`),
+espectro:()=>SV(640,190,`
+<defs><linearGradient id="g1" x1="0" x2="1"><stop offset="0" stop-color="var(--pr2)"/><stop offset="1" stop-color="var(--pr)"/></linearGradient></defs>
+<rect x="30" y="70" width="580" height="18" rx="9" fill="url(#g1)"/>
+${[["De apoyo","Plantillas, buenas prácticas, mentoría",90],["De control","Exige cumplimiento y gobernanza",320],["Directiva","Gestiona los proyectos directamente",550]].map(([a,b,x])=>`<circle cx="${x}" cy="79" r="20" class="dot"/>${T(x,30,a,"tb")}${T(x,125,b,"tm")}`).join("")}
+${T(320,170,"← menos control e influencia · más control e influencia →","tm")}`),
+flywheel:()=>{const L=["Introducción","Exploración","Diseño","Despliegue","Mejora","Realización"];const cx=320,cy=130,r=88;let o=`<circle cx="${cx}" cy="${cy}" r="${r}" class="ring"/>${T(cx,cy-4,"Valor al","tb")}${T(cx,cy+14,"cliente","tb")}`;
+L.forEach((n,i)=>{const a=-Math.PI/2+i*Math.PI/3,x=cx+r*Math.cos(a),y=cy+r*Math.sin(a);o+=`<circle cx="${x}" cy="${y}" r="21" class="s${i%3+1} nd"/>${T(x,y+5,i+1,"tb")}`;
+ const lx=cx+(r+50)*Math.cos(a),ly=cy+(r+36)*Math.sin(a)+4;o+=T(lx,ly,n,"tb")});return SV(640,270,o)},
+vs:()=>"",
+evm:()=>SV(640,280,`
+<line x1="60" y1="240" x2="600" y2="240" class="ax"/><line x1="60" y1="240" x2="60" y2="20" class="ax"/>
+${T(330,268,"Tiempo","tm")}${T(28,130,"$","tm")}
+<path d="M60 240 C200 235 260 140 600 40" class="pv"/><path d="M60 240 C200 238 270 175 440 125" class="ev"/><path d="M60 240 C200 232 260 120 440 70" class="ac"/>
+<line x1="440" y1="70" x2="440" y2="125" class="ln"/><line x1="440" y1="125" x2="440" y2="${240}" class="ln" stroke-dasharray="3 4"/>
+${T(612,38,"PV","tb","end")}${T(452,66,"AC","tb","start")}${T(452,142,"EV","tb","start")}
+${T(430,230,"CV = EV − AC (negativo)","tm","end")}${T(520,200,"Hoy","tm")}`),
+relacion:()=>SV(640,290,`
+<rect class="s0" x="20" y="20" width="600" height="40" rx="10"/>${T(320,46,"PMO: estándares · gobernanza · herramientas · recursos · reportes · capacitación","tb")}
+${["Proyecto A","Proyecto B","Proyecto C"].map((n,i)=>`<rect class="s${i+1}" x="${40+i*200}" y="130" width="160" height="60" rx="10"/>${T(120+i*200,156,n,"tb")}${T(120+i*200,176,"Director de proyecto","tm")}<line x1="${120+i*200}" y1="60" x2="${120+i*200}" y2="130" class="ln" marker-end="url(#ar)"/>`).join("")}
+<defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--mu)"/></marker></defs>
+${T(320,235,"La PMO sirve y gobierna a los proyectos;","tm")}${T(320,255,"el director de proyecto es quien responde por los resultados de su proyecto","tm")}`)
+};
+
+/* ============ CAPÍTULOS ============ */
+const CH=[
+{id:"c0",n:0,ic:"📘",t:"Gestión de proyectos (PMBOK) y su relación con la PMO",ex:"Base de todos los dominios",min:25,
+sub:"Antes de entender la PMO necesitas dominar qué hace la dirección de proyectos. Este capítulo es la base.",
+b:()=>
+H("1. ¿Qué es un proyecto?")+
+P("Un <b>proyecto</b> es un esfuerzo <b>temporal</b> emprendido para crear un producto, servicio o resultado <b>único</b>. Tiene inicio y fin definidos, y termina cuando se logran los objetivos, se agota el presupuesto o se decide cancelarlo. Lo opuesto son las <b>operaciones</b>: trabajo continuo y repetitivo que mantiene el negocio funcionando (por ejemplo, atender el soporte diario).")+
+CC([["⏳","Temporal","Tiene fecha de inicio y de fin."],["✨","Único","El resultado es distinto a lo hecho antes, aunque haya similitudes."],["📈","Elaboración progresiva","Se detalla a medida que se conoce más información."],["🎯","Crea valor","Se justifica por el beneficio para el negocio, no solo por entregar."]])+
+H("2. ¿Qué es la dirección de proyectos y qué es el PMBOK?")+
+P("La <b>dirección de proyectos</b> es la aplicación de conocimientos, habilidades, herramientas y técnicas para cumplir los requisitos del proyecto. El <b>PMBOK® Guide</b> (Project Management Body of Knowledge) es el estándar de buenas prácticas de PMI sobre cómo hacerlo. <b>No es una metodología</b> que se sigue paso a paso: es un marco de referencia que cada organización adapta (tailoring).")+
+CALL("wa","Tu mensaje mencionó “PMOPBK”. El nombre correcto es <b>PMBOK</b> (de proyectos). La PMO tiene su propia guía de PMI, la <b>PMO Practice Guide</b>. Son documentos diferentes que se complementan.")+
+P("<b>Tres ediciones, tres formas de organizar lo mismo:</b>")+
+VS(["PMBOK 8.ª edición (la vigente)",["<b>6 principios</b>: visión holística, enfoque en el valor, calidad integrada en procesos y entregables, liderazgo responsable, sostenibilidad en todas las áreas y cultura empoderada","<b>7 dominios de desempeño</b>: gobernanza, alcance, cronograma, finanzas, interesados, recursos y riesgo","<b>40 procesos</b> presentados de forma no prescriptiva","Incluye más contenido sobre IA, PMO y adquisiciones; integra el Standard for Project Management en el mismo volumen"]],["Ediciones anteriores",["<b>6.ª</b>: 5 grupos de procesos, 10 áreas de conocimiento y 49 procesos","<b>7.ª</b>: 12 principios y 8 dominios de desempeño (interesados, equipo, enfoque de desarrollo y ciclo de vida, planificación, trabajo del proyecto, entrega, medición, incertidumbre)","Las áreas de conocimiento de la 6.ª siguen siendo útiles para entender el contenido"]])+
+CALL("wa","Fuentes consultadas (PMI y sitios de formación) indican que la 8.ª edición salió entre fines de 2025 y enero de 2026, y los nombres exactos de principios y dominios provienen de resúmenes de terceros. Contrástalos con tu ejemplar oficial antes del examen.")+
+DG.ciclo()+
+H("3. Las 10 áreas de conocimiento (PMBOK 6, siguen sirviendo de mapa mental)")+
+CC([["🧩","Integración","Coordina todo; control integrado de cambios."],["📐","Alcance","Qué se incluye y qué no (EDT/WBS)."],["📅","Cronograma","Actividades, duraciones, ruta crítica."],["💰","Costos","Estimación, presupuesto y control (valor ganado)."],["✅","Calidad","Cumplir requisitos y aptitud de uso."],["👥","Recursos","Equipo, materiales y su asignación."],["💬","Comunicaciones","Información correcta, a la persona correcta, a tiempo."],["⚡","Riesgos","Amenazas y oportunidades."],["🤝","Adquisiciones","Contratos y proveedores."],["🙋","Interesados","Identificar, analizar y gestionar expectativas."]])+
+H("4. Proyecto, programa y portafolio")+
+P("Las organizaciones no solo ejecutan proyectos aislados: los agrupan según su relación con la estrategia.")+DG.jerarquia()+
+VS(["Programa",["Proyectos <b>relacionados</b> gestionados de forma coordinada","Busca beneficios que no se logran gestionándolos por separado","Ej.: construir una planta, capacitar al personal y obtener permisos"]],["Portafolio",["Proyectos, programas y operaciones <b>agrupados por la estrategia</b>","Se enfoca en priorizar, equilibrar y decidir qué invertir","No requiere que los proyectos estén relacionados entre sí"]])+
+H("5. ¿Cómo se relaciona la PMO con la gestión de proyectos?")+
+P("Esta es la pregunta central del curso. La dirección de proyectos responde <b>cómo se ejecuta bien un proyecto</b>. La PMO responde <b>cómo logra la organización que todos sus proyectos se ejecuten bien y generen valor</b>.")+
+DG.relacion()+
+VS(["Director de proyecto",["Responde por los objetivos de <b>un</b> proyecto","Gestiona alcance, cronograma, costo, calidad, riesgos y equipo","Su foco es entregar el proyecto","Vive mientras dura el proyecto"]],["PMO",["Responde por la <b>capacidad</b> de la organización en proyectos","Define estándares, gobernanza, herramientas y reportes","Su foco es el valor para la organización","Es una estructura permanente (aunque puede evolucionar)"]])+
+CALL("tip","La PMO <b>no reemplaza</b> al director de proyecto. Lo habilita: le da método, herramientas, datos, capacitación y gobernanza, y consolida lo que pasa en todos los proyectos para que los ejecutivos decidan.")+
+CALL("eg","Una empresa tiene 40 proyectos en paralelo. Cada director usa su propio formato de reporte y nadie sabe qué recursos están sobreasignados. La PMO define un reporte único, un registro de capacidad y un comité mensual de decisiones. Los proyectos siguen siendo gestionados por sus directores; la PMO da visibilidad y orden.")+
+H("6. Valor ganado (EVM): una herramienta que la PMO usa para reportar")+
+DG.evm()+
+CC([["PV","Valor planificado","Lo que debía estar hecho hoy."],["EV","Valor ganado","Valor del trabajo realmente completado."],["AC","Costo real","Lo que realmente se gastó."],["CPI","EV / AC","Menor a 1: sobre costo."],["SPI","EV / PV","Menor a 1: atrasado."],["EAC","BAC / CPI","Proyección del costo final."]])+
+CALL("ex","Memoriza: <b>CV = EV − AC</b> y <b>SV = EV − PV</b>. Un índice menor a 1 siempre es malo; mayor a 1, bueno. En una pregunta de escenario, identifica primero cuál dato falta y qué decisión debe tomar el director o la PMO.")+
+DEEP("c0")+SUM(["Proyecto = temporal y único; operaciones = continuas.","PMBOK (8.ª ed.: 6 principios y 7 dominios) es un estándar de buenas prácticas que se adapta, no una metodología rígida.","El proyecto vive dentro de programas y portafolios que sirven a la estrategia.","La PMO habilita y gobierna a los directores de proyecto; no los reemplaza.","El valor ganado mide desempeño de costo y cronograma con datos objetivos."])},
+
+{id:"c1",n:1,ic:"🧭",t:"Introducción: qué es una PMO y su propuesta de valor",ex:"Dominio PMO Strategic Elements (base)",min:20,
+sub:"Qué es una PMO, qué tipos existen, qué funciones cumple y por qué hoy se habla de una PMO “centrada en el cliente”.",
+b:()=>
+H("1. Definición")+
+P("Una <b>PMO</b> (Oficina de Gestión de Proyectos, Programas o Portafolio) es una estructura organizacional que estandariza los procesos de gobernanza y facilita el intercambio de recursos, metodologías, herramientas y técnicas relacionadas con proyectos. Su razón de ser es <b>entregar valor</b> a la organización.")+
+H("2. Tipos de PMO: un espectro de control")+DG.espectro()+
+VS(["De apoyo",["Rol consultivo","Ofrece plantillas, lecciones y capacitación","Ideal en culturas autónomas o al comenzar"]],["De control",["Exige uso de metodología y reportes","Audita el cumplimiento","Ideal cuando se necesita consistencia"]])+
+CALL("tip","La <b>PMO directiva</b> gestiona los proyectos directamente (los directores le reportan). No hay un tipo “mejor”: se elige según cultura, madurez y problemas que se quieren resolver.")+
+P("Además existen PMO <b>empresarial o estratégica</b> (portafolio), <b>de departamento</b>, <b>de proyecto</b> (temporal, para un proyecto grande) y la <b>PMO ágil / centro de excelencia</b>.")+
+H("3. Funciones principales")+
+CC([["📏","Estandarizar","Metodología, plantillas, procesos."],["🏛️","Gobernar","Criterios de decisión, comités, puertas."],["📊","Reportar","Estado de proyectos y portafolio."],["🧑‍🏫","Capacitar","Coaching y mentoría a directores."],["🗂️","Gestionar recursos","Capacidad y asignación."],["📚","Gestionar conocimiento","Lecciones aprendidas."],["⚖️","Priorizar","Alineación con la estrategia."],["💎","Gestionar beneficios","Que el valor prometido se realice."]])+
+H("4. PMO centrada en el cliente y el ciclo de valor")+
+P("El material oficial de preparación de PMI organiza el recorrido de una PMO en <b>seis etapas</b> que giran como un volante (<i>flywheel</i>): cuanto más valor percibe el cliente, más apoyo recibe la PMO, y más puede mejorar. Estas etapas son los capítulos 1 a 6 de este portal.")+DG.flywheel()+
+CALL("tip","Los “clientes” de la PMO son los directores de proyecto, los patrocinadores, los ejecutivos y las áreas de negocio. Si ellos no perciben valor, la PMO se vuelve burocracia y pierde apoyo.")+
+CALL("wa","Una PMO que solo “exige reportes” sin dar nada a cambio es el error clásico. Siempre debes poder responder: <b>¿qué problema real resolvemos y para quién?</b>")+
+DEEP("c1")+SUM(["La PMO estandariza, gobierna, reporta, capacita y prioriza.","Tipos: de apoyo, de control y directiva; el tipo depende del contexto.","La PMO se justifica por valor medible para sus clientes internos.","El recorrido: Introducción → Exploración → Diseño → Despliegue → Mejora → Realización."])},
+
+{id:"c2",n:2,ic:"🔍",t:"Exploración: necesidades, cultura y alineación",ex:"Dominio Organizational Development & Alignment (16%)",min:25,
+sub:"Antes de crear o rediseñar una PMO hay que entender a la organización: qué duele, quién decide y cómo se trabaja aquí.",
+b:()=>
+H("1. ¿Por qué explorar primero?")+
+P("Muchas PMO fracasan porque se diseñan desde una plantilla externa sin entender el contexto. La exploración genera <b>conciencia</b> de la necesidad, <b>diagnostica</b> el estado actual y <b>alinea</b> expectativas con la estrategia.")+
+STEPS([["Generar conciencia","Mostrar con datos el problema: sobrecostos, atrasos, proyectos que no aportan valor."],["Identificar interesados","Patrocinador, ejecutivos, directores de proyecto, áreas de negocio, TI, finanzas."],["Evaluar necesidades","Entrevistas, encuestas, revisión de proyectos pasados: ¿cuáles son los dolores más críticos?"],["Evaluar cultura y madurez","¿Es jerárquica o colaborativa? ¿Qué tanta disciplina de proyectos existe?"],["Alinear con la estrategia","Conectar la PMO con los objetivos de la organización."],["Decidir (caso de negocio)","Presentar opciones, costos y beneficios para obtener la decisión."]])+
+H("2. Cultura organizacional")+
+VS(["Cultura jerárquica / formal",["Valora procesos, aprobaciones y reportes","Una PMO de control suele encajar","Riesgo: rigidez y lentitud"]],["Cultura colaborativa / ágil",["Valora autonomía y rapidez","Una PMO de apoyo o ágil encaja mejor","Riesgo: falta de consistencia y visibilidad"]])+
+CALL("tip","La PMO debe <b>ajustarse a la cultura</b> (o cambiarla gradualmente con apoyo del patrocinador), no ignorarla.")+
+H("3. Interesados y patrocinio")+
+P("Usa la <b>matriz poder/interés</b> para decidir cómo involucrar a cada grupo: <i>alto poder / alto interés</i> = gestionar de cerca; <i>alto poder / bajo interés</i> = mantener satisfecho; <i>bajo poder / alto interés</i> = mantener informado; <i>bajo / bajo</i> = monitorear. Sin un <b>patrocinador ejecutivo</b> con autoridad, la PMO no puede sostenerse.")+
+H("4. Madurez organizacional")+
+P("Los modelos de madurez (OPM3, P3M3, CMMI y otros) ayudan a diagnosticar qué tan consistentes y medidos son los procesos. La madurez baja pide una PMO sencilla y de apoyo; la madurez alta permite una PMO más estratégica.")+
+CALL("eg","Un banco regional pide una PMO. Tras entrevistas se descubre que los directores trabajan solos, no hay reportes comparables y TI no sabe qué prioridades tiene el negocio. La conclusión: empezar con una PMO de apoyo con reporte único de portafolio, no con auditorías pesadas.")+
+CALL("ex","Cuando la pregunta describe una organización nueva en gestión de proyectos, la mejor respuesta suele ser <b>diagnosticar primero y empezar simple</b>, con victorias tempranas, antes de imponer controles.")+
+DEEP("c2")+SUM(["Explorar = entender necesidades, cultura, madurez e interesados.","El patrocinio ejecutivo es condición de supervivencia.","Ajusta el tipo de PMO a la cultura y madurez.","El caso de negocio justifica la decisión de crear o evolucionar la PMO."])},
+
+{id:"c3",n:3,ic:"📐",t:"Diseño: propuesta de valor, charter, servicios y gobernanza",ex:"Dominios PMO Design & Structuring (18%) y Strategic Elements (18%)",min:30,
+sub:"Cómo se diseña una PMO: qué servicios ofrece, cómo se organiza, quién decide y cómo se financia.",
+b:()=>
+H("1. Propuesta de valor")+
+P("Define <b>qué problemas resuelve la PMO, para quién y con qué resultado</b>. Todo el diseño se deriva de esta propuesta. Incluye visión, misión, objetivos y los beneficios esperados.")+
+H("2. Acta de constitución (charter) de la PMO")+
+CC([["🎯","Propósito","Por qué existe."],["📦","Alcance de servicios","Qué hace y qué no."],["🏛️","Autoridad","Qué puede decidir o exigir."],["🧑‍💼","Patrocinador","Quién la respalda."],["📏","Métricas de éxito","Cómo se sabrá si funciona."],["💵","Presupuesto","Cómo se financia."]])+
+H("3. Catálogo de servicios")+
+P("Lista de servicios con su descripción, destinatarios y nivel de servicio. Ejemplos: reporte de portafolio, metodología y plantillas, gestión de capacidad, auditorías de proyecto, capacitación, coaching, mesa de ayuda, gestión de lecciones aprendidas.")+
+CALL("tip","Empieza con <b>pocos servicios de alto valor</b>; crece cuando los clientes los pidan. Un catálogo enorme desde el día uno genera resistencia.")+
+H("4. Gobernanza")+
+P("Define <b>quién decide qué</b>, con qué criterios y en qué foro: comité de dirección, puertas de decisión (<i>stage gates</i>), proceso de aprobación de cambios y escalamiento de problemas. Una <b>matriz RACI</b> aclara Responsable, Aprobador, Consultado e Informado.")+
+H("5. Estructura y modelo operativo")+
+CC([["🏢","Ubicación","Cuanto más cerca de la alta dirección, más autoridad."],["👥","Roles","Director de PMO, analistas, planificadores, coaches."],["💰","Financiamiento","Presupuesto central o cobro a los proyectos."],["🧰","Herramientas","Primero el proceso; luego el software."],["🧵","Metodología","Marco con adaptación (tailoring) por tamaño y riesgo."],["🗺️","Hoja de ruta","Implantación por fases."]])+
+CALL("wa","Comprar una herramienta de gestión de portafolio antes de definir procesos es un error muy frecuente: automatizas el desorden.")+
+CALL("ex","Para preguntas de diseño busca: <b>charter aprobado, servicios alineados a necesidades, gobernanza clara y plan por fases</b>. Evita respuestas que implican copiar el modelo de otra empresa sin adaptarlo.")+
+DEEP("c3")+SUM(["Primero la propuesta de valor; luego servicios, gobernanza y estructura.","El charter formaliza propósito, alcance, autoridad y patrocinio.","El catálogo debe ser pequeño al inicio y crecer con la demanda.","El tailoring evita burocracia innecesaria."])},
+
+{id:"c4",n:4,ic:"🚀",t:"Despliegue: poner en marcha y operar la PMO",ex:"Dominio PMO Operation & Performance (15%)",min:30,
+sub:"Cómo se lanza la PMO, cómo se incorpora a los proyectos y cómo se opera el día a día.",
+b:()=>
+H("1. Lanzar sin “big bang”")+
+STEPS([["Piloto","Probar los servicios en uno o dos proyectos y ajustar."],["Onboarding","Presentar a los directores y equipos qué recibirán y qué se espera."],["Despliegue por oleadas","Extender gradualmente a más áreas."],["Operación estable","Servicios recurrentes con indicadores."]])+
+H("2. Operación diaria de los servicios")+
+CC([["📊","Reportes","Pocos, claros, con semáforos y decisiones requeridas."],["⚡","Riesgos","Registro de portafolio; escalamiento."],["🗂️","Recursos","Capacidad vs. demanda para evitar sobreasignación."],["🔄","Cambios","Control integrado y actualización de líneas base."],["✅","Calidad","Auditorías y revisiones de proyecto."],["📚","Conocimiento","Lecciones aprendidas y repositorio."]])+
+CALL("tip","Una <b>única fuente de verdad</b>: los datos oficiales viven en un solo repositorio. Así se evitan reportes contradictorios y debates sobre qué cifra es la buena.")+
+H("3. Medir el desempeño de proyectos")+
+DG.evm()+
+P("La PMO consolida el valor ganado de los proyectos: <b>CPI</b> y <b>SPI</b> por debajo de 1 son señales de alerta. Distingue indicadores <b>adelantados</b> (predicen, p. ej. riesgos abiertos o tendencia del SPI) de <b>rezagados</b> (confirman, p. ej. costo final).")+
+H("4. Gestión de la demanda")+
+P("La PMO recibe solicitudes de nuevos proyectos y las evalúa contra criterios, capacidad y estrategia antes de aprobarlas. Aceptar todo lo que piden las áreas es la forma más rápida de sobrecargar la organización.")+
+CALL("eg","El comité muestra 12 iniciativas nuevas. La PMO consulta la capacidad: solo hay recursos para 5 sin romper proyectos en curso. Presenta una priorización con criterios y propone diferir las demás.")+
+CALL("ex","En preguntas de escenario sobre operación, la respuesta correcta suele combinar <b>datos objetivos + escalamiento oportuno + proceso formal de cambios</b>, no soluciones improvisadas.")+
+DEEP("c4")+SUM(["Lanza con piloto y onboarding; evita el big bang.","Servicios clave: reportes, riesgos, recursos, cambios, calidad y conocimiento.","Una única fuente de verdad evita reportes contradictorios.","Gestiona demanda contra capacidad y estrategia."])},
+
+{id:"c5",n:5,ic:"🔧",t:"Mejora: efectividad y madurez continua",ex:"Dominio PMO Enhancement & Effectiveness (18%)",min:20,
+sub:"Una PMO no está terminada: se mide, se escucha a los clientes y se mejora de forma sistemática.",
+b:()=>
+H("1. El ciclo de mejora")+
+STEPS([["Medir","Indicadores de servicio y de resultados de proyectos."],["Escuchar","Encuestas, entrevistas y retroalimentación de clientes internos."],["Analizar causa raíz","Atacar el origen, no el síntoma."],["Actuar","Ajustar, simplificar, eliminar o crear servicios."],["Verificar","Comprobar si la mejora funcionó (ciclo PDCA)."]])+
+H("2. Madurez")+
+P("Reevalúa la madurez periódicamente con un modelo reconocido. Identifica brechas, define el siguiente nivel realista y actualiza la hoja de ruta. Subir de madurez no es acumular procesos, sino hacerlos <b>más efectivos y medibles</b>.")+
+H("3. Lecciones aprendidas")+
+CALL("wa","Archivar lecciones no es aprenderlas. Valen cuando se <b>analizan, se convierten en acciones y se aplican</b> en proyectos futuros.")+
+H("4. Retirar lo que no aporta")+
+P("Mejorar también es <b>simplificar</b>: si un servicio, reporte o plantilla ya no genera valor, ajústalo o ciérralo. Esto libera capacidad y mejora la percepción de la PMO.")+
+H("5. Innovación")+
+CC([["🤖","Automatización","Reportes y tableros automáticos."],["🔮","Analítica predictiva","Anticipar desviaciones."],["🌱","Agilidad","Adoptar prácticas ágiles donde corresponda."],["🌐","Escalar","Extender servicios a nuevas áreas."]])+
+CALL("ex","Si el escenario describe una PMO con quejas de burocracia, la mejor acción es <b>escuchar, medir, simplificar y volver a comunicar el valor</b>, no endurecer controles.")+
+DEEP("c5")+SUM(["Mejora = medir, escuchar, analizar causa raíz, actuar y verificar.","La madurez se reevalúa de forma periódica.","Las lecciones aprendidas se aplican, no se archivan.","Retirar servicios sin valor también es mejorar."])},
+
+{id:"c6",n:6,ic:"💎",t:"Realización: medir y comunicar el valor",ex:"Dominios PMO Enhancement (18%) y Operation (15%)",min:20,
+sub:"Si no puedes demostrar el valor de la PMO, no sobrevivirá. Este capítulo trata de medirlo y comunicarlo.",
+b:()=>
+H("1. ¿Qué es “valor” para una PMO?")+
+P("Valor es el beneficio que la organización y sus clientes reciben gracias a la PMO: proyectos más exitosos, decisiones más rápidas, menos desperdicio, mejor uso de recursos y beneficios estratégicos realizados.")+
+H("2. Qué medir")+
+VS(["Indicadores de la PMO",["% de proyectos que cumplen objetivos","Cumplimiento de la metodología","Satisfacción de clientes internos","Tiempo de decisión de aprobaciones","Beneficios realizados"]],["Indicadores financieros",["ROI (retorno sobre la inversión)","VAN / NPV (valor presente neto)","TIR / IRR","Payback (período de recuperación)","Costo de la PMO vs. ahorros generados"]])+
+CALL("tip","Mide <b>resultados</b> (qué cambió gracias a la PMO), no solo <b>actividad</b> (cuántas reuniones o plantillas hubo).")+
+H("3. Comunicar a los interesados")+
+CC([["🧑‍💼","Alta dirección","Pocas métricas, impacto en estrategia, decisiones requeridas."],["🧑‍🏫","Directores de proyecto","Qué ganan: menos trabajo repetitivo, apoyo."],["🏢","Áreas de negocio","Cómo las iniciativas apoyan sus metas."],["🧾","Finanzas","Beneficios, ahorros y ROI."]])+
+P("Adapta el mensaje: tableros visuales, historias de éxito con datos y un resumen ejecutivo claro. Cuenta qué problema había, qué hizo la PMO y qué resultado se logró.")+
+H("4. Sostener el valor")+
+P("Comparte los logros de forma periódica, renueva el apoyo del patrocinador y vincula los beneficios con dueños y métricas en el tiempo. El valor que no se comunica, no existe para quien decide.")+
+CALL("eg","Un tablero trimestral muestra: proyectos en meta subió de 42% a 61%, el tiempo de aprobación bajó de 30 a 12 días y se ahorraron USD 800 mil evitando dos proyectos duplicados. Con eso, el patrocinador aprueba ampliar el equipo.")+
+CALL("ex","La respuesta correcta suele <b>vincular las métricas de la PMO con objetivos estratégicos</b> y comunicarlas al nivel adecuado de cada audiencia.")+
+DEEP("c6")+SUM(["Valor = beneficios medibles para la organización y sus clientes.","Mide resultados, no solo actividad.","Adapta la comunicación a cada interesado.","El valor se sostiene comunicándolo de forma continua."])},
+
+{id:"c7",n:7,ic:"🤝",t:"Personas: liderazgo, equipos y ética",ex:"Dominio People (15%)",min:20,
+sub:"Una PMO funciona gracias a personas: sus competencias, su liderazgo y su forma de colaborar.",
+b:()=>
+H("1. El triángulo de talento de PMI")+
+CC([["🛠️","Maneras de trabajar","Técnicas, metodologías, ágil, predictivo, híbrido."],["🌟","Habilidades de poder","Liderazgo, comunicación, negociación, inteligencia emocional."],["🏆","Visión de negocio","Estrategia, valor y entendimiento del negocio."]])+
+P("Una PMO necesita personas fuertes en <b>las tres</b> áreas. Cuando solo se tienen habilidades técnicas, los proyectos se entregan pero no se influye en las decisiones del negocio.")+
+H("2. Liderar vs. gestionar")+
+VS(["Gestionar",["Planifica, organiza y controla","Se enfoca en procesos y resultados","Reduce variación"]],["Liderar",["Inspira, alinea y motiva","Se enfoca en personas y visión","Impulsa el cambio"]])+
+H("3. Equipos y conflictos")+
+STEPS([["Formación","Los miembros se conocen y buscan orientación."],["Tormenta","Aparecen conflictos y se disputan roles."],["Normalización","Se acuerdan reglas y se colabora."],["Desempeño","El equipo trabaja con autonomía y eficacia."]])+
+P("Para resolver conflictos, la técnica más sostenible es <b>colaborar / resolver el problema</b>. Forzar o evitar sirve en casos puntuales, pero deja problemas sin resolver.")+
+H("4. Desarrollar a las personas")+
+P("La PMO ofrece capacitación, mentoría, rutas de carrera para directores de proyecto y una <b>comunidad de práctica</b> donde se comparten experiencias. También gestiona su propio equipo con delegación clara de expectativas y autoridad.")+
+H("5. Ética profesional")+
+CC([["🛡️","Responsabilidad","Asumir decisiones y sus consecuencias."],["🙏","Respeto","Tratar con dignidad a todos."],["⚖️","Equidad","Decidir sin conflicto de intereses ni favoritismo."],["🔎","Honestidad","Decir la verdad y no engañar."]])+
+CALL("ex","En preguntas de ética, la respuesta correcta casi siempre es la <b>transparente</b>: informar el problema, evitar conflictos de intereses y no ocultar información al patrocinador.")+
+DEEP("c7")+SUM(["Tres áreas del triángulo de talento: técnico, liderazgo y negocio.","Gestionar controla; liderar inspira. La PMO necesita ambos.","Resolver conflictos colaborando es la mejor práctica general.","La ética de PMI: responsabilidad, respeto, equidad y honestidad."])},
+
+{id:"c8",n:8,ic:"📊",t:"Estrategia, portafolio y beneficios",ex:"Dominio PMO Strategic Elements (18%)",min:25,
+sub:"La PMO conecta la estrategia con la ejecución: decide qué proyectos hacer, en qué orden y cómo asegurar los beneficios.",
+b:()=>
+H("1. De la estrategia a los proyectos")+DG.jerarquia()+
+P("Cada iniciativa debe poder <b>trazarse</b> a un objetivo estratégico. Si no, probablemente no debería hacerse.")+
+H("2. Selección y priorización")+
+CC([["🎯","Alineación estratégica","¿Apoya los objetivos?"],["💵","Valor financiero","ROI, VAN, TIR, payback."],["⚡","Riesgo","Probabilidad e impacto."],["🧑‍🔧","Capacidad","¿Hay recursos disponibles?"]])+
+CALL("tip","Prioriza con <b>criterios objetivos y transparentes</b>. Decidir por simpatía o por quién grita más es el error más común.")+
+H("3. Balance del portafolio")+
+P("Un buen portafolio equilibra corto y largo plazo, riesgo alto y bajo, crecimiento y mantenimiento. Detener un proyecto que ya no es viable <b>es un buen resultado</b>: el costo hundido no debe influir en la decisión.")+
+H("4. Gestión de beneficios")+
+STEPS([["Definir","Qué beneficio, para quién, con qué métrica."],["Planificar","Quién es el dueño y cuándo se espera."],["Realizar","Ejecutar para que el beneficio ocurra."],["Sostener","Mantenerlo después del proyecto."]])+
+H("5. Medidas financieras")+
+CC([["ROI","Retorno sobre inversión","(Beneficio − costo) / costo."],["VAN","Valor actual neto","Mayor a 0 = crea valor."],["TIR","Tasa interna de retorno","Tasa que hace VAN = 0."],["⏱️","Payback","Tiempo para recuperar la inversión."]])+
+CALL("ex","Si dos proyectos compiten, la respuesta más defendible usa <b>criterios definidos y alineados a la estrategia</b>; el que tiene mayor VAN no siempre gana si no está alineado o excede la capacidad.")+
+DEEP("c8")+SUM(["Todo proyecto debe trazarse a la estrategia.","Prioriza con criterios objetivos: estrategia, valor, riesgo y capacidad.","Balancea el portafolio y detén lo no viable.","Los beneficios tienen dueño, métrica y seguimiento."])}
+];
+const DEEPT={
+c0:`<h2>En profundidad: los principios y dominios del PMBOK 8</h2>
+<p>La 8.ª edición reorganiza el conocimiento en <b>6 principios</b> (cómo pensar y comportarse) y <b>7 dominios de desempeño</b> (qué áreas gestionar). Los principios son los siguientes. Cada uno se puede abrir con clic.</p>
+<div class="cc">${[["🌐","Adopta una visión holística","Ver el proyecto como parte de un sistema: sus componentes, dependencias, interesados y entorno. Una decisión en alcance afecta costo, riesgo y equipo. Ejemplo: acelerar una entrega puede sobrecargar al equipo y bajar la calidad; la visión holística obliga a mirar ese efecto antes de decidir."],["💎","Enfócate en el valor","El valor es el motivo de existir del proyecto. Se define con el patrocinador, se mide y se revisa durante todo el ciclo de vida. Si el valor desaparece (cambió el mercado, la ley o la prioridad), se replantea o se detiene el proyecto."],["✅","Integra la calidad en procesos y entregables","La calidad no se “agrega al final”: se define desde los requisitos, se previene con buenos procesos y se verifica de forma continua. Cuesta menos prevenir que corregir."],["🧭","Sé un líder responsable","Combina liderazgo y gestión responsable (<i>stewardship</i>): actuar con integridad, cuidar los recursos y responder por las decisiones. Se vincula con la ética profesional."],["🌱","Integra la sostenibilidad en todas las áreas","Considerar impactos ambientales, sociales y económicos en alcance, cronograma, costos, adquisiciones y entregables. Ejemplo: elegir un proveedor con menor huella de carbono aunque el costo inicial sea un poco mayor."],["🤝","Construye una cultura empoderada","Las personas rinden más cuando entienden el propósito, tienen autonomía y se sienten seguras de hablar. El director facilita, no solo controla."]].map(([i,t,x])=>`<details class="cx"><summary><span class="ic">${i}</span><b>${t}</b><em>Ver explicación</em></summary><div class="dt">${x}</div></details>`).join("")}</div>
+<p>Los <b>7 dominios</b> son: <b>gobernanza</b> (decisiones, roles, supervisión), <b>alcance</b>, <b>cronograma</b>, <b>finanzas</b>, <b>interesados</b>, <b>recursos</b> y <b>riesgo</b>. Los procesos (40 en total) se presentan dentro de cada dominio de forma no prescriptiva: describen lo que conviene lograr y dejan al equipo elegir cómo hacerlo. Esto ayuda a adaptar el enfoque a proyectos predictivos, ágiles o híbridos.</p>
+<div class="call wa"><b>⚠️ Ojo</b><div>Los nombres exactos de principios y dominios proceden de resúmenes de terceros y de la página de PMI. Contrástalos con tu ejemplar del libro.</div></div>
+<h2>En profundidad: el director de proyecto frente a la PMO, paso a paso</h2>
+<p>Imagina un proyecto de implementar un nuevo sistema de facturación. El <b>director de proyecto</b> arma el plan, gestiona al equipo, controla el avance, comunica con el patrocinador y resuelve los problemas del día a día. Su pregunta diaria es: <i>“¿mi proyecto va bien?”</i>.</p>
+<p>La <b>PMO</b> pregunta otra cosa: <i>“¿nuestros proyectos, en conjunto, van bien y están creando el valor que la organización necesita?”</i>. Para responderla ofrece al director una plantilla de plan aprobada, una herramienta de seguimiento, un calendario de comités para escalar decisiones, un registro de capacidad para pedir personal y un coach si es su primer proyecto grande. A cambio, recibe datos comparables de su proyecto, que consolida en un reporte para el comité ejecutivo.</p>
+<p>Cuando el sistema de facturación se retrasa y compite por programadores con otros dos proyectos, el director solo no puede resolverlo: la PMO muestra el conflicto con datos y el comité decide qué proyecto tiene prioridad. Esa es la esencia: <b>el director gestiona el proyecto; la PMO gestiona el sistema en el que los proyectos viven</b>.</p>
+<h2>En profundidad: cómo se lee el valor ganado</h2>
+<p>Un proyecto tiene presupuesto de 1000 y debería ir al 40% (PV = 400). Realmente va al 30% (EV = 300) y se gastaron 450 (AC = 450). Entonces: <b>CV = 300 − 450 = −150</b> (se gasta de más), <b>SV = 300 − 400 = −100</b> (hay atraso), <b>CPI = 300 / 450 = 0,67</b>, <b>SPI = 300 / 400 = 0,75</b>. Si no cambia el desempeño, <b>EAC = 1000 / 0,67 ≈ 1500</b>. Con estos números la PMO puede llevar al comité una conversación concreta: ¿se agrega presupuesto, se reduce alcance o se detiene el proyecto?</p>`,
+
+c1:`<h2>En profundidad: cómo elegir el tipo de PMO</h2>
+<p>No existe el tipo “correcto” en abstracto. Se decide por tres factores: <b>cultura</b> (¿se aceptan controles?), <b>madurez</b> (¿hay procesos?) y <b>problema a resolver</b> (¿falta visibilidad, consistencia o capacidad?). Una empresa de ingeniería regulada puede necesitar una PMO de control con auditorías; una startup de software suele funcionar mejor con una PMO de apoyo o un centro de excelencia ágil. Muchas organizaciones evolucionan: empiezan con apoyo, ganan credibilidad y luego añaden control donde aporta valor.</p>
+<p>La <b>PMO directiva</b> es la que más responsabilidad asume: los directores de proyecto trabajan para ella y ella responde por los resultados. Es útil cuando la organización carece de directores de proyecto experimentados, pero tiene el costo de ser más intrusiva.</p>
+<h2>En profundidad: la PMO centrada en el cliente</h2>
+<p>La visión moderna trata a la PMO como un <b>proveedor de servicios</b>: sus clientes internos son los directores de proyecto (quieren ayuda), los patrocinadores (quieren resultados), los ejecutivos (quieren visibilidad y decisiones) y las áreas de negocio (quieren beneficios). El recorrido de seis etapas (Introducción, Exploración, Diseño, Despliegue, Mejora y Realización) forma un ciclo: cuanto más valor se realiza y se comunica, más apoyo recibe la PMO y más fácil es mejorarla. Si el valor no se percibe, el ciclo se frena.</p>
+<h2>En profundidad: errores comunes de una PMO</h2>
+<p>1) <b>Burocracia:</b> pedir documentos que nadie lee. 2) <b>Policía sin autoridad:</b> exigir cumplimiento sin el respaldo del patrocinador. 3) <b>Herramienta antes que proceso.</b> 4) <b>Querer implantar todo a la vez.</b> 5) <b>No medir resultados</b>, por lo que no puede demostrar valor. Cada uno se evita con diagnóstico previo, patrocinio claro, servicios graduales y métricas.</p>`,
+
+c2:`<h2>En profundidad: cómo se hace un diagnóstico</h2>
+<p>El diagnóstico combina <b>cuatro fuentes</b>: 1) <b>Entrevistas</b> con ejecutivos, patrocinadores y directores de proyecto; 2) <b>Revisión de proyectos recientes</b> (cuántos se terminaron a tiempo, cuántos tuvieron sobrecosto, cuántos entregaron beneficios); 3) <b>Revisión de documentos</b> (políticas, plantillas existentes, reportes); 4) <b>Observación</b> de cómo se toman las decisiones en la práctica. Con estos datos se arma un resumen que muestra el problema en cifras y propone opciones.</p>
+<h2>En profundidad: el caso de negocio</h2>
+<p>Un caso de negocio sólido incluye: <b>problema</b> (con datos), <b>objetivos</b>, <b>opciones</b> (incluyendo no hacer nada), <b>costos</b>, <b>beneficios</b> (cuantificados cuando es posible), <b>riesgos</b>, <b>supuestos</b> y <b>recomendación</b>. Los ejecutivos no deciden por entusiasmo, sino por números y riesgos comprensibles. Una buena práctica es presentar un piloto de bajo costo como primera opción.</p>
+<h2>En profundidad: cultura y cambio</h2>
+<p>Introducir una PMO es un cambio organizacional. Modelos útiles: <b>ADKAR</b> (Conciencia, Deseo, Conocimiento, Habilidad, Refuerzo) y los <b>8 pasos de Kotter</b> (urgencia, coalición, visión, comunicación, remover obstáculos, victorias a corto plazo, consolidar, anclar en la cultura). La clave: antes de pedir cambios de comportamiento, las personas deben <b>entender por qué</b> y <b>qué ganan</b>. La resistencia no es mala voluntad, es información: indica miedo a perder autonomía, carga de trabajo o falta de confianza.</p>
+<div class="call eg"><b>📌 Ejemplo</b><div>En una empresa constructora, los jefes de obra se resisten a llenar reportes semanales. La PMO descubre que cada jefe usa su propio Excel y pierde 4 horas por semana consolidando. Ofrece un formato único con carga automática que les ahorra 2 horas. La resistencia baja porque el reporte pasa de ser “control” a ser “ayuda”.</div></div>`,
+
+c3:`<h2>En profundidad: cómo se arma el catálogo de servicios</h2>
+<p>Cada servicio se describe con: <b>nombre</b>, <b>qué problema resuelve</b>, <b>a quién sirve</b>, <b>qué entrega</b>, <b>cómo se solicita</b>, <b>nivel de servicio</b> (por ejemplo, “respuesta en 2 días hábiles”) y <b>cómo se mide</b>. Ejemplos: “Reporte mensual de portafolio”, “Revisión del acta de proyecto”, “Coaching para nuevos directores”, “Auditoría de salud de proyecto”, “Taller de gestión de riesgos”. Se priorizan primero los servicios que resuelven los dolores identificados en la exploración.</p>
+<h2>En profundidad: gobernanza en la práctica</h2>
+<p>Elementos típicos: <b>comité ejecutivo de portafolio</b> (aprueba y prioriza), <b>puertas de decisión</b> (por ejemplo: inicio, plan aprobado, entrega, cierre), <b>umbrales</b> (un cambio de más de 10% en costo o 1 mes en plazo va al comité) y <b>rutas de escalamiento</b> (qué se escala, a quién y en cuánto tiempo). La matriz RACI se usa para que cada decisión tenga un único Aprobador (A). Dos aprobadores producen parálisis; ninguno produce caos.</p>
+<h2>En profundidad: adaptación (tailoring)</h2>
+<p>Una buena metodología tiene <b>niveles</b>. Ejemplo: proyectos pequeños (menos de USD 50 mil): acta de una página y reporte mensual; medianos: plan completo y reporte quincenal; estratégicos: plan completo, comité mensual y auditoría. También se adapta por enfoque: ciclos iterativos para software, ruta crítica para infraestructura. La adaptación evita que la metodología sea un freno.</p>
+<h2>En profundidad: elegir herramientas</h2>
+<p>Se sigue este orden: 1) definir procesos y datos que se necesitan; 2) listar requisitos; 3) comparar opciones (costo, integraciones, facilidad de uso); 4) pilotar; 5) capacitar; 6) desplegar. Lo habitual es que una herramienta sencilla bien usada rinda más que una compleja a medias.</p>`,
+
+c4:`<h2>En profundidad: el calendario de operación</h2>
+<p>Una PMO que opera bien tiene <b>ritmo</b>: reuniones semanales de seguimiento con directores de proyecto, reporte mensual de portafolio, comité ejecutivo trimestral y revisión anual de la hoja de ruta. El ritmo da previsibilidad: los directores saben cuándo reportar y los ejecutivos, cuándo decidir.</p>
+<h2>En profundidad: reportes que se usan</h2>
+<p>Un reporte útil responde tres preguntas en una página: <b>¿cómo vamos?</b> (semáforo y tendencia), <b>¿qué nos preocupa?</b> (riesgos y problemas principales) y <b>¿qué necesitamos?</b> (decisiones, recursos). Define criterios objetivos para los colores (por ejemplo: verde = SPI y CPI ≥ 0,95; amarillo = entre 0,85 y 0,95; rojo = menor a 0,85). Así se evita que cada director aplique su criterio.</p>
+<h2>En profundidad: gestión de riesgos a nivel portafolio</h2>
+<p>La PMO no reemplaza el registro de cada proyecto; agrega valor consolidando: riesgos que afectan a varios proyectos (por ejemplo, un mismo proveedor crítico), dependencias entre proyectos y concentración de recursos. Se define una <b>escala común</b> de probabilidad e impacto para poder comparar y priorizar. Los riesgos que superan un umbral se escalan al comité.</p>
+<h2>En profundidad: gestión de recursos y capacidad</h2>
+<p>Se mantiene un registro de personas, habilidades y disponibilidad. Cada proyecto pide recursos por periodo; la PMO suma la demanda y la compara con la capacidad. Cuando la demanda supera a la capacidad, hay tres caminos: <b>reprogramar</b> proyectos, <b>contratar o subcontratar</b>, o <b>cancelar o diferir</b> los de menor valor. La nivelación evita picos que agotan al equipo y generan errores.</p>
+<h2>En profundidad: gestión de cambios y de la línea base</h2>
+<p>La línea base es la versión aprobada del alcance, cronograma y costo. Un cambio se evalúa por su impacto, se aprueba o rechaza en la instancia correcta y, si se aprueba, <b>se actualiza la línea base</b> y se comunica. Sin este proceso, los proyectos “derivan”: nadie sabe contra qué medir el desempeño.</p>`,
+
+c5:`<h2>En profundidad: medir la efectividad de la PMO</h2>
+<p>Se usan tres niveles de indicadores: <b>servicio</b> (tiempo de respuesta, uso de servicios, satisfacción), <b>proceso</b> (cumplimiento de metodología, calidad de datos) y <b>resultado</b> (proyectos en meta, ahorros, beneficios realizados). Los indicadores de resultado son los que más valoran los ejecutivos; los de servicio permiten mejorar el día a día. Un error frecuente es medir solo actividad (número de reportes) y no efecto (decisiones tomadas gracias a ellos).</p>
+<h2>En profundidad: modelos de madurez</h2>
+<p>Un modelo de madurez describe niveles progresivos: desde procesos informales e individuales hasta procesos medidos y optimizados. Se usan para: 1) <b>diagnosticar</b> el estado actual, 2) <b>comparar</b> con referencias, 3) <b>definir el siguiente nivel</b> realista y 4) <b>medir el avance</b>. No se trata de llegar al nivel máximo en todo, sino al nivel que la organización necesita y puede sostener.</p>
+<h2>En profundidad: aprender de la experiencia</h2>
+<p>El proceso de lecciones aprendidas: capturar (al cierre de cada fase, no solo al final), analizar (¿es causa raíz o síntoma?), convertir en acción (cambiar una plantilla, un criterio, un proceso), comunicar y verificar que la acción se aplicó. Las lecciones sin acción se vuelven un archivo muerto.</p>
+<div class="call eg"><b>📌 Ejemplo</b><div>La PMO nota que 6 de 10 proyectos de TI se retrasan en pruebas. Causa raíz: no se reservaba tiempo para corregir errores. Acción: la plantilla de cronograma incorpora una fase de corrección obligatoria. Resultado: los siguientes 10 proyectos reducen atrasos de 60% a 30%.</div></div>`,
+
+c6:`<h2>En profundidad: cómo se construye el argumento de valor</h2>
+<p>Estructura recomendada: <b>1) situación inicial</b> con datos (por ejemplo, 42% de proyectos en meta), <b>2) intervención</b> (qué servicios dio la PMO), <b>3) resultado</b> (61% en meta, 18 días menos de aprobación, USD 800 mil ahorrados) y <b>4) siguiente paso</b> (qué se propone y qué se necesita). Los resultados deben poder atribuirse razonablemente a la PMO y respaldarse con datos verificables; las cifras infladas destruyen la credibilidad.</p>
+<h2>En profundidad: tipos de beneficios</h2>
+<p>Beneficios <b>financieros</b> (ahorro de costos, ingresos), <b>operativos</b> (menos tiempo de ciclo, menos errores), <b>estratégicos</b> (nuevas capacidades, cumplimiento, posicionamiento) y <b>cualitativos</b> (satisfacción, reputación). Los cualitativos también se pueden medir con encuestas y escalas. Conviene mezclar tipos para mostrar un panorama completo.</p>
+<h2>En profundidad: tableros y narrativa</h2>
+<p>Un tablero ejecutivo tiene entre 5 y 8 indicadores, con tendencia en el tiempo y comparación contra la meta. Se acompaña de una narrativa breve: qué pasó, por qué y qué se decide. Las historias con datos son más persuasivas que los datos solos y que las historias solas.</p>
+<h2>En profundidad: cómo se calculan las medidas financieras</h2>
+<p><b>ROI</b> = beneficio neto / costo (beneficio neto = beneficios − costo). <b>Payback</b> = inversión / beneficio anual (si es constante). <b>VAN</b> = suma de los flujos futuros descontados − inversión inicial. Ejemplo: inversión 100; beneficios de 50 al año durante 3 años; tasa 10%. VAN ≈ 50/1,1 + 50/1,21 + 50/1,331 − 100 ≈ 24,3 → positivo, conviene. Payback = 100/50 = 2 años.</p>`,
+
+c7:`<h2>En profundidad: competencias de una PMO</h2>
+<p>El equipo de la PMO necesita: <b>capacidad analítica</b> (datos, tableros), <b>conocimiento de metodologías</b>, <b>comunicación ejecutiva</b>, <b>facilitación</b> (reuniones y talleres), <b>negociación</b> e <b>influencia sin autoridad</b>: muchas veces la PMO debe lograr cambios en personas que no le reportan. Esta última es de las más difíciles y valiosas.</p>
+<h2>En profundidad: estilos de liderazgo</h2>
+<p>Un buen líder cambia de estilo según el contexto: <b>directivo</b> (equipos nuevos o crisis), <b>coaching</b> (desarrollo de personas), <b>participativo</b> (buscar consenso), <b>delegativo</b> (equipos maduros), <b>servicial</b> (remueve obstáculos). Los equipos ágiles valoran el liderazgo servicial; en una emergencia, el directivo. Ser flexible es parte de la competencia.</p>
+<h2>En profundidad: conflictos</h2>
+<p>Técnicas: <b>colaborar/resolver el problema</b> (ganar-ganar, la preferida), <b>comprometer</b> (cada uno cede algo), <b>suavizar</b> (resaltar acuerdos), <b>forzar</b> (imponer una solución; útil en emergencias) y <b>evitar</b> (retirarse; útil solo si el tema es trivial). En el examen, ante dos opciones razonables, suele ser mejor la que trata la causa del conflicto.</p>
+<h2>En profundidad: dilemas éticos</h2>
+<p>Ante un dilema: 1) reúne los hechos, 2) identifica quién resulta afectado, 3) consulta las políticas y el código de ética, 4) busca asesoría si es necesario, 5) decide y 6) <b>documenta</b>. Si hay conflicto entre lo que pide un jefe y la ética, la respuesta esperada es actuar con integridad y escalar a la instancia adecuada, nunca ocultar información.</p>`,
+
+c8:`<h2>En profundidad: cómo se prioriza con una matriz de criterios</h2>
+<p>Se definen criterios (por ejemplo: alineación estratégica 30%, valor financiero 25%, riesgo 15%, urgencia o requisito legal 15%, capacidad 15%), se califica cada proyecto de 1 a 5 y se calcula un puntaje ponderado. El resultado orienta la discusión del comité; no la reemplaza. Hay proyectos que se aprueban aunque su puntaje sea bajo (obligaciones regulatorias o de seguridad) y se registran como excepciones transparentes.</p>
+<h2>En profundidad: gobernanza del portafolio</h2>
+<p>El comité revisa periódicamente el portafolio: ¿siguen alineados los proyectos con la estrategia? ¿Hay nuevas oportunidades? ¿Hay proyectos que deben detenerse? Las decisiones posibles: <b>continuar</b>, <b>corregir</b>, <b>pausar</b>, <b>detener</b> o <b>acelerar</b>. Detener a tiempo libera recursos para iniciativas de más valor.</p>
+<h2>En profundidad: portafolio, programa y proyecto en una misma historia</h2>
+<p>Una empresa tiene como estrategia “crecer 20% en el mercado digital”. El <b>portafolio</b> incluye una iniciativa de comercio electrónico, otra de analítica de clientes y una de infraestructura. La de comercio electrónico se gestiona como <b>programa</b>: sitio web, logística y marketing; cada uno es un <b>proyecto</b>. La PMO consolida la visión, asegura que cada nivel apunte a la estrategia y reporta beneficios.</p>
+<h2>En profundidad: gestión de beneficios y quién los “posee”</h2>
+<p>Un error clásico es creer que el director del proyecto es dueño del beneficio. No lo es: él entrega una capacidad (por ejemplo, un sistema). El beneficio (menos tiempo de atención) lo realiza el área de negocio cuando adopta el sistema. Por eso se nombra un <b>dueño del beneficio</b> en el negocio, con una métrica y una fecha de revisión posterior al cierre.</p>`
+};
+const DEEP=id=>DEEPT[id]||"";
+
+const Q=[
+["c0","¿Cuál es la característica que distingue a un proyecto de las operaciones?",["Usa presupuesto","Es temporal y produce un resultado único","Lo ejecuta un equipo","Tiene un gerente"],1,"Un proyecto es temporal y único; las operaciones son continuas y repetitivas."],
+["c0","Un conjunto de proyectos y programas agrupados para lograr objetivos estratégicos se llama:",["Programa","Portafolio","Subproyecto","Línea base"],1,"El portafolio se alinea con la estrategia; el programa agrupa proyectos relacionados."],
+["c0","¿Qué enfoque conviene cuando los requisitos son inestables y se espera retroalimentación frecuente?",["Predictivo","Ágil","Ninguno","Cascada estricta"],1,"Lo ágil maneja alcance evolutivo con entregas iterativas."],
+["c0","Un proyecto está terminando a tiempo y en presupuesto, pero no genera el beneficio esperado. ¿Cómo se considera?",["Exitoso","Fracaso en valor/beneficios","Sin importancia","Exitoso por cumplir restricciones"],1,"El éxito se mide también por el valor y beneficios, no solo tiempo y costo."],
+["c0","¿Cuál es la secuencia correcta de grupos de procesos?",["Planificar, iniciar, ejecutar, cerrar, controlar","Iniciar, planificar, ejecutar, monitorear y controlar, cerrar","Ejecutar, planificar, cerrar","Iniciar, ejecutar, planificar, cerrar"],1,"Inicio → Planificación → Ejecución → Monitoreo y control → Cierre (el control corre en paralelo)."],
+["c0","El director de proyecto asigna un cambio de alcance sin aprobación. ¿Qué debió hacer?",["Nada, es su autoridad","Aplicar el control integrado de cambios","Informar después","Ocultarlo"],1,"Todo cambio pasa por el proceso formal de control de cambios."],
+["c0","Un programa se diferencia de un portafolio en que:",["No tiene proyectos","Agrupa proyectos relacionados para obtener beneficios coordinados","Es siempre temporal sin beneficios","Solo incluye operaciones"],1,"El programa gestiona proyectos interrelacionados para lograr beneficios conjuntos."],
+["c0","¿Cuál de las siguientes es una restricción típica del proyecto?",["Visión de la empresa","Cronograma","Cultura","Organigrama"],1,"Alcance, cronograma, costo, calidad, recursos y riesgo."],
+["c0","SPI = 0.8 significa que el proyecto está:",["Adelantado","Atrasado respecto al plan","Sobre costo","En línea"],1,"SPI = EV/PV < 1 indica atraso."],
+["c0","CPI = 1.2 significa:",["Gastando de más","Obteniendo más valor por cada unidad gastada","Atrasado","Sin avance"],1,"CPI = EV/AC > 1 indica eficiencia de costo."],
+["c0","Si EV=80, AC=100, PV=90, ¿cuál es la variación de costo (CV)?",["-20","+20","-10","+10"],0,"CV = EV − AC = 80 − 100 = −20 (sobre costo)."],
+["c0","Si BAC=1000 y CPI=0.8 y la tendencia continúa, EAC es:",["800","1000","1250","1200"],2,"EAC = BAC/CPI = 1000/0.8 = 1250."],
+["c0","El patrocinador (sponsor) normalmente:",["Ejecuta tareas","Provee recursos, autoridad y respalda el proyecto","Escribe el código","Cierra contratos"],1,"Aporta financiamiento, respaldo y quita obstáculos."],
+["c0","Un riesgo es:",["Un problema ocurrido","Un evento incierto que puede afectar objetivos","Un cambio aprobado","Una restricción"],1,"El riesgo es incierto; el problema (issue) ya ocurrió."],
+["c0","¿Qué respuesta a riesgo negativo reduce probabilidad o impacto?",["Aceptar","Transferir","Mitigar","Explotar"],2,"Mitigar reduce probabilidad y/o impacto."],
+["c2","¿Cuál es el principal propósito de alinear la PMO con la estrategia?",["Cumplir normas","Asegurar que los proyectos apoyen los objetivos organizacionales","Reducir personal","Estandarizar plantillas"],1,"La PMO conecta estrategia y ejecución."],
+["c2","Antes de diseñar controles para la PMO, lo MÁS recomendable es:",["Comprar una herramienta","Evaluar cultura y madurez de la organización","Contratar más gente","Copiar la PMO de otra empresa"],1,"El diseño debe ajustarse al contexto y capacidad de absorción."],
+["c2","Sin patrocinio ejecutivo, una PMO suele:",["Prosperar","Perder autoridad y apoyo","Aumentar su presupuesto","Ser innecesaria siempre"],1,"El sponsor otorga legitimidad y autoridad."],
+["c2","La gobernanza define principalmente:",["Plantillas","Quién decide, con qué criterios y en qué foros","Horarios","Salarios"],1,"Roles de decisión, criterios y foros."],
+["c2","Ante resistencia al cambio por la nueva PMO, lo más efectivo es:",["Imponer sanciones","Dialogar, mostrar beneficios y obtener victorias tempranas","Ignorar","Aumentar reportes"],1,"El cambio se gestiona con comunicación y valor demostrado."],
+["c2","¿Qué herramienta clasifica interesados según poder e interés?",["Matriz poder/interés","Diagrama de Gantt","Ruta crítica","Pareto"],0,"La matriz poder/interés guía la estrategia de involucramiento."],
+["c2","¿Qué hace un modelo de madurez (p. ej. OPM3, P3M3)?",["Reemplaza la metodología","Diagnostica capacidades actuales y guía mejoras","Calcula el costo","Asigna tareas"],1,"Permite medir el estado actual y planificar la evolución."],
+["c2","Una puerta de decisión (stage gate) sirve para:",["Cerrar el proyecto siempre","Decidir si continuar, corregir o detener según criterios","Contratar personal","Planificar reuniones"],1,"Punto formal de revisión y decisión."],
+["c2","¿Cuál es un riesgo de copiar una PMO de otra empresa sin adaptarla?",["Ninguno","No encajar con la cultura y necesidades propias","Ahorrar tiempo","Mayor aceptación"],1,"El contexto es distinto; hay que adaptar."],
+["c8","¿Qué documento justifica la creación de una PMO ante la dirección?",["Registro de riesgos","Caso de negocio","Lista de verificación","Acta de reunión"],1,"El caso de negocio muestra problema, opciones, costo-beneficio y recomendación."],
+["c8","Para implantar una PMO nueva se recomienda:",["Big bang con todos los servicios","Empezar con pocos servicios de alto valor y crecer por fases","Esperar 3 años","Solo auditar"],1,"Resultados tempranos generan credibilidad."],
+["c8","Un proyecto con 'costo hundido' alto pero beneficios ya inviables debería:",["Continuar por lo invertido","Evaluarse para detenerse","Duplicar presupuesto","Ocultarse"],1,"El costo hundido no debe influir; se decide por valor futuro."],
+["c8","¿Qué criterio NO suele usarse al priorizar un portafolio?",["Alineación estratégica","Valor financiero","Riesgo","Simpatía del gerente"],3,"La priorización debe ser objetiva y transparente."],
+["c8","La gestión de beneficios exige que cada beneficio tenga:",["Dueño y métrica","Solo un gráfico","Un contrato","Un ícono"],0,"Sin dueño y métrica no se puede realizar ni sostener."],
+["c8","El VAN (NPV) positivo indica que el proyecto:",["Pierde valor","Genera valor sobre el costo de capital","No tiene riesgo","Es obligatorio"],1,"VAN > 0 crea valor."],
+["c8","El balance del portafolio busca:",["Un solo tipo de proyecto","Mezcla equilibrada de riesgo, plazo y tipo de iniciativas","Menos proyectos","Solo ganancias rápidas"],1,"Balancear corto/largo plazo y riesgo/retorno."],
+["c8","La misión de la PMO debe:",["Ser secreta","Alinearse con la estrategia corporativa y las necesidades del negocio","Copiar la de otra","Ser técnica"],1,"Define el propósito y valor que entrega."],
+["c1","Tipo de PMO que gestiona directamente los proyectos:",["De apoyo","De control","Directiva","Virtual"],2,"La PMO directiva toma el control directo de los proyectos."],
+["c1","Tipo de PMO que ofrece plantillas y buenas prácticas sin imponer cumplimiento:",["De apoyo","De control","Directiva","Estratégica"],0,"Control bajo: rol consultivo."],
+["c3","El acta de constitución de la PMO define principalmente:",["Tareas diarias","Propósito, alcance de servicios, autoridad y patrocinador","Reglas del café","Solo el presupuesto"],1,"Es la base formal de su mandato."],
+["c3","Al elegir herramientas de PPM, primero se debe:",["Comprar la más cara","Definir procesos y requisitos","Capacitar a todos","Cambiar de software cada año"],1,"El proceso va primero; la herramienta lo habilita."],
+["c3","Un catálogo de servicios de la PMO sirve para:",["Decorar","Definir qué ofrece la PMO, a quién y con qué nivel","Eliminar proyectos","Contratar personal"],1,"Clarifica la propuesta de valor y expectativas."],
+["c3","La matriz RACI define:",["Riesgos","Quién es Responsable, Aprobador, Consultado e Informado","Costos","Calidad"],1,"Aclara responsabilidades."],
+["c3","¿Qué es 'tailoring' (adaptación) de la metodología?",["Eliminar la metodología","Ajustar procesos según tamaño, riesgo y tipo del proyecto","Copiar plantillas","Aplicar todo siempre"],1,"Evita burocracia innecesaria en proyectos pequeños."],
+["c3","Antes de desplegar una nueva metodología a toda la organización conviene:",["Un piloto","Anunciar por correo","Prohibir la anterior","Nada"],0,"El piloto permite aprender y ajustar."],
+["c3","La ubicación de la PMO en el organigrama influye en:",["Su color","Su autoridad e independencia","Su nombre","Nada"],1,"Más cerca de la alta dirección = más autoridad."],
+["c3","El financiamiento de la PMO puede ser:",["Solo donaciones","Presupuesto central o cobro a los proyectos","Imposible","Solo externo"],1,"Ambos modelos existen; cada uno con ventajas."],
+["c4","Una 'única fuente de verdad' en reportes de la PMO significa:",["Un solo reporte en papel","Datos consolidados y consistentes de un repositorio oficial","Un solo proveedor","Un solo usuario"],1,"Evita cifras contradictorias."],
+["c4","Un reporte efectivo para la alta dirección debe ser:",["Largo y detallado","Breve, claro, con semáforos y decisiones requeridas","Solo técnico","Sin fecha"],1,"Orientado a decisiones."],
+["c4","La sobreasignación de recursos se detecta con:",["Análisis de capacidad vs. demanda","Reunión de café","Pareto","Diagrama de flujo"],0,"Planificar capacidad vs. demanda."],
+["c4","Indicador adelantado (leading) es el que:",["Confirma resultados pasados","Predice resultados futuros","No mide","Es financiero"],1,"Permite actuar antes."],
+["c4","Un KPI útil de una PMO es:",["Número de reuniones","% de proyectos que cumplen metas de alcance, tiempo y costo","Cantidad de plantillas","Horas en oficina"],1,"Mide resultados, no actividad."],
+["c4","En el registro de riesgos, el impacto y la probabilidad sirven para:",["Priorizar riesgos","Medir costos","Ordenar tareas","Asignar roles"],0,"Permiten calificar y priorizar."],
+["c4","Una auditoría de proyecto es:",["Una sanción","Revisión independiente del cumplimiento y calidad","Una reunión","Un informe de costos"],1,"Identifica brechas y lecciones."],
+["c4","Un cambio aprobado debe reflejarse en:",["Nada","Las líneas base y documentos del proyecto","Solo el correo","Solo el contrato"],1,"Se actualizan líneas base y se comunica."],
+["c4","La métrica TCPI se usa para:",["Costo ya gastado","Rendimiento de costo necesario para cumplir un objetivo","Riesgos","Calidad"],1,"To-Complete Performance Index."],
+["c5","Las lecciones aprendidas agregan valor cuando:",["Se archivan","Se analizan y se aplican a proyectos futuros","Se imprimen","Se ocultan"],1,"El valor está en usarlas."],
+["c5","El ciclo PDCA significa:",["Plan-Do-Check-Act","Prevent-Design-Control-Audit","Plan-Deliver-Close-Agree","Ninguno"],0,"Planificar, hacer, verificar, actuar."],
+["c5","Para demostrar el valor de la PMO al patrocinador se debe:",["Pedir más presupuesto","Medir y comunicar resultados vs. objetivos","Aumentar controles","Mostrar plantillas"],1,"Resultados medibles."],
+["c5","Si un servicio de la PMO ya no aporta valor, lo correcto es:",["Mantenerlo por inercia","Ajustarlo o cerrarlo","Duplicarlo","Ocultarlo"],1,"Mejora continua incluye retirar servicios."],
+["c5","Reevaluar la madurez periódicamente permite:",["Cumplir un trámite","Detectar brechas y orientar el siguiente nivel de mejora","Reducir el equipo","Nada"],1,"Guía la hoja de ruta."],
+["c5","Una retrospectiva sirve para:",["Culpar a alguien","Inspeccionar el trabajo y mejorar el proceso","Cerrar contratos","Elegir líder"],1,"Aprendizaje continuo del equipo."],
+["c5","El análisis de causa raíz busca:",["El culpable","El origen del problema para evitar su repetición","Reducir costos solo","Cambiar el alcance"],1,"Ataca la causa, no el síntoma."],
+["c5","La analítica predictiva en la PMO ayuda a:",["Imprimir informes","Anticipar desviaciones y riesgos","Reemplazar a las personas","Cerrar proyectos"],1,"Permite decisiones proactivas."],
+["c7","El triángulo de talento de PMI incluye:",["Técnico, liderazgo y gestión estratégica/de negocio","Costo, tiempo, alcance","Plan, hacer, verificar","Riesgo, calidad, recursos"],0,"Maneras de trabajar, liderazgo y visión de negocio."],
+["c7","Liderar se diferencia de gestionar en que liderar:",["Controla procesos","Inspira, alinea y motiva a las personas","Hace reportes","Registra costos"],1,"Gestionar planifica y controla; liderar influye."],
+["c7","Etapas de Tuckman en orden:",["Formación, tormenta, normalización, desempeño","Normalización, formación, tormenta, desempeño","Tormenta, formación, desempeño, cierre","Desempeño, formación, tormenta"],0,"Forming, Storming, Norming, Performing."],
+["c7","La mejor técnica de resolución de conflictos a largo plazo es:",["Forzar","Evitar","Colaborar / resolver el problema","Ceder siempre"],2,"Busca solución ganar-ganar."],
+["c7","Una comunidad de práctica de directores de proyecto sirve para:",["Controlar a las personas","Compartir conocimiento y desarrollar competencias","Reducir sueldos","Nada"],1,"Fomenta aprendizaje entre pares."],
+["c7","La inteligencia emocional ayuda al líder a:",["Evitar decisiones","Gestionar sus emociones y las del equipo","Delegar todo","Eliminar conflictos"],1,"Clave para influencia y relaciones."],
+["c7","Para desarrollar a los directores de proyecto, la PMO puede ofrecer:",["Solo sanciones","Capacitación, mentoría y rutas de carrera","Nada","Plantillas"],1,"Desarrollo de competencias."],
+["c7","Un director de proyecto que solo controla pero no inspira al equipo carece de:",["Liderazgo","Presupuesto","Cronograma","Contrato"],0,"Necesita habilidades de liderazgo."],
+["c7","Delegar eficazmente requiere:",["Claridad de expectativas y confianza","Control total","Silencio","Evitar seguimiento"],0,"Definir resultados esperados y autoridad."],
+["c0","El PMBOK® Guide se describe mejor como:",["Una metodología obligatoria paso a paso","Un estándar de buenas prácticas que se adapta a cada contexto","Una certificación","Un software de planificación"],1,"Es un marco de referencia; cada organización lo adapta (tailoring)."],
+["c0","En la 6.ª edición del PMBOK, ¿cuántas áreas de conocimiento hay?",["5","8","10","12"],2,"Integración, alcance, cronograma, costos, calidad, recursos, comunicaciones, riesgos, adquisiciones e interesados."],
+["c0","La 8.ª edición del PMBOK se organiza en:",["12 principios y 8 dominios","6 principios y 7 dominios de desempeño","5 grupos de procesos y 10 áreas","3 niveles de madurez"],1,"6 principios y 7 dominios (gobernanza, alcance, cronograma, finanzas, interesados, recursos y riesgo), con 40 procesos."],
+["c0","¿Cuál es un principio nuevo de la 8.ª edición del PMBOK?",["Integrar la sostenibilidad en todas las áreas del proyecto","Priorizar el cronograma sobre el valor","Eliminar la calidad","Reducir los interesados"],0,"La sostenibilidad aparece como principio propio (ambiental, social y económica)."],
+["c0","¿Quién responde por lograr los objetivos de un proyecto específico?",["La PMO","El director de proyecto","El comité de portafolio","El departamento de finanzas"],1,"El director de proyecto es responsable del resultado de su proyecto; la PMO lo habilita."],
+["c0","¿Cuál es la relación correcta entre la PMO y el director de proyecto?",["La PMO reemplaza al director de proyecto","La PMO habilita y gobierna; el director ejecuta y responde por el proyecto","El director de proyecto dirige a la PMO","No se relacionan"],1,"La PMO provee estándares, herramientas y gobernanza para que los proyectos tengan éxito."],
+["c0","La 'elaboración progresiva' significa que:",["El proyecto crece sin control","La información se detalla a medida que se conoce más","Se aumenta el presupuesto","Se agregan interesados"],1,"Los planes se refinan conforme hay más información."],
+["c0","¿Qué distingue a un programa de un portafolio?",["El programa agrupa proyectos relacionados para beneficios coordinados; el portafolio agrupa por estrategia","No hay diferencia","El programa es más pequeño siempre","El portafolio no incluye proyectos"],0,"El portafolio no exige que sus componentes estén relacionados entre sí."],
+["c0","¿Qué herramienta descompone el alcance en entregables más pequeños?",["Ruta crítica","EDT / WBS","Diagrama de Pareto","Matriz RACI"],1,"La Estructura de Desglose del Trabajo organiza el alcance."],
+["c0","Si CPI = 0.9 y SPI = 1.1, el proyecto está:",["Sobre costo y adelantado","Bajo costo y atrasado","Sobre costo y atrasado","En línea con el plan"],0,"CPI < 1 es sobre costo; SPI > 1 es adelantado."],
+["c0","En una 'operación' (a diferencia de un proyecto):",["El trabajo es continuo y repetitivo","El resultado siempre es único","Hay fecha de fin","No hay equipo"],0,"Las operaciones mantienen el negocio; los proyectos son temporales."],
+["c1","¿Cuál es el principal propósito de una PMO?",["Controlar horarios","Entregar valor a la organización mejorando cómo se gestionan proyectos y portafolios","Reemplazar a TI","Reducir personal"],1,"Su razón de ser es el valor para la organización y sus clientes."],
+["c1","¿A quiénes se considera 'clientes' de una PMO centrada en el cliente?",["Solo clientes externos","Directores de proyecto, patrocinadores, ejecutivos y áreas de negocio","Solo los proveedores","Nadie"],1,"Son sus usuarios internos."],
+["c1","Una PMO que solo exige reportes sin dar apoyo corre el riesgo de:",["Ser vista como burocracia y perder apoyo","Ganar autoridad","Reducir costos","Subir su madurez"],0,"Debe entregar valor percibido."],
+["c1","¿Qué tipo de PMO suele ser más adecuado cuando la cultura es autónoma y la madurez es baja?",["Directiva","De control","De apoyo","Ninguna"],2,"Empieza ayudando, no imponiendo."],
+["c1","Una PMO de proyecto (temporal) se crea típicamente para:",["Toda la empresa","Un proyecto grande o complejo","El área financiera","La junta directiva"],1,"Existe mientras dura el proyecto."],
+["c1","¿Cuál es una función típica de la PMO?",["Redactar el código","Estandarizar metodología y reportes","Contratar a todo el personal","Negociar salarios"],1,"Estandarización, gobernanza, reporte, capacitación, priorización y beneficios."],
+["c1","El 'flywheel' de valor centrado en el cliente indica que:",["Hay un orden fijo sin retorno","A más valor percibido, más apoyo y más capacidad de mejorar","La PMO es un costo","Solo importan los costos"],1,"Es un ciclo que se refuerza."],
+["c1","Un centro de excelencia ágil (Agile CoE) se parece a una PMO de:",["Control rígido","Apoyo que fomenta prácticas y capacitación","Auditoría externa","Contratación"],1,"Su rol es habilitar prácticas ágiles."],
+["c2","Antes de proponer el diseño de la PMO, el paso más importante es:",["Comprar software","Realizar una evaluación de necesidades y de cultura","Contratar personal","Definir indicadores financieros finales"],1,"Entender el contexto evita diseños que no encajan."],
+["c2","Un patrocinador clave está desinteresado en la PMO. ¿Qué haces primero?",["Ignorarlo","Mostrarle con datos el costo del problema y el valor que puede aportar la PMO","Seguir sin él","Renunciar"],1,"Conectar la PMO con sus prioridades y generar conciencia."],
+["c2","La matriz poder/interés indica que un interesado con alto poder y bajo interés debe:",["Ignorarse","Mantenerse satisfecho","Gestionarse de cerca solamente","Eliminarse"],1,"Poder alto / interés bajo = mantener satisfecho."],
+["c2","Para generar conciencia sobre la necesidad de una PMO conviene:",["Presentar datos de desempeño de proyectos y sus costos","Dar un discurso genérico","Enviar un correo masivo","Esperar a que pidan"],0,"Los datos concretos convencen."],
+["c2","Una organización con poca disciplina de proyectos y cultura informal debería comenzar con:",["Auditorías estrictas","Una PMO sencilla de apoyo y victorias tempranas","Un comité de 20 personas","Una PMO directiva"],1,"Empieza simple y crece."],
+["c2","El resultado típico de la etapa de exploración es:",["La PMO terminada","Un diagnóstico y un caso de negocio con recomendación","El primer reporte mensual","El cierre de proyectos"],1,"Se decide con evidencia."],
+["c3","¿Qué documento da legitimidad formal y alcance a la PMO?",["Registro de riesgos","Acta de constitución (charter)","Cronograma","Lista de lecciones"],1,"Define propósito, alcance, autoridad y patrocinio."],
+["c3","Un error común al diseñar el catálogo de servicios es:",["Empezar con pocos servicios","Ofrecer muchos servicios sin verificar la demanda","Medirlos","Alinearlos a necesidades"],1,"Genera resistencia y sobrecarga."],
+["c3","La matriz RACI sirve para:",["Calcular costos","Aclarar responsabilidades","Planificar horarios","Medir calidad"],1,"Responsable, Aprobador, Consultado, Informado."],
+["c3","¿Cuál es un modelo de financiamiento posible de la PMO?",["Presupuesto central o cobro a los proyectos","Solo donaciones","Solo préstamos","Ninguno"],0,"Cada uno tiene ventajas e inconvenientes."],
+["c3","Una puerta de decisión (stage gate) es parte de:",["La gobernanza","La contabilidad","El cierre de contratos","Los reportes de ventas"],0,"Define criterios y puntos de decisión."],
+["c3","Un directivo pide comprar primero un software de portafolio. ¿Qué respondes?",["Compremos hoy","Primero definamos procesos y requisitos","El software resuelve todo","Mejor sin herramientas"],1,"La herramienta habilita el proceso."],
+["c4","El onboarding de los directores de proyecto a los servicios de la PMO sirve para:",["Cumplir un trámite","Que entiendan qué recibirán y qué se espera de ellos","Evaluarlos","Asignarles tareas"],1,"Facilita la adopción."],
+["c4","Un comité recibe más solicitudes de proyectos que capacidad disponible. La PMO debe:",["Aprobar todo","Priorizar con criterios y proponer diferir lo demás","Rechazar todo","Pedir más presupuesto sin análisis"],1,"Gestionar demanda contra capacidad y estrategia."],
+["c4","Un indicador 'adelantado' es, por ejemplo:",["Costo final del proyecto","Tendencia del SPI o riesgos abiertos","Beneficio realizado","Facturación del año anterior"],1,"Predice resultados futuros."],
+["c4","El despliegue por oleadas ayuda a:",["Aprender y ajustar antes de escalar","Evitar la capacitación","Ahorrar reuniones","Eliminar a los directores"],0,"Reduce el riesgo de rechazo."],
+["c4","El reporte ejecutivo de portafolio debe incluir:",["Todo el detalle de cada tarea","Estado resumido, riesgos clave y decisiones requeridas","Solo texto técnico","Nada"],1,"Debe ser breve y orientado a decisiones."],
+["c4","La nivelación de recursos busca:",["Aumentar el costo","Resolver conflictos de asignación y sobrecarga","Eliminar el cronograma","Duplicar el equipo"],1,"Equilibra demanda y capacidad."],
+["c5","Si una encuesta muestra que los directores consideran que los reportes consumen demasiado tiempo, la PMO debe:",["Ignorarlo","Analizar la causa y simplificar o automatizar los reportes","Aumentar los controles","Cancelar los reportes sin análisis"],1,"Escuchar y mejorar el servicio."],
+["c5","¿Para qué se evalúa periódicamente la madurez de la PMO?",["Para cumplir una norma","Para detectar brechas y orientar los siguientes pasos","Para despedir personal","Para reducir presupuesto"],1,"Guía la hoja de ruta de mejora."],
+["c5","Retirar o ajustar un servicio sin valor es:",["Un fracaso","Parte de la mejora continua","Un error de diseño siempre","Un cambio de estrategia obligatorio"],1,"Libera capacidad y mejora la percepción."],
+["c5","El ciclo PDCA sirve para:",["Gestionar contratos","Mejorar de forma iterativa","Calcular costos","Medir calidad solo al final"],1,"Planificar, hacer, verificar, actuar."],
+["c6","¿Qué indicador demuestra mejor el valor de la PMO ante el patrocinador?",["Número de reuniones","Aumento del % de proyectos que cumplen metas y ahorros generados","Cantidad de plantillas","Horas trabajadas"],1,"Resultados vinculados a objetivos estratégicos."],
+["c6","Para comunicar el valor a la alta dirección es mejor:",["Un informe de 80 páginas","Pocas métricas, vinculadas a la estrategia, con decisiones requeridas","Solo anécdotas","Solo gráficos sin contexto"],1,"El mensaje se adapta a la audiencia."],
+["c6","Se invirtió USD 100 y se obtuvo un beneficio neto de USD 40. ¿ROI?",["40%","140%","4%","0.4%"],0,"ROI = beneficio neto / costo = 40/100 = 40%."],
+["c6","La PMO mide 'actividad' cuando reporta:",["Proyectos en meta","Número de plantillas entregadas","Beneficios realizados","Ahorros logrados"],1,"Actividad no es resultado."],
+["c6","'Sostener el valor' implica:",["Comunicar logros y renovar el apoyo de forma periódica","Cerrar la PMO","Reducir servicios sin analizar","Evitar reportes"],0,"El valor debe mantenerse en el tiempo."],
+["c6","Un VAN (NPV) igual a 0 indica que:",["El proyecto pierde dinero","El proyecto rinde justo el costo de capital","Es siempre rechazado","Es siempre aprobado"],1,"Rinde exactamente la tasa de descuento."],
+["c6","El payback (período de recuperación) mide:",["Tiempo para recuperar la inversión","Calidad del equipo","Rentabilidad total","Cantidad de riesgos"],0,"Es el tiempo en que los beneficios cubren el costo."],
+["c7","El triángulo de talento de PMI comprende:",["Costo, tiempo y alcance","Maneras de trabajar, habilidades de poder y visión de negocio","Inicio, ejecución y cierre","Liderazgo, riesgo y calidad"],1,"Las tres competencias de un profesional de proyectos."],
+["c7","Un miembro del equipo oculta un retraso al patrocinador. ¿Qué principio ético se vulnera?",["Honestidad","Eficiencia","Creatividad","Autonomía"],0,"Los valores de PMI: responsabilidad, respeto, equidad y honestidad."],
+["c7","Dos directores discuten por recursos. La mejor solución sostenible es:",["Que decida el gerente sin escuchar","Colaborar para resolver el problema de fondo","Evitar el tema","Que uno ceda siempre"],1,"Colaborar produce acuerdos duraderos."],
+["c7","¿Qué valor es parte del Código de Ética de PMI?",["Competitividad","Equidad","Rapidez","Secreto"],1,"Responsabilidad, respeto, equidad y honestidad."],
+["c8","Un proyecto de alto VAN pero sin alineación estratégica y sin capacidad disponible:",["Siempre se aprueba","Debe evaluarse contra criterios de alineación y capacidad","Se aprueba por su VAN","Se oculta"],1,"El VAN no es el único criterio."],
+["c8","Un beneficio sin dueño ni métrica:",["Se puede gestionar bien","No se puede realizar ni sostener de forma confiable","Siempre se logra","No importa"],1,"La gestión de beneficios exige dueño y métrica."],
+["c8","Un portafolio balanceado equilibra:",["Solo proyectos pequeños","Riesgo, plazo y tipo de iniciativas","Solo proyectos sin riesgo","Solo costos"],1,"Mezcla de riesgo, retorno y horizonte."]
+];
+const CARDS=[
+["c0","Proyecto","Esfuerzo temporal que crea un producto, servicio o resultado único."],
+["c0","Programa","Proyectos relacionados gestionados de forma coordinada para obtener beneficios conjuntos."],
+["c0","Portafolio","Proyectos, programas y operaciones agrupados para lograr objetivos estratégicos."],
+["c0","PV / EV / AC","Valor planificado / Valor ganado / Costo real."],
+["c0","CV","EV − AC. Negativo = sobre costo."],
+["c0","SV","EV − PV. Negativo = atrasado."],
+["c0","CPI","EV / AC. Menor a 1 = ineficiente en costo."],
+["c0","SPI","EV / PV. Menor a 1 = atrasado."],
+["c0","EAC (tendencia)","BAC / CPI."],
+["c0","Enfoque híbrido","Combina métodos predictivos y ágiles según el componente."],
+["c0","Riesgo vs. problema","Riesgo: evento incierto. Problema (issue): ya ocurrió."],
+["c0","Respuestas a riesgo negativo","Evitar, mitigar, transferir, aceptar."],
+["c2","Gobernanza","Marco de decisión: quién decide, con qué criterios y en qué foros."],
+["c2","Stage gate","Punto formal de revisión para continuar, corregir o detener."],
+["c2","Matriz poder/interés","Clasifica interesados para definir cómo involucrarlos."],
+["c2","Madurez organizacional","Capacidad de la organización en gestión de proyectos; se mide con OPM3, P3M3, CMMI."],
+["c2","Gestión del cambio","Preparar y apoyar a las personas en la transición (ADKAR, Kotter)."],
+["c2","Patrocinio ejecutivo","Respaldo de la alta dirección: autoridad, recursos y legitimidad."],
+["c8","Caso de negocio","Justifica una inversión: problema, opciones, costo-beneficio, riesgos."],
+["c8","Hoja de ruta de la PMO","Plan por fases para implantar y evolucionar servicios."],
+["c8","Gestión de beneficios","Definir, planificar, realizar y sostener beneficios con dueño y métrica."],
+["c8","VAN (NPV)","Valor presente de flujos futuros menos la inversión. Mayor a 0 crea valor."],
+["c8","TIR (IRR)","Tasa que hace el VAN igual a cero."],
+["c8","Balance del portafolio","Mezcla de riesgo, plazo, tipo y retorno."],
+["c1","PMO de apoyo","Control bajo: plantillas, buenas prácticas, consultoría."],
+["c1","PMO de control","Control moderado: exige cumplimiento y gobernanza."],
+["c1","PMO directiva","Control alto: gestiona directamente los proyectos."],
+["c3","Charter de la PMO","Documento formal con propósito, alcance, autoridad y patrocinador."],
+["c3","Catálogo de servicios","Lista de lo que ofrece la PMO, a quién y con qué nivel."],
+["c3","RACI","Matriz: Responsable, Aprobador (Accountable), Consultado, Informado."],
+["c3","Tailoring","Adaptar la metodología al tamaño, riesgo y tipo del proyecto."],
+["c3","Piloto","Prueba en pequeño antes de desplegar a toda la organización."],
+["c3","Modelo de financiamiento","Presupuesto central o cobro a los proyectos (charge-back)."],
+["c4","Única fuente de verdad","Repositorio oficial con datos consistentes para todos los reportes."],
+["c4","Indicador adelantado","Predice resultados futuros (leading)."],
+["c4","Indicador rezagado","Confirma resultados pasados (lagging)."],
+["c4","Capacidad vs. demanda","Comparar horas disponibles con trabajo requerido; evita sobreasignación."],
+["c4","Auditoría de proyecto","Revisión independiente de cumplimiento y calidad."],
+["c4","Control integrado de cambios","Evalúa y aprueba/rechaza cambios y actualiza líneas base."],
+["c5","PDCA","Planificar, Hacer, Verificar, Actuar."],
+["c5","Lecciones aprendidas","Conocimiento capturado y aplicado a proyectos futuros."],
+["c5","Retrospectiva","Reunión periódica para inspeccionar y mejorar el proceso."],
+["c5","Causa raíz","Origen del problema; se atacan causas, no síntomas."],
+["c5","Valor de la PMO","Se demuestra con resultados medibles y comunicados al patrocinador."],
+["c7","Triángulo de talento PMI","Maneras de trabajar (técnico), liderazgo y visión estratégica/de negocio."],
+["c7","Etapas de Tuckman","Formación, tormenta, normalización, desempeño (y disolución)."],
+["c7","Liderar vs. gestionar","Liderar inspira y alinea; gestionar planifica y controla."],
+["c7","Resolución de conflictos","Colaborar/resolver es la técnica preferida a largo plazo."],
+["c7","Inteligencia emocional","Gestionar emociones propias y ajenas para influir y relacionarse."],
+["c7","Comunidad de práctica","Red de profesionales que comparten conocimiento."],
+["c0","PMBOK","Estándar de buenas prácticas de PMI en dirección de proyectos. No es una metodología rígida."],
+["c0","Áreas de conocimiento (PMBOK 6)","Integración, alcance, cronograma, costos, calidad, recursos, comunicaciones, riesgos, adquisiciones, interesados."],
+["c0","PMBOK 8.ª edición","6 principios, 7 dominios de desempeño (gobernanza, alcance, cronograma, finanzas, interesados, recursos, riesgo) y 40 procesos."],
+["c0","PMBOK 7.ª edición","12 principios y 8 dominios de desempeño."],
+["c0","PM vs. PMO","El PM responde por un proyecto; la PMO por la capacidad y el valor de la organización en proyectos."],
+["c0","Elaboración progresiva","Detallar planes a medida que se conoce más información."],
+["c0","EDT / WBS","Descomposición jerárquica del alcance en entregables."],
+["c1","PMO","Estructura que estandariza gobernanza y facilita recursos, metodologías, herramientas y técnicas de proyectos."],
+["c1","Ciclo de valor de la PMO (flywheel)","Introducción, Exploración, Diseño, Despliegue, Mejora, Realización."],
+["c1","Clientes de la PMO","Directores de proyecto, patrocinadores, ejecutivos y áreas de negocio."],
+["c1","Agile CoE","Centro de excelencia que promueve prácticas ágiles."],
+["c2","Evaluación de necesidades","Diagnóstico de dolores, expectativas y capacidades antes del diseño."],
+["c2","Cultura organizacional","Forma de trabajar y decidir; condiciona qué PMO es viable."],
+["c3","Propuesta de valor","Qué problemas resuelve la PMO, para quién y con qué resultado."],
+["c3","Nivel de servicio","Compromiso de calidad y tiempo de respuesta de un servicio de la PMO."],
+["c4","Onboarding","Incorporar a los directores y equipos a los servicios de la PMO."],
+["c4","Gestión de la demanda","Evaluar solicitudes de proyectos contra criterios y capacidad."],
+["c5","Madurez de la PMO","Nivel de consistencia y efectividad de procesos; se reevalúa periódicamente."],
+["c6","ROI","(Beneficio − costo) / costo."],
+["c6","Payback","Tiempo para recuperar la inversión."],
+["c6","Resultados vs. actividad","Se mide el cambio generado, no cuántas reuniones o plantillas hubo."],
+["c7","Código de Ética PMI","Responsabilidad, respeto, equidad y honestidad."],
+["c8","Trazabilidad estratégica","Cada iniciativa debe vincularse a un objetivo estratégico."],
+["c8","Costo hundido","Gasto ya realizado; no debe influir en decidir si continuar."]
+];
+/* ============ ESTADO ============ */
+const KEY="portal_pmocp_v2";
+const BOX_DAYS=[0,1,2,4,8,16];
+let S;
+function load(){try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){S=null}
+ if(!S||typeof S!=="object")S={};
+ S.lessons=S.lessons||{};S.cards=S.cards||{};S.stats=S.stats||{};S.exams=S.exams||[];S.seen=S.seen||{};S.visits=(S.visits||0);}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+load();
+const day=86400000;
+const $=s=>document.querySelector(s);
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const chOf=id=>CH.find(c=>c.id===id);
+function rec(c,ok){const s=S.stats[c]=S.stats[c]||{ok:0,t:0};s.t++;if(ok)s.ok++;save()}
+function pct(c){const s=S.stats[c];return s&&s.t?Math.round(100*s.ok/s.t):null}
+function bar(p,cls){return `<div class="bar ${cls||""}"><i style="width:${p||0}%"></i></div>`}
+function ring(p,label){const r=34,c=2*Math.PI*r;return `<div class="rg"><svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="${r}" class="rb"/><circle cx="40" cy="40" r="${r}" class="rf" stroke-dasharray="${c}" stroke-dashoffset="${c*(1-p/100)}" transform="rotate(-90 40 40)"/></svg><b>${p}%</b></div>`}
+
+/* preferir preguntas que se han visto menos; azar en el desempate */
+function pickQ(pool,n){return shuf(pool).sort((a,b)=>(S.seen[a]||0)-(S.seen[b]||0)).slice(0,n)}
+
+/* ============ NAVEGACIÓN ============ */
+const VIEWS={inicio:"Inicio",capitulos:"Capítulos",tarjetas:"Tarjetas",practica:"Práctica",simulacro:"Simulacro",progreso:"Progreso",fuentes:"Fuentes"};
+let view="inicio",tmr=null,qz=null;
+function nav(v,arg){clearInterval(tmr);view=v;qz=null;
+ $("#nav").innerHTML=Object.entries(VIEWS).map(([k,n])=>`<button class="${k===v||(v==="capitulo"&&k==="capitulos")?"on":""}" onclick="nav('${k}')">${n}</button>`).join("");
+ R[v](arg);window.scrollTo(0,0)}
+const R={};
+
+/* ---- Inicio ---- */
+R.inicio=()=>{
+ const done=Object.keys(S.lessons).length,tot=CH.length;
+ const due=CARDS.filter((c,i)=>!S.cards[i]||S.cards[i].due<=Date.now()).length;
+ const weak=weakest();
+ const next=CH.find(c=>!S.lessons[c.id])||CH[0];
+ $("#app").innerHTML=`<div class="aviso"><b>📌 Aviso importante</b><p>Este portal es <b>material de estudio independiente</b>, de carácter <b>únicamente informativo y educativo</b>, creado para ayudarte a prepararte para una certificación. Su contenido está redactado con palabras propias a partir de información pública y no reproduce material oficial.</p><p>No está afiliado, patrocinado ni respaldado por PMI®. PMI, PMP, PMBOK, PMI-RMP y PMI-PMOCP son marcas de sus respectivos titulares y se mencionan solo para indicar a qué certificación se orienta el estudio. No sustituye las guías oficiales ni garantiza resultados en el examen: confirma siempre requisitos y contenidos en pmi.org.</p></div><section class="hero"><div><h1>De cero a la certificación en oficinas de proyectos</h1><p>Aprende gestión de proyectos y PMO capítulo por capítulo, practica con preguntas al azar y mide tu avance.</p>
+ <div class="row"><button class="btn big" onclick="nav('capitulo','${next.id}')">${done?"Continuar: ":"Empezar: "}Cap. ${next.n}</button><button class="btn ghost" onclick="nav('simulacro')">Simulacro</button></div></div><div class="hr">🎓</div></section>
+ <div class="grid">
+  <div class="card stat"><span class="mu">Capítulos leídos</span><div class="bigx">${done}/${tot}</div>${bar(100*done/tot,"g")}</div>
+  <div class="card stat"><span class="mu">Tarjetas por repasar hoy</span><div class="bigx">${due}</div><button class="btn sec" onclick="nav('tarjetas')">Repasar</button></div>
+  <div class="card stat"><span class="mu">Tema más débil</span><div class="bigx s">${weak?esc(chOf(weak.k).t.split(":")[0]):"Sin datos"}</div>${weak?`<span class="mu">${weak.p}% de acierto</span>`:""}</div>
+ </div>
+ <h2>🎲 Reto rápido <span class="mu">(5 preguntas al azar distintas cada vez que entras)</span></h2>
+ <div id="qbox"></div>
+ <h2>Cómo estudiar</h2>
+ <div class="cc"><div class="cx"><div class="ic">1</div><b>Lee un capítulo</b><span>Con calma, mirando los gráficos y tarjetas.</span></div><div class="cx"><div class="ic">2</div><b>Repasa tarjetas</b><span>Repetición espaciada: lo que fallas vuelve antes.</span></div><div class="cx"><div class="ic">3</div><b>Practica el tema</b><span>Preguntas al azar con explicación inmediata.</span></div><div class="cx"><div class="ic">4</div><b>Haz simulacros</b><span>Cronometrados, sin ayuda, para medir tu nivel.</span></div></div>
+ <h2>Requisitos para obtener la certificación PMI-PMOCP™</h2><div class="card reqc"><ul><li><b>Educación:</b> título de secundaria (o equivalente).</li><li><b>Experiencia:</b> 3 años de experiencia en proyectos dentro de los últimos 8 años, <b>o</b> tener el PMP vigente.</li><li><b>Formación:</b> 10 horas de educación en PMO.</li><li><b>Examen:</b> 120 preguntas, 165 minutos, en centro Pearson VUE o en línea.</li><li><b>Costo publicado:</b> USD 520 miembros / USD 700 no miembros (el pago se hace tras aceptar la solicitud).</li><li><b>Mantenimiento:</b> cada 3 años; las páginas de PMI muestran cifras distintas de PDUs (40 y 60), por lo que conviene confirmarlo.</li></ul><div class="mu">Información basada en las páginas públicas de PMI. Puede cambiar con el tiempo; verifícala en <a href="#" onclick="nav('fuentes');return false">Fuentes</a>, donde están los enlaces oficiales.</div></div>`;
+ startQuiz(null,5,false,{target:"#qbox",embed:true})};
+function weakest(){let b=null;for(const c of CH){const p=pct(c.id);if(p!==null&&(!b||p<b.p))b={k:c.id,p}}return b}
+
+/* ---- Capítulos ---- */
+R.capitulos=()=>{
+ $("#app").innerHTML=`<h1>Capítulos</h1><p class="mu">Sigue el orden: el capítulo 0 es la base de proyectos y la relación con la PMO; luego, las seis etapas del recorrido de una PMO.</p>
+ <div class="chgrid">${CH.map(c=>{const p=pct(c.id);return `<div class="chc ${S.lessons[c.id]?"done":""}" onclick="nav('capitulo','${c.id}')"><div class="cn">${c.ic}<small>Cap. ${c.n}</small></div><h3>${c.t}</h3><p class="mu">${c.sub}</p><div class="meta"><span class="tag">⏱ ${c.min} min</span>${S.lessons[c.id]?`<span class="tag ok">✔ leído</span>`:""}${p!==null?`<span class="tag">${p}% acierto</span>`:""}</div></div>`}).join("")}</div>
+ <h2>Cómo se conecta con los 6 dominios del examen</h2>
+ <div class="card"><table><tr><th>Dominio del examen</th><th>Peso</th><th>Capítulos</th></tr>
+ <tr><td>Desarrollo y alineación organizacional</td><td>16%</td><td>2 · 8</td></tr>
+ <tr><td>Elementos estratégicos de la PMO</td><td>18%</td><td>1 · 3 · 8</td></tr>
+ <tr><td>Diseño y estructuración de la PMO</td><td>18%</td><td>3</td></tr>
+ <tr><td>Operación y desempeño de la PMO</td><td>15%</td><td>4 · 6</td></tr>
+ <tr><td>Mejora y efectividad de la PMO</td><td>18%</td><td>5 · 6</td></tr>
+ <tr><td>Personas</td><td>15%</td><td>7</td></tr></table>
+ <p class="mu">Relación orientativa hecha por mí; no es el mapeo oficial.</p></div>`};
+
+R.capitulo=id=>{
+ const c=chOf(id),i=CH.indexOf(c),prev=CH[i-1],nx=CH[i+1];
+ $("#app").innerHTML=`<div class="crumb"><a href="#" onclick="nav('capitulos');return false">← Capítulos</a></div>
+ <article class="lesson"><header class="lh"><div class="ic2">${c.ic}</div><div><span class="tag">Capítulo ${c.n}</span><span class="tag">⏱ ${c.min} min</span><h1>${c.t}</h1><p class="mu">${c.ex}</p></div></header>
+ <div class="lead">${c.sub}</div><div id="toc"></div>${c.b()}
+ <div class="row end"><button class="btn" onclick="markLesson('${c.id}')">${S.lessons[c.id]?"✔ Capítulo completado":"Marcar como leído"}</button><button class="btn sec" onclick="startQuiz('${c.id}',10)">Practicar este capítulo</button><button class="btn sec" onclick="nav('tarjetas','${c.id}')">Tarjetas</button></div>
+ <div class="row sp">${prev?`<button class="btn sec" onclick="nav('capitulo','${prev.id}')">← Cap. ${prev.n}</button>`:"<span></span>"}${nx?`<button class="btn sec" onclick="nav('capitulo','${nx.id}')">Cap. ${nx.n} →</button>`:""}</div></article>`;buildToc()};
+function buildToc(){const hs=[...document.querySelectorAll(".lesson h2")];if(!hs.length)return;
+ hs.forEach((h,i)=>h.id="s"+i);
+ $("#toc").innerHTML=`<div class="toc"><b>En este capítulo:</b>${hs.map((h,i)=>`<a href="#s${i}" onclick="document.getElementById('s${i}').scrollIntoView({behavior:'smooth'});return false">${h.textContent.replace(/^\d+\.\s*/,"")}</a>`).join("")}</div>`}
+function markLesson(id){S.lessons[id]=Date.now();save();R.capitulo(id)}
+
+/* ---- Tarjetas (Leitner) ---- */
+let deck=[],ci=0,flip=false,deckCh=null;
+R.tarjetas=c=>{deckCh=c||null;const now=Date.now();
+ deck=shuf(CARDS.map((x,i)=>i).filter(i=>(!deckCh||CARDS[i][0]===deckCh)&&(!S.cards[i]||S.cards[i].due<=now)));ci=0;flip=false;drawCard()};
+function drawCard(){
+ const filt=`<select onchange="R.tarjetas(this.value||null)"><option value="">Todos los capítulos</option>${CH.map(c=>`<option value="${c.id}" ${c.id===deckCh?"selected":""}>Cap. ${c.n}: ${esc(c.t.slice(0,40))}</option>`).join("")}</select>`;
+ if(ci>=deck.length){$("#app").innerHTML=`<h1>Tarjetas</h1>${filt}<div class="card" style="margin-top:12px">🎉 No quedan tarjetas pendientes por ahora. Las que fallaste vuelven pronto; las que sabías, en días.</div>`;return}
+ const i=deck[ci],c=CARDS[i];
+ $("#app").innerHTML=`<h1>Tarjetas</h1>${filt}<p class="mu">${ci+1} de ${deck.length} · Cap. ${chOf(c[0]).n}</p>
+ <div class="flash ${flip?"back":""}" onclick="flip=!flip;drawCard()"><span class="mu">${flip?"Respuesta":"Concepto"}</span><div>${flip?esc(c[2]):"<b>"+esc(c[1])+"</b>"}</div></div>
+ ${flip?`<div class="row"><button class="btn bad" onclick="grade(${i},false)">No lo sabía</button><button class="btn good" onclick="grade(${i},true)">Lo sabía</button></div>`:`<div class="mu">Intenta recordar la respuesta y luego toca la tarjeta.</div>`}`}
+function grade(i,ok){const s=S.cards[i]||{box:0};s.box=ok?Math.min(5,s.box+1):1;
+ s.due=ok?Date.now()+BOX_DAYS[s.box]*day:Date.now()+10*60000;
+ S.cards[i]=s;rec(CARDS[i][0],ok);ci++;flip=false;drawCard()}
+
+/* ---- Práctica ---- */
+R.practica=()=>{
+ $("#app").innerHTML=`<h1>Práctica</h1><p class="mu">Cada vez se eligen preguntas al azar; se priorizan las que has visto menos.</p><div class="grid">`+
+ CH.map(c=>`<div class="card"><b>${c.ic} Cap. ${c.n}</b><div class="mu">${esc(c.t)}</div><div class="mu">${Q.filter(q=>q[0]===c.id).length} preguntas · acierto ${pct(c.id)===null?"–":pct(c.id)+"%"}</div><div class="row"><button class="btn" onclick="startQuiz('${c.id}',10)">Practicar</button></div></div>`).join("")+
+ `</div><div class="card"><b>🎲 Mixto</b><div class="mu">20 preguntas al azar de todos los capítulos</div><div class="row"><button class="btn" onclick="startQuiz(null,20)">Practicar mixto</button></div></div>`};
+
+/* ---- Cuestionario ---- */
+function startQuiz(ch,n,exam,opt){
+ opt=opt||{};
+ let pool=Q.map((q,i)=>i).filter(i=>!ch||Q[i][0]===ch);
+ pool=pickQ(pool,n||pool.length);
+ clearInterval(tmr);
+ qz={items:pool.map(i=>({i,order:shuf([0,1,2,3]),sel:null})),pos:0,exam:!!exam,ch,n,target:opt.target||"#app",embed:!!opt.embed};
+ drawQ()}
+function drawQ(){
+ const it=qz.items[qz.pos],q=Q[it.i],ans=it.sel!==null,box=$(qz.target);
+ const last=qz.pos===qz.items.length-1;
+ box.innerHTML=`<div class="qh"><span class="mu">Pregunta ${qz.pos+1} de ${qz.items.length} · Cap. ${chOf(q[0]).n}</span>${qz.exam?`<b id="clk"></b>`:""}</div>${bar(100*(qz.pos+(ans?1:0))/qz.items.length)}
+ <div class="card q"><h3 style="margin-top:0">${esc(q[1])}</h3>
+ ${it.order.map((oi,k)=>{let c="opt";if(!qz.exam&&ans){if(oi===q[3])c+=" ok";else if(oi===it.sel)c+=" ko"}else if(it.sel===oi)c+=" sel";
+  return `<button class="${c}" ${(ans&&!qz.exam)?"disabled":""} onclick="pick(${oi})"><i>${"ABCD"[k]}</i>${esc(q[2][oi])}</button>`}).join("")}
+ ${ans&&!qz.exam?`<div class="exp"><b>${it.sel===q[3]?"✔ Correcto":"✘ Incorrecto"}.</b> ${esc(q[4])}</div>`:""}
+ <div class="row"><button class="btn sec" ${qz.pos===0?"disabled":""} onclick="qz.pos--;drawQ()">Anterior</button>
+ <button class="btn" ${!ans&&!qz.exam?"disabled":""} onclick="${last?"finishQuiz()":"qz.pos++;drawQ()"}">${last?"Terminar":"Siguiente"}</button></div></div>`;
+ if(qz.exam)tick()}
+function pick(oi){const it=qz.items[qz.pos];if(!qz.exam&&it.sel!==null)return;it.sel=oi;
+ if(!qz.exam){S.seen[it.i]=(S.seen[it.i]||0)+1;rec(Q[it.i][0],oi===Q[it.i][3])}drawQ()}
+function finishQuiz(){clearInterval(tmr);
+ let ok=0;const by={};
+ qz.items.forEach(it=>{const q=Q[it.i],good=it.sel===q[3];if(good)ok++;
+  if(qz.exam){S.seen[it.i]=(S.seen[it.i]||0)+1;rec(q[0],good)}
+  by[q[0]]=by[q[0]]||{ok:0,t:0};by[q[0]].t++;if(good)by[q[0]].ok++});
+ const n=qz.items.length,p=Math.round(100*ok/n);
+ if(qz.exam){S.exams.push({d:Date.now(),ok,n});save()}
+ const wrong=qz.items.filter(it=>it.sel!==Q[it.i][3]),embed=qz.embed,box=$(qz.target);
+ box.innerHTML=`<div class="card res">${ring(p)}<div><h2 style="margin:0">Resultado: ${ok}/${n}</h2><div class="mu">${p>=75?"¡Muy bien!":p>=60?"Vas bien, sigue practicando.":"Repasa el capítulo y vuelve a intentarlo."}</div>
+ <div class="row"><button class="btn" onclick="${embed?"startQuiz(null,5,false,{target:'#qbox',embed:true})":"nav('practica')"}">${embed?"🎲 Otro reto":"Volver a práctica"}</button></div></div></div>
+ ${!embed?`<div class="card">${Object.entries(by).map(([k,v])=>`<div>Cap. ${chOf(k).n} · ${esc(chOf(k).t)} <span class="mu">${v.ok}/${v.t}</span>${bar(100*v.ok/v.t,v.ok/v.t>=.7?"g":"r")}</div>`).join("<br>")}</div>`:""}
+ ${wrong.length?`<h3>Revisa lo que fallaste (${wrong.length})</h3>`+wrong.map(it=>{const q=Q[it.i];return `<div class="card"><b>${esc(q[1])}</b><div class="mu">Tu respuesta: ${it.sel===null?"sin responder":esc(q[2][it.sel])}</div><div class="okt">Correcta: ${esc(q[2][q[3]])}</div><div class="exp">${esc(q[4])}</div></div>`}).join(""):`<div class="card">🎉 Sin errores.</div>`}`;
+ save()}
+
+/* ---- Simulacro ---- */
+R.simulacro=()=>{
+ const hist=S.exams.slice(-5).reverse().map(e=>`<tr><td>${new Date(e.d).toLocaleDateString()}</td><td>${e.ok}/${e.n}</td><td>${Math.round(100*e.ok/e.n)}%</td></tr>`).join("");
+ const nmax=Q.length;
+ $("#app").innerHTML=`<h1>Simulacro de examen</h1>
+ <div class="card">Preguntas al azar de todos los capítulos, <b>sin retroalimentación hasta el final</b> y con cronómetro. Puedes ir y volver entre preguntas.
+ <div class="mu">El examen real: 120 preguntas en 165 min (≈1,4 min por pregunta). Aquí se mantiene la misma proporción.</div>
+ <div class="row"><select id="nq"><option value="30">30 preguntas · 41 min</option><option value="60" selected>60 preguntas · 83 min</option><option value="${nmax}">Todas (${nmax}) · ${Math.round(nmax*165/120)} min</option></select>
+ <button class="btn" onclick="startExam()">Iniciar simulacro</button></div></div>
+ ${hist?`<div class="card"><b>Últimos intentos</b><table><tr><th>Fecha</th><th>Aciertos</th><th>%</th></tr>${hist}</table></div>`:""}`};
+let endAt=0;
+function startExam(){const n=Math.min(Q.length,+$("#nq").value);endAt=Date.now()+n*165/120*60000;startQuiz(null,n,true)}
+function tick(){clearInterval(tmr);
+ const f=()=>{const e=$("#clk");if(!e||!qz||!qz.exam){clearInterval(tmr);return}
+  const left=endAt-Date.now();if(left<=0){clearInterval(tmr);finishQuiz();return}
+  const m=Math.floor(left/60000),s=Math.floor(left%60000/1000);e.textContent="⏱ "+m+":"+String(s).padStart(2,"0")};
+ f();tmr=setInterval(f,1000)}
+
+/* ---- Progreso ---- */
+R.progreso=()=>{
+ const rows=CH.map(c=>{const p=pct(c.id),s=S.stats[c.id];
+  return `<tr><td>${c.ic} Cap. ${c.n}: ${esc(c.t)}</td><td style="width:34%">${bar(p,p===null?"":p>=75?"g":p>=60?"y":"r")}</td><td>${p===null?"–":p+"% ("+s.ok+"/"+s.t+")"}</td></tr>`}).join("");
+ const weak=CH.filter(c=>pct(c.id)!==null&&pct(c.id)<70);
+ const learned=Object.values(S.cards).filter(c=>c.box>=3).length;
+ const seen=Object.keys(S.seen).length;
+ $("#app").innerHTML=`<h1>Progreso</h1>
+ <div class="grid"><div class="card stat"><span class="mu">Capítulos leídos</span><div class="bigx">${Object.keys(S.lessons).length}/${CH.length}</div></div>
+ <div class="card stat"><span class="mu">Tarjetas dominadas</span><div class="bigx">${learned}/${CARDS.length}</div></div>
+ <div class="card stat"><span class="mu">Preguntas vistas</span><div class="bigx">${seen}/${Q.length}</div></div>
+ <div class="card stat"><span class="mu">Simulacros</span><div class="bigx">${S.exams.length}</div></div></div>
+ <div class="card"><b>Acierto por capítulo</b><table>${rows}</table></div>
+ <div class="card"><b>Áreas débiles (menos de 70%)</b><div>${weak.length?weak.map(c=>`<div>• Cap. ${c.n} ${esc(c.t)} (${pct(c.id)}%) <a href="#" onclick="startQuiz('${c.id}',10);return false">practicar</a> · <a href="#" onclick="nav('capitulo','${c.id}');return false">releer</a></div>`).join(""):"<span class='mu'>Ninguna detectada aún. Practica para generar datos.</span>"}</div></div>
+ <div class="row"><button class="btn sec" onclick="if(confirm('¿Borrar todo el progreso?')){try{localStorage.removeItem(KEY)}catch(e){}load();nav('inicio')}">Reiniciar progreso</button></div>`};
+
+
+/* ---- Fuentes ---- */
+const OFICIAL=[["Página oficial de la certificación PMOCP", "https://pmoga.pmi.org/certification"], ["Examen PMOCP (detalles)", "https://pmoga.pmi.org/certification/pmi-pmocp-exam"], ["Preparación y recursos de estudio", "https://pmoga.pmi.org/certification/preparation"], ["Curso oficial de preparación (10 horas)", "https://pmoga.pmi.org/certification/pmi-pmocp-prep-course"], ["PMBOK Guide 8.ª edición (PMI Bookstore)", "https://pmi.bookstore.ipgbook.com/a-guide-to-the-project-management-body-of-knowledge--pmbok---guide------eighth-edition-and-the-standard-for-project-management-products-9781628258295.php"]];
+const YTQ="PMOCP PMO Certified Professional";
+const yt=q=>"https://www.youtube.com/results?search_query="+encodeURIComponent(q);
+R.fuentes=()=>{
+ $("#app").innerHTML=`<h1>Fuentes</h1><p class="mu">Enlaces para profundizar. Se abren en una pestaña nueva y requieren internet.</p>
+ <h2>🏛️ Páginas oficiales de PMI</h2><div class="card">${OFICIAL.map(([t,u])=>`<div class="lk"><a href="${u}" target="_blank" rel="noopener">${esc(t)}</a><span class="mu">${u.replace(/^https?:\/\//,"").slice(0,60)}</span></div>`).join("")}</div>
+ <h2>▶️ Videos de YouTube por capítulo</h2><p class="mu">Son <b>búsquedas</b> en YouTube con palabras clave del capítulo: ordena por “relevancia” o “vistas” para ver los videos más destacados. No recomiendo un canal específico porque no los verifiqué uno por uno.</p>
+ <div class="chgrid">${CH.map(c=>`<div class="card lkc"><b>${c.ic} Cap. ${c.n}</b><div class="mu">${esc(c.t)}</div><div class="row"><a class="btn sec" href="${yt(YTQ+" "+c.t.split(":")[0])}" target="_blank" rel="noopener">▶ Buscar en YouTube</a><a class="btn sec" href="${yt(YTQ+" "+c.t.split(":")[0]+" español")}" target="_blank" rel="noopener">En español</a></div></div>`).join("")}</div>
+`};
+nav("inicio");
+if("serviceWorker" in navigator&&location.protocol.indexOf("http")===0){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))}
+</script>
+</body>
+</html>

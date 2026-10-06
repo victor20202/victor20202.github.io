@@ -1,0 +1,947 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="theme-color" content="#101c2a">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VIAControl Estudio: Gestión de Proyectos</title>
+<style>
+:root{--bg:#f4f6fb;--card:#fff;--tx:#1b2333;--mu:#667085;--pr:#2457d6;--pr2:#e8eefc;--ok:#157f4b;--okb:#e3f6ec;--ko:#b42318;--kob:#fde8e6;--wa:#b54708;--wab:#fff3e0;--bd:#e2e6ef;--a1:#dbe6ff;--a2:#d9f2e6;--a3:#ffe9cf;--a4:#f0e2ff;--sh:0 2px 8px rgba(20,35,80,.07)}
+@media(prefers-color-scheme:dark){:root{--bg:#0f131b;--card:#1a202c;--tx:#e8ecf4;--mu:#97a1b5;--pr:#7ea3ff;--pr2:#222d49;--ok:#5fd39a;--okb:#14352a;--ko:#ff8a80;--kob:#3a1c1a;--wa:#f5a85c;--wab:#3a2a15;--bd:#2c3547;--a1:#233559;--a2:#16392c;--a3:#4a3317;--a4:#35244f;--sh:none}}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.65 system-ui,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--tx)}
+header{background:var(--card);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:5}
+.top{max-width:1000px;margin:auto;padding:8px 16px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.logo{font-weight:800;margin-right:auto;font-size:18px}
+nav{display:flex;flex-wrap:wrap;gap:4px}
+nav button{border:0;background:none;color:var(--mu);padding:7px 11px;border-radius:8px;font:inherit;font-size:14px;cursor:pointer}
+nav button.on{background:var(--pr2);color:var(--pr);font-weight:700}
+main{max-width:1000px;margin:auto;padding:18px 16px 70px}
+h1{font-size:26px;margin:.2em 0 .4em;line-height:1.25}h2{font-size:21px;margin:1.5em 0 .4em}h3{font-size:17px;margin:.8em 0 .3em}
+p{margin:.5em 0}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:var(--sh)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mu{color:var(--mu);font-size:14px}
+.btn{background:var(--pr);color:#fff;border:0;border-radius:10px;padding:10px 18px;font:inherit;font-weight:600;cursor:pointer}
+.btn.sec{background:var(--pr2);color:var(--pr)}.btn:disabled{opacity:.45;cursor:default}
+.btn.big{padding:13px 22px;font-size:17px;background:#fff;color:#1d3fa1}.btn.ghost{background:rgba(255,255,255,.18);color:#fff}
+.btn.good{background:var(--ok);color:#fff}.btn.bad{background:var(--ko);color:#fff}
+.bar{height:9px;background:var(--pr2);border-radius:6px;overflow:hidden;margin:6px 0}.bar i{display:block;height:100%;background:var(--pr);transition:width .3s}
+.bar.g i{background:var(--ok)}.bar.r i{background:var(--ko)}.bar.y i{background:var(--wa)}
+.tag{display:inline-block;font-size:12px;padding:2px 9px;border-radius:10px;background:var(--pr2);color:var(--pr);margin:0 4px 4px 0;font-weight:600}.tag.ok{background:var(--okb);color:var(--ok)}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.row.end{margin-top:26px}.row.sp{justify-content:space-between}
+select{font:inherit;padding:9px;border-radius:9px;border:1px solid var(--bd);background:var(--card);color:var(--tx);max-width:100%}
+table{border-collapse:collapse;width:100%;font-size:15px}td,th{border-bottom:1px solid var(--bd);padding:8px 6px;text-align:left}
+.hero{background:linear-gradient(135deg,#1d3fa1,#4a7bff 60%,#7a5cff);color:#fff;border-radius:18px;padding:26px;display:flex;gap:16px;align-items:center;justify-content:space-between;margin-bottom:16px}
+.hero h1{margin:0 0 6px;font-size:30px}.hero p{margin:0 0 6px;opacity:.95;max-width:520px}.hr{font-size:78px}
+.stat .bigx{font-size:32px;font-weight:800;line-height:1.2}.stat .bigx.s{font-size:17px;line-height:1.35}
+.chgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
+.chc{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:16px;cursor:pointer;box-shadow:var(--sh);transition:transform .12s}
+.chc:hover{transform:translateY(-3px);border-color:var(--pr)}.chc.done{border-color:var(--ok)}
+.cn{font-size:30px;display:flex;align-items:center;gap:8px}.cn small{font-size:13px;color:var(--mu);font-weight:700}
+.chc h3{margin:.3em 0}.meta{margin-top:8px}
+/* lectura */
+.crumb{margin-bottom:8px}.crumb a{color:var(--pr);text-decoration:none}
+.lesson{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:22px 24px;box-shadow:var(--sh)}
+.lh{display:flex;gap:14px;align-items:flex-start;margin-bottom:8px}.ic2{font-size:44px;line-height:1}
+.lead{background:var(--pr2);border-radius:12px;padding:12px 14px;margin:6px 0 4px;font-size:17px}
+.lesson h2{border-bottom:2px solid var(--pr2);padding-bottom:5px}
+.cc{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin:12px 0}
+.cx{background:var(--pr2);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:4px}
+.cx:nth-child(4n+2){background:var(--a2)}.cx:nth-child(4n+3){background:var(--a3)}.cx:nth-child(4n+4){background:var(--a4)}
+.cx .ic{font-size:26px;font-weight:800;line-height:1.1}.cx span{font-size:14px;color:var(--mu)}
+.call{border-radius:12px;padding:12px 14px;margin:14px 0;border-left:5px solid var(--pr);background:var(--pr2)}
+.call.ex{border-color:var(--ok);background:var(--okb)}.call.wa{border-color:var(--wa);background:var(--wab)}.call.eg{border-color:#8a5cf5;background:var(--a4)}
+.call>b{display:block;margin-bottom:3px}
+.vs{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;margin:14px 0}
+.vc{background:var(--a1);border-radius:12px;padding:12px 16px}.vc.alt{background:var(--a3)}.vc h3{margin-top:0}.vc ul{margin:0;padding-left:18px}.vc li{margin:4px 0}
+.steps{display:grid;gap:8px;margin:12px 0}.st{display:flex;gap:12px;align-items:flex-start;background:var(--pr2);border-radius:12px;padding:10px 12px}
+.st i{flex:none;width:30px;height:30px;border-radius:50%;background:var(--pr);color:#fff;font-style:normal;font-weight:800;display:flex;align-items:center;justify-content:center}
+.st span{display:block;color:var(--mu);font-size:14.5px}
+.sum{background:linear-gradient(135deg,var(--okb),var(--pr2));border-radius:14px;padding:12px 18px;margin-top:22px}.sum ul{margin:6px 0 0;padding-left:20px}
+.fig{margin:16px 0;background:var(--bg);border-radius:14px;padding:10px}.fig svg{width:100%;height:auto;display:block}
+svg .t{font-size:12.5px;fill:var(--tx)}svg .tb{font-size:13.5px;font-weight:700;fill:var(--tx)}svg .tm{font-size:12px;fill:var(--mu)}
+svg .s0{fill:var(--a4);stroke:#8a5cf5;stroke-width:1.5}svg .s1{fill:var(--a1);stroke:var(--pr);stroke-width:1.5}svg .s2{fill:var(--a2);stroke:var(--ok);stroke-width:1.5}svg .s3{fill:var(--a3);stroke:var(--wa);stroke-width:1.5}
+svg .ln{stroke:var(--mu);stroke-width:1.6;fill:none}svg .ax{stroke:var(--mu);stroke-width:1.5}
+svg .dot{fill:var(--card);stroke:var(--pr);stroke-width:3}svg .ring{fill:none;stroke:var(--bd);stroke-width:3;stroke-dasharray:6 6}
+svg .nd{stroke-width:2}
+svg .pv{fill:none;stroke:var(--pr);stroke-width:3}svg .ev{fill:none;stroke:var(--ok);stroke-width:3}svg .ac{fill:none;stroke:var(--ko);stroke-width:3}
+details.cx summary,details.st summary{list-style:none;cursor:pointer;display:flex;flex-direction:column;gap:4px}
+details.st summary{flex-direction:row;gap:12px;align-items:flex-start}
+details summary::-webkit-details-marker{display:none}
+details.cx{padding:12px}details.cx[open]{grid-column:1/-1}
+.cx em,.st em{font-style:normal;font-size:12px;font-weight:700;color:var(--pr);margin-top:2px}
+details[open]>summary em{display:none}
+.dt{margin-top:10px;padding-top:10px;border-top:1px dashed var(--bd);font-size:15.5px;line-height:1.65}
+details.st{flex-direction:column;align-items:stretch;gap:0}
+details.st .dt{margin-left:42px}
+details.cx:hover,details.st:hover{box-shadow:0 0 0 2px var(--pr2)}
+.toc{background:var(--bg);border-radius:12px;padding:10px 14px;margin:12px 0;display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font-size:14px}
+.toc a{color:var(--pr);text-decoration:none;font-weight:600}.toc a:hover{text-decoration:underline}
+.lesson p{font-size:16.5px}
+/* flash y cuestionario */
+.flash{min-height:190px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-size:21px;cursor:pointer;user-select:none;background:linear-gradient(135deg,var(--pr2),var(--a4));border-radius:18px;padding:22px;margin:12px 0;box-shadow:var(--sh)}
+.flash.back{background:linear-gradient(135deg,var(--okb),var(--a1))}
+.qh{display:flex;justify-content:space-between;align-items:center}
+.opt{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;border:1.5px solid var(--bd);background:var(--card);color:var(--tx);padding:11px 12px;border-radius:11px;margin:8px 0;font:inherit;cursor:pointer}
+.opt i{flex:none;width:26px;height:26px;border-radius:7px;background:var(--pr2);color:var(--pr);font-style:normal;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:13px}
+.opt:hover:not(:disabled){border-color:var(--pr)}.opt.sel{border-color:var(--pr);background:var(--pr2)}
+.opt.ok{background:var(--okb);border-color:var(--ok)}.opt.ko{background:var(--kob);border-color:var(--ko)}
+.exp{background:var(--pr2);border-radius:10px;padding:10px 12px;margin-top:8px;font-size:15px}
+.okt{color:var(--ok)}
+.res{display:flex;gap:18px;align-items:center}.rg{position:relative;width:96px;height:96px;flex:none}.rg b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:20px}
+.rb{fill:none;stroke:var(--pr2);stroke-width:8}.rf{fill:none;stroke:var(--ok);stroke-width:8;stroke-linecap:round}
+.card{overflow-x:auto}.reqc ul{margin:0 0 8px;padding-left:20px}.reqc li{margin:6px 0}.lk{display:flex;flex-direction:column;padding:8px 0;border-bottom:1px solid var(--bd)}.lk a{color:var(--pr);font-weight:600;text-decoration:none;word-break:break-word}.lkc .row{margin-top:8px}.lkc a.btn{text-decoration:none;font-size:14px}@media(max-width:560px){td,th{font-size:13.5px;padding:6px 4px}.hero{flex-direction:column;align-items:flex-start}.hr{display:none}.lesson{padding:16px}}
+</style>
+<style id="tema">/* ===== Tema VIAControl ===== */
+:root{--bg:#f4f5f7;--card:#fff;--tx:#101c2a;--mu:#5a6470;--pr:#1d3250;--pr2:#e8ecf2;--ac:#c98a3d;--acb:#f8eedf;--bd:#dfe3ea;--wa:#9a6218;--wab:#fbf0dc;--a1:#e8ecf2;--a2:#f8eedf;--a3:#edf0f4;--a4:#f3e6d0;--btn:#101c2a;--btn-tx:#fff;--sh:0 2px 10px rgba(16,28,42,.07)}
+@media(prefers-color-scheme:dark){:root{--bg:#0b141f;--card:#132033;--tx:#e9eef5;--mu:#93a1b3;--pr:#e2b06a;--pr2:#1d2c43;--ac:#d99b4c;--acb:#34291a;--bd:#28374d;--wa:#e2b06a;--wab:#34291a;--a1:#1b2b42;--a2:#3a2d1a;--a3:#203049;--a4:#33291b;--btn:#d99b4c;--btn-tx:#101c2a;--sh:none}}
+body{background:var(--bg);color:var(--tx);letter-spacing:.005em}
+header{border-bottom:0;box-shadow:0 3px 0 var(--ac),0 6px 16px rgba(16,28,42,.06)}
+.top{padding:8px 16px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;color:var(--tx)}
+.logo img{height:34px;width:auto;background:#fff;padding:4px 10px;border-radius:9px;display:block}
+.logo span{font-size:14px;font-weight:700;color:var(--mu);border-left:2px solid var(--ac);padding-left:10px}
+nav button{font-weight:600}
+nav button.on{background:var(--pr2);color:var(--pr);box-shadow:inset 0 -3px 0 var(--ac)}
+h1{letter-spacing:-.01em}
+.btn{background:var(--btn);color:var(--btn-tx);box-shadow:0 1px 0 rgba(0,0,0,.08)}
+.btn.sec{background:var(--pr2);color:var(--pr);box-shadow:none}
+.btn.big{background:var(--ac);color:#101c2a}.btn.ghost{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.35)}
+.btn.good{background:var(--ok);color:#fff}.btn.bad{background:var(--ko);color:#fff}
+.bar{background:var(--pr2)}.bar i{background:var(--ac)}.bar.g i{background:var(--ok)}.bar.r i{background:var(--ko)}.bar.y i{background:var(--wa)}
+.tag{background:var(--pr2);color:var(--pr)}.tag.ok{background:var(--okb);color:var(--ok)}
+.hero{background-image:radial-gradient(circle at 92% -10%,rgba(201,138,61,.45),transparent 52%),linear-gradient(135deg,#101c2a,#344456);border-bottom:4px solid var(--ac);box-shadow:0 8px 24px rgba(16,28,42,.18)}
+.hero h1{letter-spacing:-.02em}
+.stat{border-top:3px solid var(--ac)}
+.chc:hover{border-color:var(--ac)}.chc.done{border-color:var(--ok)}
+.lesson h2{border-bottom:2px solid var(--ac);display:inline-block;padding-right:18px}
+.lead{background:var(--acb);border-left:5px solid var(--ac)}
+.call{background:var(--pr2);border-left-color:var(--pr)}.call.eg{background:var(--acb);border-left-color:var(--ac)}
+.cx .ic{color:var(--pr)}
+.st i{background:var(--btn);color:var(--btn-tx)}
+.vc{background:var(--a1)}.vc.alt{background:var(--a2)}
+.sum{background:linear-gradient(135deg,var(--okb),var(--acb))}
+.fig{background:var(--bg)}
+svg .s0{fill:var(--a4);stroke:var(--ac)}svg .s1{fill:var(--a1);stroke:var(--pr)}svg .s2{fill:var(--a3);stroke:var(--mu)}svg .s3{fill:var(--a2);stroke:#a56a1f}
+svg .dot{stroke:var(--ac)}
+.flash{background:linear-gradient(135deg,var(--pr2),var(--acb));border:1px solid var(--bd)}.flash.back{background:linear-gradient(135deg,var(--okb),var(--a1))}
+.opt i{background:var(--pr2);color:var(--pr)}.opt:hover:not(:disabled){border-color:var(--ac)}.opt.sel{border-color:var(--ac);background:var(--acb)}
+.exp{background:var(--pr2)}
+.toc a{color:var(--pr)}
+.crumb a{color:var(--pr)}
+.lk a{color:var(--pr)}
+details.cx:hover,details.st:hover{box-shadow:0 0 0 2px var(--ac)}
+.cx em,.st em{color:var(--ac)}
+::selection{background:var(--ac);color:#101c2a}
+@media(max-width:560px){.logo span{display:none}.logo img{height:30px}}
+</style>
+<style>.aviso{background:var(--acb);border:1px solid var(--ac);border-left:6px solid var(--ac);border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:14.5px;line-height:1.55}.aviso p{margin:6px 0 0}.foot{max-width:1000px;margin:0 auto;padding:0 16px 40px;color:var(--mu);font-size:12.5px;text-align:center}</style>
+</head>
+<body>
+<header><div class="top"><div class="logo"><img alt="VIAControl" src="data:image/png;base64,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"><span>Gestión de Proyectos</span></div><nav id="nav"></nav></div></header>
+<main id="app"></main>
+<footer class="foot">Material de estudio independiente, solo informativo. No afiliado ni respaldado por PMI®. Marcas de sus respectivos titulares.</footer>
+<script>
+const DETAILS={
+"Integración (7)":"<b>Gestión de la integración (PMBOK 6):</b> 1) Desarrollar el acta de constitución; 2) Desarrollar el plan para la dirección del proyecto; 3) Dirigir y gestionar el trabajo; 4) Gestionar el conocimiento; 5) Monitorear y controlar el trabajo; 6) Realizar el control integrado de cambios; 7) Cerrar el proyecto o fase. Es el área que coordina todas las demás. En la 8.ª edición su contenido se reparte sobre todo en el dominio de <b>gobernanza</b>.",
+"Alcance (6)":"<b>PMBOK 6:</b> Planificar la gestión del alcance, Recopilar requisitos, Definir el alcance, Crear la EDT/WBS, Validar el alcance, Controlar el alcance. Los cuatro primeros son de planificación; los dos últimos, de monitoreo y control. En la 8.ª edición corresponde al dominio de <b>alcance</b> (6 procesos).",
+"Cronograma (6)":"<b>PMBOK 6:</b> Planificar la gestión del cronograma, Definir las actividades, Secuenciar las actividades, Estimar la duración, Desarrollar el cronograma y Controlar el cronograma. La 8.ª edición lo condensa en el dominio de <b>cronograma</b> (3 procesos).",
+"Costos (4)":"<b>PMBOK 6:</b> Planificar la gestión de costos, Estimar costos, Determinar el presupuesto y Controlar los costos. En la 8.ª edición pasa al dominio de <b>finanzas</b> (4 procesos).",
+"Calidad (3)":"<b>PMBOK 6:</b> Planificar la gestión de la calidad, Gestionar la calidad (asegurar) y Controlar la calidad. En la 8.ª edición la calidad es un <b>principio</b> (“integra la calidad en procesos y entregables”) y se aplica dentro de los dominios.",
+"Recursos (6)":"<b>PMBOK 6:</b> Planificar la gestión de recursos, Estimar los recursos de las actividades, Adquirir recursos, Desarrollar el equipo, Dirigir al equipo y Controlar los recursos. En la 8.ª edición corresponde al dominio de <b>recursos</b> (5 procesos).",
+"Comunicaciones (3)":"<b>PMBOK 6:</b> Planificar la gestión de las comunicaciones, Gestionar las comunicaciones y Monitorear las comunicaciones. En la 8.ª se integran al dominio de <b>interesados</b> (7 procesos) por su relación con el involucramiento.",
+"Riesgos (7)":"<b>PMBOK 6:</b> Planificar la gestión de riesgos, Identificar riesgos, Realizar el análisis cualitativo, Realizar el análisis cuantitativo, Planificar la respuesta, Implementar la respuesta y Monitorear los riesgos. En la 8.ª edición es el dominio de <b>riesgo</b> (6 procesos).",
+"Adquisiciones (3)":"<b>PMBOK 6:</b> Planificar la gestión de las adquisiciones, Efectuar las adquisiciones y Controlar las adquisiciones. La 8.ª edición amplía el contenido de adquisiciones; confirma en el libro en qué dominio se ubica cada proceso.",
+"Interesados (4)":"<b>PMBOK 6:</b> Identificar a los interesados, Planificar el involucramiento, Gestionar el involucramiento y Monitorear el involucramiento. En la 8.ª es el dominio de <b>interesados</b>.",
+"Fecha":"El examen actualizado entró en vigor el <b>9 de julio de 2026</b>. Si tu libro o curso es anterior, revisa que cubra el nuevo esquema de dominios y el PMBOK 8.",
+"Duración":"<b>240 minutos</b> en total, con <b>dos descansos de 10 minutos</b>. Practica con el simulacro del portal para acostumbrarte a mantener la concentración varias horas.",
+"Preguntas":"<b>180 preguntas.</b> Parte de ellas puede ser de prueba (no se califican). Las fuentes consultadas discrepan en el número exacto de preguntas calificadas; verifica en pmi.org.",
+"Dominios":"<b>Personas 33%</b> (liderazgo, equipo, conflictos, interesados), <b>Procesos 41%</b> (técnicas y gestión del proyecto) y <b>Entorno de negocio 26%</b> (valor, estrategia, cumplimiento, cambio, sostenibilidad).",
+"Formatos":"Además de opción múltiple y selección múltiple, se reportan casos con varias preguntas, preguntas con gráficos (por ejemplo un Gantt o un diagrama), arrastrar y soltar y relacionar. Se evalúa el criterio, no la memorización.",
+"Temporal":"Tiene inicio y fin definidos. El resultado puede durar mucho; lo temporal es el esfuerzo.",
+"Único":"El resultado es distinto a todo lo hecho antes, aunque haya similitudes.",
+"Elaboración progresiva":"Se detalla el plan a medida que se conoce más información.",
+"Valor":"El proyecto existe para generar valor; se mide con los beneficios realizados, no solo con tiempo y costo.",
+"Estructura funcional":"La autoridad está en el gerente funcional. El director de proyecto tiene poca autoridad, presupuesto limitado y suele ser coordinador o facilitador.",
+"Estructura matricial":"Los recursos reportan al gerente funcional y al director del proyecto. Puede ser <b>débil</b> (más funcional), <b>balanceada</b> o <b>fuerte</b> (el director tiene más autoridad). Genera conflictos por prioridad de recursos.",
+"Estructura orientada a proyectos":"Los recursos se asignan al proyecto y reportan al director de proyecto. Alta autoridad, pero al terminar los proyectos el equipo puede quedarse sin trabajo.",
+"Factores ambientales (EEF)":"Condiciones fuera del control del equipo que influyen en el proyecto: cultura, estructura, normas, condiciones del mercado, infraestructura y estándares gubernamentales.",
+"Activos de los procesos (OPA)":"Lo que la organización ya tiene y se puede reutilizar: políticas, procedimientos, plantillas, bases de datos de lecciones aprendidas y proyectos anteriores.",
+"Caso de negocio":"Documento que justifica la inversión: necesidad, opciones, análisis costo-beneficio y recomendación.",
+"Plan de gestión de beneficios":"Describe qué beneficios se esperan, quién es responsable, cuándo se realizarán y cómo se medirán.",
+"Acta de constitución":"Autoriza formalmente el proyecto y otorga autoridad al director. Incluye propósito, objetivos, riesgos de alto nivel, hitos, presupuesto resumido y criterios de éxito. La emite el patrocinador o alguien externo al proyecto con autoridad suficiente.",
+"Líneas base":"Versiones aprobadas de alcance, cronograma y costo. Sirven de referencia para medir desempeño y solo cambian por el control de cambios.",
+"Control de cambios":"Proceso formal: registrar la solicitud, evaluar impacto, decidir en la instancia adecuada, implementar, actualizar líneas base y comunicar.",
+"Cierre":"Se confirma la aceptación, se liberan recursos, se transfiere el producto, se cierran contratos, se archivan documentos y se registran lecciones aprendidas.",
+"Entrevistas":"Se pregunta directamente a expertos o interesados. Permite profundizar, aunque es lenta si hay muchos participantes.",
+"Grupos focales":"Una conversación moderada con un grupo seleccionado para conocer expectativas y actitudes.",
+"Encuestas":"Cuestionarios para muchas personas; útil para datos cuantitativos y poblaciones dispersas.",
+"Observación":"Se observa el trabajo real (job shadowing) para descubrir procesos que los usuarios no mencionan.",
+"Prototipos":"Modelos tempranos del producto que permiten recibir retroalimentación antes de construirlo.",
+"Diagrama de afinidad":"Agrupa ideas surgidas en una lluvia de ideas por similitud para analizarlas.",
+"Enunciado del alcance":"Describe entregables, criterios de aceptación, exclusiones, supuestos y restricciones.",
+"EDT / WBS":"Descomposición jerárquica del trabajo en entregables y paquetes de trabajo; sigue la regla del 100%.",
+"Diccionario de la EDT":"Describe cada elemento de la EDT: responsable, criterios de aceptación, hitos y estimaciones.",
+"Línea base del alcance":"Enunciado del alcance aprobado + EDT + diccionario de la EDT. Sirve para medir y controlar el alcance.",
+"Scope creep":"Crecimiento no controlado del alcance. Se evita con una línea base clara y control de cambios.",
+"Gold plating":"Entregar más de lo pedido sin autorización. Es una mala práctica: agrega costo y riesgo sin aprobación.",
+"Fin a inicio (FS)":"La sucesora no empieza hasta que termina la predecesora. Ejemplo: no se pinta hasta terminar el enlucido.",
+"Inicio a inicio (SS)":"Ambas actividades pueden empezar a la vez (o con desfase). Ejemplo: empezar la redacción mientras se hace la investigación.",
+"Fin a fin (FF)":"La sucesora no puede terminar hasta que termine la predecesora. Ejemplo: terminar las pruebas cuando termina el desarrollo.",
+"Inicio a fin (SF)":"Poco usada: la sucesora no puede terminar hasta que empiece la predecesora.",
+"Adelanto (lead)":"Permite adelantar la sucesora respecto a la predecesora (por ejemplo, empezar 2 días antes de que termine la anterior). Es una forma de ejecución rápida.",
+"Retraso (lag)":"Una espera obligatoria entre actividades. Ejemplo: esperar 3 días a que seque el concreto.",
+"Holgura total":"Tiempo que una actividad puede atrasarse sin retrasar la fecha de fin del proyecto. Se calcula como LS − ES (o LF − EF). Las actividades de la ruta crítica tienen holgura cero.",
+"Holgura libre":"Tiempo que una actividad puede atrasarse sin retrasar el inicio temprano de la actividad que la sigue.",
+"LS":"<b>Inicio tardío</b>: la fecha más tardía en que puede empezar sin atrasar el proyecto. LS = LF − duración.",
+"EF":"<b>Fin temprano</b>: ES + duración. Se calcula en el recorrido hacia adelante.",
+"Estimación análoga":"Se basa en proyectos similares anteriores. Es rápida y barata, pero menos precisa. Útil al inicio.",
+"Estimación paramétrica":"Aplica una relación estadística entre datos históricos y una variable (por ejemplo, costo por metro cuadrado × metros). Es más precisa si el modelo es bueno.",
+"Ascendente (bottom-up)":"Se estima cada componente de la EDT y se suma. Es la más precisa y la más laboriosa.",
+"Tres puntos":"Usa tres estimaciones (optimista, más probable, pesimista). Triangular: (O+M+P)/3; PERT (beta): (O+4M+P)/6.",
+"PV":"<b>Valor planificado</b>: valor del trabajo que debería estar terminado a la fecha.",
+"EV":"<b>Valor ganado</b>: valor del trabajo realmente terminado (porcentaje completado × BAC).",
+"AC":"<b>Costo real</b>: lo que se gastó para el trabajo realizado.",
+"BAC":"<b>Presupuesto hasta la conclusión</b>: la suma de los presupuestos de toda la línea base.",
+"ROI":"<b>ROI = beneficio neto / costo</b>. Mide rentabilidad, pero no considera el tiempo.",
+"Payback":"Tiempo para recuperar la inversión. Prefiere el menor, pero ignora lo que ocurre después.",
+"VAN (NPV)":"Valor presente de los flujos futuros descontados menos la inversión inicial. Positivo: crea valor. Se prefiere el proyecto de mayor VAN.",
+"TIR (IRR)":"Tasa de descuento que hace el VAN igual a cero. Se compara con la tasa mínima exigida.",
+"Costo-beneficio":"Relación entre beneficios y costos (BCR). Mayor a 1 indica que los beneficios superan a los costos.",
+"Poder / interés":"Matriz: alto poder y alto interés = gestionar de cerca; alto poder y bajo interés = mantener satisfecho; bajo poder y alto interés = mantener informado; bajo y bajo = monitorear.",
+"Poder / influencia":"Clasifica interesados según su capacidad de influir en el resultado y su nivel de autoridad.",
+"Modelo de prominencia":"Evalúa tres atributos: <b>poder</b>, <b>urgencia</b> y <b>legitimidad</b>. Un interesado con los tres es “definitivo” y requiere atención inmediata.",
+"Mapa de empatía":"Ayuda a entender qué piensa, siente, dice y hace un interesado, para dirigir mejor el involucramiento.",
+"Comunicación interactiva":"Intercambio en tiempo real entre dos o más personas: reuniones, llamadas, videoconferencias. Es la más eficaz para evitar malentendidos.",
+"Push (enviar)":"El emisor envía la información: correos, cartas, informes. No asegura que el receptor la haya entendido.",
+"Pull (halar)":"El receptor accede cuando lo necesita: sitio web, repositorio, portal de e-learning.",
+"Maslow":"Pirámide: fisiológicas, seguridad, sociales, estima y autorrealización. Se motiva atendiendo la necesidad no satisfecha.",
+"Herzberg":"Los <b>factores higiénicos</b> (salario, condiciones) evitan la insatisfacción pero no motivan; los <b>motivadores</b> (logro, reconocimiento, responsabilidad) sí motivan.",
+"McGregor":"<b>Teoría X</b>: las personas evitan el trabajo y necesitan supervisión. <b>Teoría Y</b>: buscan responsabilidad y se autodirigen. En proyectos modernos se recomienda un estilo cercano a la Y.",
+"McClelland":"Necesidades de <b>logro</b>, <b>afiliación</b> y <b>poder</b>. Cada persona tiene una predominante.",
+"Vroom (expectativa)":"La motivación depende de creer que el esfuerzo llevará al desempeño y que el desempeño llevará a una recompensa valiosa.",
+"Liderazgo servicial":"El líder pone al equipo primero: escucha, remueve impedimentos y desarrolla personas. Es el estilo asociado al ágil.",
+"Transformacional":"Inspira con una visión, motiva y estimula la innovación y el cambio.",
+"Situacional":"El líder ajusta su estilo (dirigir, entrenar, apoyar, delegar) según la madurez de las personas.",
+"Poder formal":"Se basa en el cargo. Útil, pero el liderazgo efectivo no depende solo de él.",
+"Poder experto":"Se basa en el conocimiento o habilidad; muy respetado en equipos técnicos.",
+"Poder referente":"Se basa en la admiración o el respeto por la persona; es poderoso y perdurable.",
+"Colaborar / resolver el problema":"Busca una solución que satisfaga a todos. Es la técnica más efectiva a largo plazo y la preferida en el examen.",
+"Comprometer":"Cada parte cede algo. Es una solución parcial; las dos partes quedan parcialmente satisfechas.",
+"Suavizar / complacer":"Enfatiza los acuerdos y minimiza las diferencias; calma el conflicto pero no lo resuelve.",
+"Forzar / dirigir":"Se impone una solución; útil en emergencias, pero deja resentimiento.",
+"Evitar / retirarse":"Posponer o ignorar el conflicto; solo adecuado si el tema es trivial o se necesita tiempo.",
+"Riesgo":"Evento o condición incierta que, si ocurre, tiene un efecto positivo o negativo sobre los objetivos.",
+"Problema (issue)":"Un riesgo que ya ocurrió o una situación actual que requiere acción. Se gestiona en el registro de incidentes.",
+"Supuesto":"Factor que se considera verdadero sin pruebas. Los supuestos mal validados son una fuente de riesgo; se registran y se revisan.",
+"Restricción":"Limitación que afecta el proyecto: fecha fija, presupuesto máximo, tecnología obligatoria.",
+"Riesgo residual":"Lo que queda después de aplicar una respuesta. Se acepta o se vuelve a tratar.",
+"Riesgo secundario":"Un riesgo nuevo que aparece como consecuencia de una respuesta. Debe analizarse antes de aprobar la respuesta.",
+"EMV":"<b>Valor monetario esperado = probabilidad × impacto</b>. Las amenazas tienen valor negativo y las oportunidades positivo. Ejemplo: 20% × USD 100.000 = USD 20.000.",
+"Simulación Monte Carlo":"Ejecuta miles de simulaciones con rangos de duración o costo para obtener la probabilidad de cumplir una fecha o presupuesto.",
+"Árbol de decisión":"Muestra opciones, probabilidades y resultados; se elige la rama con mejor EMV.",
+"Diagrama de tornado":"Análisis de sensibilidad: ordena las variables por su impacto en el resultado; el riesgo más influyente va arriba.",
+"Costo de la conformidad":"Lo que se gasta para <b>evitar</b> defectos: prevención (capacitación, diseño) y evaluación (inspecciones, pruebas, auditorías).",
+"Costo de la no conformidad":"Lo que cuesta tener defectos: fallas internas (retrabajo, desperdicio) y fallas externas (garantías, reclamos, pérdida de reputación).",
+"Diagrama de Pareto":"Histograma ordenado que muestra qué pocas causas generan la mayoría de los problemas (regla 80/20).",
+"Causa y efecto (Ishikawa)":"Diagrama de espina de pescado: organiza causas posibles (personas, métodos, materiales, máquinas, medio ambiente) de un problema.",
+"Gráfico de control":"Muestra la variación del proceso en el tiempo con límites superior e inferior. La <b>regla de siete</b>: siete puntos consecutivos de un mismo lado de la media indican una causa asignable.",
+"Histograma":"Gráfico de barras que muestra la distribución de frecuencias de una variable.",
+"Alineación estratégica":"Cada proyecto debe contribuir a un objetivo estratégico de la organización.",
+"Realización de beneficios":"Los beneficios se materializan después de la entrega; alguien debe responder por medirlos.",
+"ADKAR":"Modelo de cambio individual: <b>A</b>wareness (conciencia), <b>D</b>esire (deseo), <b>K</b>nowledge (conocimiento), <b>A</b>bility (habilidad), <b>R</b>einforcement (refuerzo).",
+"Kotter":"8 pasos: crear urgencia, formar coalición, desarrollar visión, comunicarla, remover obstáculos, lograr victorias a corto plazo, consolidar mejoras y anclar el cambio en la cultura.",
+"Lewin":"Descongelar (preparar para el cambio), cambiar (implementar) y recongelar (consolidar).",
+"Individuos e interacciones":"El primer valor del Manifiesto Ágil: se priorizan personas y colaboración sobre procesos y herramientas.",
+"Software funcionando":"Se prefiere un producto que funcione antes que documentación extensa.",
+"Colaboración con el cliente":"Se prefiere trabajar con el cliente de forma continua antes que negociar contratos rígidos.",
+"Respuesta al cambio":"Se prefiere adaptarse a nuevas necesidades antes que seguir un plan que ya no sirve.",
+"Product Owner":"Responsable de maximizar el valor. Gestiona el backlog del producto: lo ordena, lo explica y decide qué se construye primero.",
+"Scrum Master":"Responsable de que Scrum se entienda y se aplique. Facilita, elimina impedimentos y entrena al equipo; no es un jefe.",
+"Desarrolladores":"Los profesionales que crean el incremento en cada Sprint. Se autoorganizan y son responsables de la calidad.",
+"Planificación del Sprint":"Se define <b>por qué</b> el Sprint es valioso (objetivo), <b>qué</b> se puede hacer y <b>cómo</b> se logrará.",
+"Scrum diario":"Reunión corta (15 minutos) en la que los Desarrolladores sincronizan y ajustan el plan del día.",
+"Revisión del Sprint":"Se inspecciona el incremento con los interesados y se adapta el backlog según la retroalimentación.",
+"Retrospectiva":"El equipo analiza cómo trabajó y acuerda mejoras concretas para el próximo Sprint.",
+"Backlog del producto":"Lista ordenada y emergente de todo lo que se necesita para el producto; la gestiona el Product Owner.",
+"Backlog del Sprint":"Objetivo del Sprint más los elementos seleccionados del backlog y el plan para entregarlos.",
+"Incremento":"Paso concreto hacia el objetivo del producto, utilizable y que cumple la definición de terminado.",
+"Definición de terminado":"Descripción formal del estado del incremento cuando cumple las medidas de calidad requeridas.",
+"Límite de trabajo en curso (WIP)":"Se limita el número de elementos en proceso por etapa. Reduce el multitasking y revela cuellos de botella.",
+"Tiempo de ciclo":"Tiempo que pasa un elemento desde que se empieza a trabajar hasta que se termina.",
+"Lead time":"Tiempo desde que se solicita un elemento hasta que se entrega al cliente.",
+"Diagrama de flujo acumulado":"Muestra la cantidad de elementos en cada etapa a lo largo del tiempo; bandas que se ensanchan indican cuellos de botella.",
+"XP (Extreme Programming)":"Prácticas técnicas: programación en pares, desarrollo guiado por pruebas, integración continua y refactorización."
+};
+const STEPDET={
+"Definir actividades":"Dividir los paquetes de trabajo en actividades programables, con su lista de actividades y atributos.",
+"Secuenciar":"Establecer relaciones lógicas (FS, SS, FF, SF), adelantos y retrasos; el resultado es el diagrama de red.",
+"Estimar duraciones":"Estimar cuánto tiempo toma cada actividad con juicio experto, análogas, paramétricas y de tres puntos; incluye considerar la reserva para contingencias.",
+"Desarrollar el cronograma":"Con el método de la ruta crítica se calculan fechas. Se pueden aplicar compresión, ejecución rápida y nivelación de recursos.",
+"Controlar":"Se compara el avance real con la línea base para detectar desvíos y tomar acciones correctivas.",
+"Caso de negocio":"Justifica la inversión: problema, opciones, costo-beneficio, riesgos y recomendación. Suele elaborarse antes del proyecto.",
+"Plan de gestión de beneficios":"Define beneficios, dueño, métricas, calendario y supuestos para realizarlos.",
+"Acta de constitución":"Autoriza el proyecto y otorga autoridad al director de proyecto.",
+"Líneas base":"Alcance, cronograma y costo aprobados, que sirven como referencia.",
+"Control de cambios":"Ningún cambio se implementa sin evaluación y aprobación por la instancia correspondiente.",
+"Cierre":"Aceptación, transferencia, cierre de contratos y registro de lecciones aprendidas.",
+"Desconocedor":"No conoce el proyecto ni sus impactos. Acción: informar.",
+"Resistente":"Conoce el proyecto y se opone. Acción: escuchar, entender sus causas y buscar acuerdos.",
+"Neutral":"Conoce el proyecto pero no apoya ni se opone. Acción: mostrarle beneficios y motivar su participación.",
+"Partidario":"Conoce el proyecto y lo apoya. Acción: mantener su apoyo y aprovechar su influencia.",
+"Líder":"Participa activamente para asegurar el éxito del proyecto. Acción: reconocer y empoderar.",
+"Formación":"Los miembros se conocen y dependen del líder. Se necesita dirección y claridad.",
+"Tormenta":"Aparecen conflictos por roles y métodos. El líder facilita el diálogo.",
+"Normalización":"Se acuerdan normas y crece la confianza.",
+"Desempeño":"El equipo trabaja con autonomía y eficacia.",
+"Disolución":"El equipo se desarma al finalizar el proyecto. Es importante reconocer los logros.",
+"Decidir hacer o comprar":"Se compara el costo y la capacidad de hacerlo internamente frente a contratar.",
+"Documentos de la licitación":"SOW (enunciado del trabajo), RFP (solicitud de propuesta; evalúa más que el precio), RFQ (solicitud de cotización; precio) e IFB (invitación a licitar).",
+"Seleccionar proveedor":"Se evalúa con criterios ponderados (técnico, precio, experiencia, riesgo) y se negocia el contrato.",
+"Administrar el contrato":"Se controla el desempeño del proveedor, los cambios y los pagos.",
+"Cerrar":"Se verifican los entregables, se hacen los pagos finales y se cierra formalmente.",
+"Planificar la gestión":"Define cómo se gestionarán los riesgos: metodología, roles, escalas, umbrales y presupuesto.",
+"Identificar":"Se buscan riesgos con lluvia de ideas, entrevistas, listas de verificación, análisis FODA y juicio de expertos; se registran en el registro de riesgos.",
+"Análisis cualitativo":"Prioriza riesgos por probabilidad e impacto, urgencia y proximidad.",
+"Análisis cuantitativo":"Cuantifica el efecto de los riesgos en los objetivos: EMV, Monte Carlo, árboles de decisión.",
+"Planificar respuestas":"Se elige una estrategia para cada riesgo prioritario y se asigna un dueño.",
+"Implementar respuestas":"Se ejecuta el plan de respuesta acordado.",
+"Monitorear":"Se vigilan los disparadores, los riesgos residuales, las reservas y la aparición de riesgos nuevos."
+};
+
+DETAILS["Valor planificado"]=DETAILS.PV;DETAILS["Valor ganado"]=DETAILS.EV;DETAILS["Costo real"]=DETAILS.AC;DETAILS["Presupuesto al concluir"]=DETAILS.BAC;
+DETAILS["Valor monetario esperado"]=DETAILS.EMV;DETAILS["Presupuesto al concluir"]=DETAILS.BAC;
+/* ============ AYUDAS DE DISEÑO ============ */
+const H=t=>`<h2>${t}</h2>`;
+const P=t=>`<p>${t}</p>`;
+const CC=a=>`<div class="cc">${a.map(([i,t,x])=>DETAILS[t]?`<details class="cx"><summary><span class="ic">${i}</span><b>${t}</b><span>${x}</span><em>Ver explicación</em></summary><div class="dt">${DETAILS[t]}</div></details>`:`<div class="cx"><div class="ic">${i}</div><b>${t}</b><span>${x}</span></div>`).join("")}</div>`;
+const CALL=(k,t)=>`<div class="call ${k}"><b>${{tip:"💡 Idea clave",ex:"🎯 Para el examen",wa:"⚠️ Ojo",eg:"📌 Ejemplo"}[k]}</b><div>${t}</div></div>`;
+const VS=(a,b)=>`<div class="vs"><div class="vc"><h3>${a[0]}</h3><ul>${a[1].map(x=>`<li>${x}</li>`).join("")}</ul></div><div class="vc alt"><h3>${b[0]}</h3><ul>${b[1].map(x=>`<li>${x}</li>`).join("")}</ul></div></div>`;
+const STEPS=a=>`<div class="steps">${a.map(([t,x],i)=>STEPDET[t]?`<details class="st"><summary><i>${i+1}</i><div><b>${t}</b><span>${x}</span><em>Ver explicación</em></div></summary><div class="dt">${STEPDET[t]}</div></details>`:`<div class="st"><i>${i+1}</i><div><b>${t}</b><span>${x}</span></div></div>`).join("")}</div>`;
+const SUM=a=>`<div class="sum"><b>Resumen del capítulo</b><ul>${a.map(x=>`<li>${x}</li>`).join("")}</ul></div>`;
+
+/* ============ DIAGRAMAS (SVG) ============ */
+const SV=(w,h,inner)=>`<figure class="fig"><svg viewBox="0 0 ${w} ${h}" role="img">${inner}</svg></figure>`;
+const T=(x,y,t,c,a)=>`<text x="${x}" y="${y}" text-anchor="${a||"middle"}" class="${c||"t"}">${t}</text>`;
+const DEEP=()=>"";
+const DG={
+ciclo:()=>SV(660,200,`
+${["Inicio","Planificación","Ejecución","Monitoreo y control","Cierre"].map((n,i)=>`<polygon class="s${i%3+1}" points="${10+i*128},30 ${120+i*128},30 ${138+i*128},75 ${120+i*128},120 ${10+i*128},120 ${28+i*128},75"/>${T(76+i*128,80,n,"tb")}`).join("")}
+${T(330,160,"PMBOK 6: 5 grupos de procesos que se repiten en cada fase","tm")}`),
+red:()=>SV(640,230,`
+<defs><marker id="ar2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--mu)"/></marker></defs>
+${[["A","3",30,95],["B","5",230,40],["C","2",230,150],["D","4",440,95]].map(([n,d,x,y])=>`<rect class="${n==="C"?"s3":"s1"}" x="${x}" y="${y}" width="150" height="56" rx="10"/>${T(x+75,y+25,"Actividad "+n,"tb")}${T(x+75,y+44,"duración "+d+" días","tm")}`).join("")}
+<line x1="180" y1="115" x2="228" y2="75" class="ln" marker-end="url(#ar2)"/><line x1="180" y1="125" x2="228" y2="170" class="ln" marker-end="url(#ar2)"/>
+<line x1="380" y1="70" x2="438" y2="110" class="ln" marker-end="url(#ar2)"/><line x1="380" y1="175" x2="438" y2="135" class="ln" marker-end="url(#ar2)"/>
+${T(320,18,"Ruta crítica: A → B → D = 12 días (holgura 0)","tb")}${T(320,222,"A → C → D = 9 días; la actividad C tiene 3 días de holgura","tm")}`),
+matriz:()=>{const lv=["Baja","Media","Alta"];let o="";const col=(p,i)=>{const s=p*i;return s>=6?"var(--kob)":s>=3?"var(--wab)":"var(--okb)"};
+for(let r=0;r<3;r++)for(let c=0;c<3;c++){const p=3-r,i=c+1;o+=`<rect x="${110+c*140}" y="${20+r*62}" width="136" height="58" rx="8" fill="${col(p,i)}" stroke="var(--bd)"/>${T(178+c*140,55+r*62,p*i,"tb")}`}
+lv.forEach((l,c)=>o+=T(178+c*140,225,l,"tm"));[...lv].reverse().forEach((l,r)=>o+=T(100,55+r*62,l,"tm","end"));
+return SV(560,260,o+T(320,248,"Impacto →","tb")+T(34,110,"Prob.","tb"))},
+scrum:()=>SV(660,230,`
+<rect class="s0" x="20" y="20" width="150" height="56" rx="10"/>${T(95,45,"Product Backlog","tb")}${T(95,63,"lista priorizada","tm")}
+<rect class="s1" x="220" y="20" width="150" height="56" rx="10"/>${T(295,45,"Planificación","tb")}${T(295,63,"Sprint Goal","tm")}
+<rect class="s2" x="420" y="20" width="220" height="56" rx="10"/>${T(530,45,"Sprint (1 a 4 semanas)","tb")}${T(530,63,"Daily Scrum cada día","tm")}
+<rect class="s3" x="420" y="130" width="220" height="56" rx="10"/>${T(530,155,"Incremento utilizable","tb")}${T(530,173,"cumple la Definición de Terminado","tm")}
+<rect class="s1" x="220" y="130" width="150" height="56" rx="10"/>${T(295,155,"Revisión","tb")}${T(295,173,"con interesados","tm")}
+<rect class="s0" x="20" y="130" width="150" height="56" rx="10"/>${T(95,155,"Retrospectiva","tb")}${T(95,173,"mejorar el proceso","tm")}
+<line x1="170" y1="48" x2="218" y2="48" class="ln"/><line x1="370" y1="48" x2="418" y2="48" class="ln"/><line x1="530" y1="76" x2="530" y2="128" class="ln"/><line x1="420" y1="158" x2="372" y2="158" class="ln"/><line x1="220" y1="158" x2="172" y2="158" class="ln"/>
+${T(330,215,"Después de la retrospectiva se vuelve a refinar el backlog y se inicia otro Sprint","tm")}`),
+evm:()=>SV(640,280,`
+<line x1="60" y1="240" x2="600" y2="240" class="ax"/><line x1="60" y1="240" x2="60" y2="20" class="ax"/>
+${T(330,268,"Tiempo","tm")}${T(28,130,"$","tm")}
+<path d="M60 240 C200 235 260 140 600 40" class="pv"/><path d="M60 240 C200 238 270 175 440 125" class="ev"/><path d="M60 240 C200 232 260 120 440 70" class="ac"/>
+<line x1="440" y1="70" x2="440" y2="125" class="ln"/><line x1="440" y1="125" x2="440" y2="240" class="ln" stroke-dasharray="3 4"/>
+${T(612,38,"PV","tb","end")}${T(452,66,"AC","tb","start")}${T(452,142,"EV","tb","start")}${T(430,230,"CV = EV − AC (negativo)","tm","end")}`),
+evol:()=>SV(660,250,`
+${[["PMBOK 6","Procesos","5 grupos × 10 áreas = 49 procesos",30,"s1"],["PMBOK 7","Principios y dominios","12 principios · 8 dominios",250,"s2"],["PMBOK 8","Dominios y procesos","6 principios · 7 dominios · 40 procesos",470,"s3"]].map(([a,b,c,x,k])=>`<rect class="${k}" x="${x}" y="40" width="170" height="130" rx="14"/>${T(x+85,72,a,"tb")}${T(x+85,100,b,"tb")}${T(x+85,130,c.split(" · ")[0].split(" = ")[0],"tm")}${T(x+85,150,c.split(" · ").slice(1).join(" · ")||c.split(" = ")[1],"tm")}`).join("")}
+<line x1="200" y1="105" x2="248" y2="105" class="ln"/><line x1="420" y1="105" x2="468" y2="105" class="ln"/>
+${T(330,210,"De “qué procesos sigo” a “qué principios aplico y qué dominios gestiono”, y de vuelta a procesos flexibles","tm")}`)
+};
+
+const CH=[
+{id:"c0",n:0,ic:"🧬",t:"PMBOK 6, 7 y 8: comparación de procesos y novedades del examen",ex:"Base: cómo se organiza el conocimiento y qué cambió en 2026",min:35,
+sub:"Antes de estudiar los temas, entiende cómo cambió la forma de organizar la dirección de proyectos y qué significa para el examen.",
+b:()=>
+H("1. Tres formas de organizar el mismo conocimiento")+
+P("El <b>PMBOK® Guide</b> de PMI describe buenas prácticas de dirección de proyectos. Cada edición lo organiza de otra manera. Conocer las tres te ayuda a entender preguntas que mezclan términos antiguos y nuevos, y a usar libros y cursos de distintos años.")+
+DG.evol()+
+VS(["PMBOK 6.ª edición (2017)",["Enfoque de <b>procesos</b>: entradas, herramientas y salidas (ITTO)","<b>5 grupos de procesos</b> × <b>10 áreas de conocimiento</b> = <b>49 procesos</b>","Pensado sobre todo para proyectos predictivos; el ágil se agregó como anexo"]],["PMBOK 7.ª edición (2021)",["Enfoque de <b>principios</b> y <b>dominios de desempeño</b>","<b>12 principios</b> y <b>8 dominios</b>: interesados, equipo, enfoque de desarrollo y ciclo de vida, planificación, trabajo del proyecto, entrega, medición e incertidumbre","<b>No tenía procesos</b>; pasaba a modelos, métodos y artefactos"]])+
+VS(["PMBOK 8.ª edición (vigente)",["<b>6 principios</b>: visión holística, enfoque en el valor, calidad integrada, liderazgo responsable, sostenibilidad y cultura empoderada","<b>7 dominios de desempeño</b>: gobernanza, alcance, cronograma, finanzas, interesados, recursos y riesgo","<b>40 procesos</b> presentados de forma no prescriptiva, dentro de cada dominio","Más contenido sobre IA, sostenibilidad, PMO y adquisiciones"]],["Cómo usar las tres en el estudio",["La 6.ª sirve para entender el <b>vocabulario clásico</b> de procesos","La 7.ª sirve para entender el <b>enfoque basado en principios</b> y la adaptación","La 8.ª es la <b>referencia vigente</b> y une ambos mundos"]])+
+CALL("wa","Los nombres de principios y dominios del PMBOK 8 provienen de resúmenes de terceros y de la página de PMI; confirma la redacción exacta en tu ejemplar. Las cifras de la 6.ª y 7.ª son las publicadas por PMI.")+
+H("2. Los 49 procesos de la 6.ª edición (haz clic para ver cada área)")+
+P("Aunque la 8.ª reorganizó el contenido, los procesos de la 6.ª siguen siendo un excelente mapa mental de qué hay que hacer y en qué orden.")+
+CC([["🧩","Integración (7)","Acta, plan, ejecución, conocimiento, monitoreo, cambios y cierre."],["📐","Alcance (6)","Planificar, requisitos, definir, EDT, validar y controlar."],["📅","Cronograma (6)","Planificar, actividades, secuencia, duración, cronograma y control."],["💰","Costos (4)","Planificar, estimar, presupuesto y controlar."],["✅","Calidad (3)","Planificar, gestionar y controlar."],["👥","Recursos (6)","Planificar, estimar, adquirir, desarrollar, dirigir y controlar."],["💬","Comunicaciones (3)","Planificar, gestionar y monitorear."],["⚡","Riesgos (7)","Planificar, identificar, análisis cualitativo y cuantitativo, respuestas, implementar y monitorear."],["🤝","Adquisiciones (3)","Planificar, efectuar y controlar."],["🙋","Interesados (4)","Identificar, planificar, gestionar y monitorear."]])+
+H("3. Cómo se equiparan la 6.ª y la 8.ª")+
+P("La 8.ª no replica las 10 áreas; las reagrupa en 7 dominios. La siguiente tabla es una <b>equivalencia orientativa</b> elaborada para estudiar; no es una tabla oficial de PMI.")+
+`<div class="card"><table><tr><th>PMBOK 6 (áreas)</th><th>PMBOK 7 (dominio)</th><th>PMBOK 8 (dominio)</th></tr>
+<tr><td>Integración</td><td>Trabajo del proyecto · Entrega</td><td><b>Gobernanza</b> (9 procesos)</td></tr>
+<tr><td>Alcance</td><td>Planificación · Entrega</td><td><b>Alcance</b> (6)</td></tr>
+<tr><td>Cronograma</td><td>Planificación · Medición</td><td><b>Cronograma</b> (3)</td></tr>
+<tr><td>Costos</td><td>Planificación · Medición</td><td><b>Finanzas</b> (4)</td></tr>
+<tr><td>Interesados y Comunicaciones</td><td>Interesados</td><td><b>Interesados</b> (7)</td></tr>
+<tr><td>Recursos y Adquisiciones</td><td>Equipo · Trabajo del proyecto</td><td><b>Recursos</b> (5)</td></tr>
+<tr><td>Riesgos</td><td>Incertidumbre</td><td><b>Riesgo</b> (6)</td></tr>
+<tr><td>Calidad</td><td>Entrega</td><td>Principio de calidad + procesos dentro de los dominios</td></tr></table>
+<p class="mu">Total en la 8.ª: 9+6+3+4+7+5+6 = 40 procesos. Dónde exactamente cae calidad y adquisiciones lo debes confirmar en el libro: es mi interpretación a partir de resúmenes.</p></div>`+
+CALL("tip","Idea para estudiar: aprende cada tema con la lógica de procesos (qué se hace), y luego pregúntate qué <b>principio</b> lo respalda. Esa doble mirada es la que pide el examen actual.")+
+H("4. Qué cambió en el examen PMP")+
+CC([["📅","Fecha","Nuevo examen vigente desde el 9 de julio de 2026."],["⏱️","Duración","240 minutos con dos descansos de 10 minutos."],["📝","Preguntas","180 preguntas."],["📊","Dominios","Personas 33% · Procesos 41% · Entorno de negocio 26%."],["🧪","Formatos","Opción múltiple, selección múltiple, arrastrar y soltar, casos y gráficos."]])+
+CALL("ex","El dominio <b>Entorno de negocio</b> pasó de 8% a 26%. Esto significa que debes dominar estrategia, valor, cumplimiento, sostenibilidad y cambio organizacional, no solo técnicas de gestión.")+
+CALL("wa","<b>Dato por confirmar:</b> la página de PMI confirma 180 preguntas, 240 minutos y los porcentajes 33/41/26. Fuentes de terceros discrepan en cuántas preguntas se califican (170 o 175). Verifica en pmi.org antes de inscribirte, junto con tarifas y requisitos vigentes.")+
+CALL("tip","Fuentes de terceros mencionan que alrededor de 60% de las preguntas abordan enfoques ágiles o híbridos. Es una estimación no oficial; por eso este portal dedica un capítulo completo al ágil y lo mezcla en las demás secciones.")+
+H("5. Cómo se estudia con este portal")+
+STEPS([["Lee un capítulo completo","Con calma, abre cada concepto con clic para ver la explicación."],["Repasa tarjetas","Repetición espaciada: lo que fallas vuelve antes."],["Practica por capítulo","Preguntas al azar con explicación inmediata."],["Haz simulacros","Cronometrados y sin ayuda."]])+
+SUM(["El PMBOK 6 es de procesos (49), el 7 de principios y dominios (12 y 8), el 8 combina 6 principios, 7 dominios y 40 procesos.","El examen vigente tiene 180 preguntas, 240 minutos y 3 dominios: Personas 33%, Procesos 41%, Entorno de negocio 26%.","Estudia con la lógica de procesos y con la de principios; el examen mezcla ambas.","Confirma datos de inscripción y tarifas directamente en pmi.org."])},
+
+{id:"c1",n:1,ic:"🏛️",t:"Fundamentos, ciclo de vida y gobernanza",ex:"Procesos · Entorno de negocio · Dominio de gobernanza",min:35,
+sub:"Qué es un proyecto, cómo se organiza una empresa, qué enfoques existen y cómo se gobierna el trabajo.",
+b:()=>
+H("1. Proyecto, programa, portafolio y operaciones")+
+P("Un <b>proyecto</b> es un esfuerzo temporal que crea un producto, servicio o resultado único. Un <b>programa</b> agrupa proyectos relacionados para obtener beneficios que no se lograrían por separado. Un <b>portafolio</b> agrupa proyectos, programas y operaciones para alcanzar objetivos estratégicos. Las <b>operaciones</b> son trabajo continuo que mantiene el negocio.")+
+CC([["⏳","Temporal","Tiene inicio y fin definidos."],["✨","Único","El resultado es distinto a lo anterior."],["📈","Elaboración progresiva","Se detalla con más información."],["💎","Valor","Un proyecto existe para generar valor."]])+
+H("2. Ciclo de vida y enfoques de desarrollo")+
+DG.ciclo()+
+VS(["Predictivo (cascada)",["Alcance, tiempo y costo se definen al inicio","Cambios por proceso formal","Adecuado con requisitos estables (construcción, infraestructura)"]],["Ágil / adaptativo",["Iteraciones cortas y entregas frecuentes","El alcance evoluciona con retroalimentación","Adecuado con incertidumbre (software, innovación)"]])+
+P("<b>Híbrido</b>: combina enfoques. Por ejemplo, planificación predictiva de infraestructura con desarrollo ágil del software. Lo importante en el examen es <b>elegir el enfoque según el contexto</b>: incertidumbre, tamaño, cultura del cliente, regulación y disponibilidad de usuarios.")+
+CALL("tip","La mejor práctica es la <b>adaptación (tailoring)</b>: ajustar procesos, documentos y gobernanza al proyecto, sin eliminar lo esencial.")+
+H("3. Organización y entorno")+
+CC([["🏢","Estructura funcional","Autoridad del gerente funcional; el director de proyecto tiene poca autoridad."],["🔀","Estructura matricial","Autoridad compartida; débil, balanceada o fuerte."],["🚀","Estructura orientada a proyectos","El director tiene alta autoridad y controla recursos."],["🌍","Factores ambientales (EEF)","Cultura, regulaciones, mercado, infraestructura."],["📚","Activos de los procesos (OPA)","Plantillas, políticas, lecciones aprendidas."]])+
+H("4. Gobernanza y autorización del proyecto")+
+STEPS([["Caso de negocio","Justifica por qué se invierte: problema, opciones, costos y beneficios."],["Plan de gestión de beneficios","Define qué beneficios, quién los posee y cómo se medirán."],["Acta de constitución","Autoriza formalmente al proyecto y al director; define objetivos de alto nivel."],["Líneas base","Alcance, cronograma y costo aprobados que sirven de referencia."],["Control de cambios","Todo cambio se evalúa e implementa por un proceso formal."],["Cierre","Se verifican entregables, se transfiere el producto y se registran lecciones aprendidas."]])+
+CALL("ex","El director de proyecto <b>no inicia el proyecto sin acta</b>. Si falta, lo correcto es pedir al patrocinador que se emita o ayudar a desarrollarla; no avanzar sin autorización.")+
+P("<b>Gobernanza</b> es el marco para decidir y supervisar: roles, umbrales de aprobación, comités, puertas de revisión. En el PMBOK 8 es un dominio propio, con el mayor número de procesos (9).")+
+CALL("eg","Un proyecto de TI tiene un sobrecosto de 15%. El umbral de gobernanza exige aprobación del comité para desvíos mayores a 10%. El director <b>no decide solo</b>: documenta, analiza opciones y lleva el cambio al comité.")+
+H("5. Rol del director de proyecto")+
+P("Es responsable de lograr los objetivos del proyecto. Combina <b>habilidades técnicas</b>, <b>liderazgo</b> y <b>visión de negocio</b>. Su trabajo incluye facilitar, resolver conflictos, comunicar y tomar decisiones dentro de su autoridad. En proyectos ágiles actúa más como líder servicial que como controlador.")+
+SUM(["Proyecto: temporal y único; operaciones: continuas.","Elige el enfoque (predictivo, ágil, híbrido) según el contexto y adáptalo.","La estructura organizacional determina la autoridad del director.","Caso de negocio → acta → líneas base → control de cambios → cierre.","El director no se salta la gobernanza."])},
+
+{id:"c2",n:2,ic:"📐",t:"Alcance: requisitos, EDT y control",ex:"Procesos · dominio de alcance",min:35,
+sub:"Definir con precisión qué se hará y qué no, y evitar que crezca sin control.",
+b:()=>
+H("1. Alcance del producto y del proyecto")+
+P("El <b>alcance del producto</b> son las características y funciones del entregable. El <b>alcance del proyecto</b> es el trabajo necesario para entregarlo. Ambos se definen de manera distinta pero se relacionan.")+
+H("2. Recopilar requisitos")+
+CC([["🎤","Entrevistas","Preguntas directas a expertos e interesados."],["👥","Grupos focales","Conversación moderada con un grupo."],["📋","Encuestas","Para muchas personas, datos cuantificables."],["👀","Observación","Mirar cómo se hace el trabajo real."],["🧪","Prototipos","Modelos tempranos para recibir retroalimentación."],["🗂️","Diagrama de afinidad","Agrupar ideas por similitud."]])+
+P("Los requisitos pueden ser de <b>negocio</b>, de <b>interesados</b>, <b>funcionales</b>, <b>no funcionales</b> (rendimiento, seguridad), de <b>transición</b> y de <b>calidad</b>. Se documentan y se vinculan con una <b>matriz de trazabilidad de requisitos</b>, que muestra de dónde viene cada requisito y en qué entregable se cumple.")+
+H("3. Definir el alcance y crear la EDT/WBS")+
+P("El <b>enunciado del alcance</b> describe entregables, criterios de aceptación, exclusiones y supuestos. La <b>EDT/WBS</b> descompone el trabajo en niveles cada vez más pequeños hasta llegar a <b>paquetes de trabajo</b>. Sigue la <b>regla del 100%</b>: la EDT debe incluir todo el trabajo y solamente ese trabajo.")+
+CC([["📄","Enunciado del alcance","Entregables, criterios, exclusiones, supuestos."],["🌳","EDT / WBS","Descomposición jerárquica del trabajo."],["📖","Diccionario de la EDT","Describe cada paquete de trabajo."],["📏","Línea base del alcance","Enunciado + EDT + diccionario."]])+
+H("4. Validar y controlar")+
+VS(["Validar el alcance",["Aceptación formal de los entregables por el cliente o patrocinador","Se hace sobre entregables ya verificados","Responde: ¿esto es lo que necesitaba?"]],["Controlar la calidad",["Verificar que el entregable cumple los requisitos de calidad","Lo hace el equipo antes de entregar","Responde: ¿está bien hecho?"]])+
+CALL("ex","Orden típico: primero <b>controlar la calidad</b> (interno) y luego <b>validar el alcance</b> (aceptación del cliente).")+
+CC([["📈","Scope creep","Crecimiento no controlado del alcance."],["🎁","Gold plating","Agregar extras que nadie pidió."]])+
+CALL("wa","Ante un cambio de alcance solicitado por un interesado, el director <b>no lo acepta ni lo rechaza por su cuenta</b>: registra la solicitud, evalúa el impacto y la lleva al control integrado de cambios.")+
+H("5. Alcance en entornos ágiles")+
+P("En ágil, el alcance vive en el <b>backlog del producto</b>: una lista priorizada de historias de usuario. Se refina continuamente. Se trabaja con un <b>producto mínimo viable (MVP)</b> para aprender rápido, y el alcance variable permite fijar el tiempo y el costo (iteraciones) y ajustar qué se entrega.")+
+SUM(["Requisitos → enunciado del alcance → EDT → línea base.","La EDT sigue la regla del 100%.","Validar = aceptación del cliente; controlar calidad = verificación interna.","Los cambios se gestionan formalmente.","En ágil, el alcance se gestiona en el backlog priorizado."])},
+
+{id:"c3",n:3,ic:"📅",t:"Cronograma: ruta crítica y compresión",ex:"Procesos · dominio de cronograma",min:40,
+sub:"Cómo se programa el trabajo, se calcula la ruta crítica y se recupera un atraso.",
+b:()=>
+H("1. Del alcance a las actividades")+
+STEPS([["Definir actividades","Dividir los paquetes de trabajo en actividades."],["Secuenciar","Establecer dependencias entre actividades."],["Estimar duraciones","Con juicio experto, análogas, paramétricas o de tres puntos."],["Desarrollar el cronograma","Calcular fechas con el método de la ruta crítica."],["Controlar","Comparar el avance con la línea base y corregir."]])+
+H("2. Dependencias")+
+CC([["➡️","Fin a inicio (FS)","La sucesora empieza cuando termina la predecesora. La más común."],["⏯️","Inicio a inicio (SS)","Ambas empiezan juntas o con desfase."],["⏹️","Fin a fin (FF)","Ambas terminan juntas."],["⏪","Inicio a fin (SF)","Rara; la sucesora termina cuando empieza la predecesora."],["⏱️","Adelanto (lead)","Permite adelantar una actividad."],["🕒","Retraso (lag)","Obliga a esperar un tiempo."]])+
+H("3. Ruta crítica")+
+P("La <b>ruta crítica</b> es la secuencia de actividades dependientes más larga; determina la duración mínima del proyecto. Las actividades críticas tienen <b>holgura cero</b>. Se calcula con un recorrido hacia adelante (ES, EF) y hacia atrás (LS, LF).")+DG.red()+
+CC([["⏳","Holgura total","LS − ES: tiempo que se puede retrasar sin afectar el fin."],["🪢","Holgura libre","Retraso posible sin afectar a la sucesora inmediata."],["🏁","EF","ES + duración: fin temprano."],["🕓","LS","LF − duración: inicio tardío."]])+
+CALL("ex","Si se atrasa una actividad <b>crítica</b>, se atrasa el proyecto. Si se atrasa una no crítica, depende de cuánta holgura tiene. Una pregunta típica: “¿Qué hace el director primero?” — calcular el <b>impacto en la ruta crítica</b>.")+
+H("4. Estimación de tres puntos (PERT)")+
+P("Con O = optimista, M = más probable y P = pesimista: <b>E = (O + 4M + P) / 6</b> y <b>desviación estándar = (P − O) / 6</b>. Ejemplo: O=4, M=6, P=14 → E = (4+24+14)/6 = 7 días; σ = (14−4)/6 ≈ 1,67.")+
+H("5. Recuperar un atraso")+
+VS(["Compresión (crashing)",["Agregar recursos para acortar la duración","<b>Aumenta el costo</b>","Funciona solo en actividades críticas"]],["Ejecución rápida (fast tracking)",["Hacer en paralelo actividades que iban en secuencia","<b>Aumenta el riesgo</b> (retrabajo)","Funciona solo si hay dependencias discrecionales"]])+
+CALL("tip","Otras técnicas: <b>nivelación de recursos</b> (resuelve sobreasignación; puede alargar el cronograma) y <b>suavizado</b> (usa la holgura sin cambiar la ruta crítica).")+
+H("6. Cronograma ágil")+
+P("Se planifica por <b>iteraciones</b> y <b>lanzamientos</b>. Se estima en <b>puntos de historia</b> y se mide la <b>velocidad</b> (puntos completados por iteración). Se visualiza con gráficos de <b>burndown</b> (trabajo restante) y <b>burnup</b> (trabajo completado y alcance).")+
+SUM(["La ruta crítica determina la duración mínima y tiene holgura cero.","PERT: E = (O + 4M + P)/6.","Crashing agrega costo; fast tracking agrega riesgo.","La nivelación resuelve conflictos de recursos.","En ágil se usa velocidad y gráficos burndown/burnup."])},
+
+{id:"c4",n:4,ic:"💰",t:"Finanzas: costos, valor ganado y contratos",ex:"Procesos · dominio de finanzas",min:45,
+sub:"Estimar, presupuestar y controlar el costo con datos objetivos.",
+b:()=>
+H("1. Estimar y presupuestar")+
+CC([["📌","Estimación análoga","Basada en proyectos anteriores; rápida, menos precisa."],["🧮","Estimación paramétrica","Usa datos estadísticos (por ejemplo, costo por metro cuadrado)."],["🔬","Ascendente (bottom-up)","Estima cada paquete y suma; más precisa."],["🎯","Tres puntos","Promedia escenarios optimista, probable y pesimista."]])+
+P("<b>Presupuesto</b> = estimación de costos de actividades + <b>reserva para contingencias</b> (riesgos identificados). La <b>reserva de gestión</b> cubre riesgos desconocidos y no forma parte de la línea base de costos. La suma da la <b>línea base de costos</b>; con la reserva de gestión se obtiene el <b>presupuesto del proyecto</b>.")+
+H("2. Valor ganado (EVM)")+DG.evm()+
+CC([["PV","Valor planificado","Lo que debía estar hecho."],["EV","Valor ganado","Valor del trabajo realmente completado."],["AC","Costo real","Lo gastado."],["BAC","Presupuesto al concluir","Presupuesto total de la línea base."]])+
+`<div class="card"><table><tr><th>Medida</th><th>Fórmula</th><th>Lectura</th></tr>
+<tr><td>CV</td><td>EV − AC</td><td>Negativo = sobre costo</td></tr>
+<tr><td>SV</td><td>EV − PV</td><td>Negativo = atrasado</td></tr>
+<tr><td>CPI</td><td>EV / AC</td><td>&lt; 1 = ineficiente en costo</td></tr>
+<tr><td>SPI</td><td>EV / PV</td><td>&lt; 1 = atrasado</td></tr>
+<tr><td>EAC (tendencia actual)</td><td>BAC / CPI</td><td>Se espera que el desempeño continúe</td></tr>
+<tr><td>EAC (desvío atípico)</td><td>AC + (BAC − EV)</td><td>El problema fue puntual</td></tr>
+<tr><td>EAC (CPI y SPI)</td><td>AC + (BAC − EV)/(CPI × SPI)</td><td>Costo y plazo influyen</td></tr>
+<tr><td>ETC</td><td>EAC − AC</td><td>Cuánto falta gastar</td></tr>
+<tr><td>VAC</td><td>BAC − EAC</td><td>Desvío esperado al final</td></tr>
+<tr><td>TCPI (a BAC)</td><td>(BAC − EV)/(BAC − AC)</td><td>Eficiencia necesaria para terminar en presupuesto</td></tr></table></div>`+
+CALL("eg","BAC=1000; PV=400; EV=300; AC=450. CPI = 0,67; SPI = 0,75; EAC (tendencia) = 1000/0,67 ≈ 1500; ETC ≈ 1050; VAC ≈ −500. El proyecto va mal en costo y en plazo.")+
+CALL("ex","Cuando el enunciado dice “el problema no se repetirá”, usa <b>EAC = AC + (BAC − EV)</b>. Si dice “el desempeño actual continuará”, usa <b>BAC / CPI</b>.")+
+H("3. Medidas financieras de negocio")+
+CC([["📈","ROI","Beneficio neto / costo."],["⏱️","Payback","Tiempo para recuperar la inversión."],["💵","VAN (NPV)","Valor presente de los flujos menos la inversión; mayor a 0 conviene."],["📊","TIR (IRR)","Tasa que hace VAN = 0."],["⚖️","Costo-beneficio","Relación entre beneficios y costos."]])+
+P("Para comparar proyectos, se elige el de <b>mayor VAN</b> (o mayor TIR si se compara contra la tasa mínima). El <b>costo hundido</b> (lo ya gastado) no debe influir en decidir si continuar.")+
+H("4. Contratos")+
+VS(["Precio fijo (FFP, FPIF)",["El proveedor asume el riesgo de sobrecosto","Se necesita alcance claro","FPIF: incluye incentivo por desempeño"]],["Costo reembolsable (CPFF, CPIF)",["El comprador asume más riesgo","Útil cuando el alcance es incierto","Se paga el costo más una tarifa o incentivo"]])+
+P("<b>Tiempo y materiales (T&M)</b> es intermedio: se paga por hora más materiales; el riesgo del alcance es del comprador.")+
+SUM(["Presupuesto = estimaciones + reserva de contingencia; la reserva de gestión queda fuera de la línea base.","Domina CV, SV, CPI, SPI, EAC, ETC, VAC y TCPI.","El costo hundido no influye en la decisión de continuar.","FFP: riesgo del vendedor; CPFF: riesgo del comprador; T&M: mixto."])},
+
+{id:"c5",n:5,ic:"🙋",t:"Interesados y comunicaciones",ex:"Personas · dominio de interesados",min:30,
+sub:"Identificar, comprender e involucrar a todos los que afectan o son afectados por el proyecto.",
+b:()=>
+H("1. Identificar y analizar interesados")+
+P("Un <b>interesado</b> es cualquier persona, grupo u organización que puede afectar o ser afectado por el proyecto. Se identifican desde el inicio y durante todo el ciclo de vida, y se registran en el <b>registro de interesados</b>.")+
+CC([["⚡","Poder / interés","Alto poder y alto interés: gestionar de cerca."],["🎯","Poder / influencia","Quién puede influir realmente en el resultado."],["🧭","Modelo de prominencia","Poder, urgencia y legitimidad."],["🗺️","Mapa de empatía","Qué piensa, siente y necesita un interesado."]])+
+H("2. Niveles de compromiso")+
+STEPS([["Desconocedor","No sabe del proyecto ni de sus impactos."],["Resistente","Conoce el proyecto y se opone."],["Neutral","Conoce el proyecto, ni apoya ni se opone."],["Partidario","Conoce los impactos y apoya."],["Líder","Participa activamente para asegurar el éxito."]])+
+P("Se compara el nivel <b>actual</b> con el <b>deseado</b> y se planifican acciones para cerrar la brecha. No todos deben llegar a líder; el esfuerzo se enfoca en los más relevantes.")+
+H("3. Comunicaciones")+
+P("Las comunicaciones deben llegar a la persona correcta, en el momento correcto y con el medio adecuado. El número de canales entre <b>n</b> personas es <b>n(n − 1) / 2</b>. Con 5 personas hay 10 canales; con 10, 45. Por eso al crecer el equipo la comunicación se complica.")+
+CC([["📣","Comunicación interactiva","Reuniones, llamadas; ida y vuelta."],["📤","Push (enviar)","Correo, informes; el emisor envía."],["📥","Pull (halar)","Repositorios, portales; el receptor consulta."]])+
+CALL("tip","Comunicar bien incluye <b>escuchar activamente</b>, confirmar que el mensaje se entendió, usar el canal adecuado y manejar el ruido (barreras culturales, idioma, distancia).")+
+H("4. Gestionar expectativas y resistencia")+
+P("La resistencia es información. Se explora su causa, se escucha, se explica el beneficio y se involucra a la persona en la solución. Evita ignorar o aislar a los interesados difíciles: la mayoría de los problemas con interesados se resuelven <b>hablando directamente</b> con ellos.")+
+CALL("ex","Cuando un interesado clave expresa preocupación, la respuesta correcta suele ser <b>reunirse con él para entender el problema</b> antes de escalar o cambiar el plan.")+
+SUM(["Identifica interesados al inicio y revisa durante todo el proyecto.","Evalúa el nivel de compromiso actual vs. deseado.","Canales de comunicación: n(n−1)/2.","Comunica con métodos interactivos, push y pull según el caso.","La conversación directa resuelve la mayoría de los conflictos."])},
+
+{id:"c6",n:6,ic:"🤝",t:"Recursos, equipo y liderazgo",ex:"Personas · dominio de recursos",min:40,
+sub:"Cómo formar, motivar y dirigir equipos, y cómo gestionar los recursos y las compras.",
+b:()=>
+H("1. Formar y desarrollar el equipo")+
+STEPS([["Formación","Los miembros se conocen y dependen del líder."],["Tormenta","Aparecen conflictos sobre roles y métodos."],["Normalización","Se acuerdan normas y crece la confianza."],["Desempeño","El equipo trabaja con autonomía y eficacia."],["Disolución","El equipo se desarma al terminar."]])+
+CALL("tip","Una herramienta clave es el <b>acta del equipo</b> (team charter): valores, normas de comunicación, toma de decisiones y resolución de conflictos acordadas por todos.")+
+H("2. Motivación")+
+CC([["🔺","Maslow","Jerarquía de necesidades: fisiológicas, seguridad, sociales, estima y autorrealización."],["🧂","Herzberg","Factores higiénicos evitan insatisfacción; motivadores generan satisfacción."],["⚙️","McGregor","Teoría X (personas evitan el trabajo) y Teoría Y (buscan responsabilidad)."],["🏅","McClelland","Necesidad de logro, afiliación y poder."],["💡","Vroom (expectativa)","Se esfuerza quien cree que logrará el resultado y que será recompensado."]])+
+H("3. Liderazgo y poder")+
+CC([["🛎️","Liderazgo servicial","Remueve obstáculos y apoya al equipo."],["🌟","Transformacional","Inspira un cambio y una visión."],["🔀","Situacional","Adapta el estilo al nivel de madurez del equipo."],["🏛️","Poder formal","Basado en el cargo."],["🎓","Poder experto","Basado en conocimientos."],["💞","Poder referente","Basado en el respeto y la admiración."]])+
+H("4. Resolver conflictos")+
+CC([["🤝","Colaborar / resolver el problema","Ganar-ganar; la técnica preferida."],["⚖️","Comprometer","Cada parte cede algo."],["😊","Suavizar / complacer","Resalta acuerdos y minimiza diferencias."],["📢","Forzar / dirigir","Imponer una solución; para emergencias."],["🚪","Evitar / retirarse","Posponer; solo si es trivial."]])+
+CALL("ex","Ante un conflicto entre dos miembros, el director primero <b>los reúne para resolverlo entre ellos</b> (colaborar); escala solo si no hay acuerdo.")+
+H("5. Recursos físicos y matriz de asignación")+
+P("La <b>matriz RACI</b> asigna Responsable, Aprobador (Accountable), Consultado e Informado. El <b>histograma de recursos</b> muestra la carga por periodo. Un recurso con demanda superior a su disponibilidad indica sobreasignación; se resuelve con nivelación, contratación o cambios de prioridad.")+
+H("6. Adquisiciones")+
+STEPS([["Decidir hacer o comprar","Analizar si se produce internamente o se contrata."],["Documentos de la licitación","Enunciado del trabajo (SOW), RFP, RFQ o IFB."],["Seleccionar proveedor","Con criterios ponderados de evaluación."],["Administrar el contrato","Controlar desempeño, cambios y pagos."],["Cerrar","Aceptar entregables y cerrar el contrato."]])+
+SUM(["El equipo evoluciona por etapas; el acta del equipo ordena la convivencia.","Conoce las teorías de motivación y los estilos de liderazgo.","Preferida: colaborar para resolver conflictos.","Usa RACI e histogramas para gestionar los recursos.","Las adquisiciones siguen un ciclo: planificar, seleccionar, administrar y cerrar."])},
+
+{id:"c7",n:7,ic:"⚡",t:"Riesgo: identificar, analizar y responder",ex:"Procesos · dominio de riesgo",min:40,
+sub:"Un riesgo es un evento incierto que puede afectar los objetivos, para bien o para mal.",
+b:()=>
+H("1. Conceptos clave")+
+CC([["❓","Riesgo","Evento o condición incierta con efecto positivo o negativo."],["🔥","Problema (issue)","Un riesgo que ya ocurrió."],["📦","Supuesto","Algo que se considera cierto sin comprobarlo."],["🔒","Restricción","Limitación impuesta al proyecto."],["🌱","Riesgo residual","El que queda después de responder."],["🔁","Riesgo secundario","El que nace de la respuesta."]])+
+H("2. Proceso de gestión del riesgo")+
+STEPS([["Planificar la gestión","Define metodología, roles, escalas, umbrales y presupuesto para riesgos."],["Identificar","Lluvia de ideas, entrevistas, listas de verificación, análisis FODA, juicio experto."],["Análisis cualitativo","Priorizar por probabilidad e impacto."],["Análisis cuantitativo","Medir el efecto numérico: EMV, simulación Monte Carlo, árbol de decisión."],["Planificar respuestas","Elegir estrategia y dueño de cada riesgo."],["Implementar respuestas","Ejecutar el plan acordado."],["Monitorear","Vigilar disparadores, riesgos nuevos y reservas."]])+
+H("3. Análisis cualitativo: matriz de probabilidad e impacto")+DG.matriz()+
+P("Cada riesgo se califica por <b>probabilidad</b> e <b>impacto</b>. El producto indica la prioridad: los riesgos en la zona roja se atienden primero.")+
+H("4. Análisis cuantitativo")+
+CC([["EMV","Valor monetario esperado","Probabilidad × impacto."],["🎲","Simulación Monte Carlo","Simula miles de escenarios para estimar plazos o costos."],["🌳","Árbol de decisión","Compara opciones según el EMV."],["🌪️","Diagrama de tornado","Muestra qué variables tienen mayor sensibilidad."]])+
+CALL("eg","Un riesgo tiene 30% de probabilidad y un impacto de USD 50.000: EMV = −15.000. Una oportunidad con 40% y USD 20.000 tiene EMV = +8.000. Se pueden sumar los EMV de los riesgos independientes para estimar la reserva.")+
+H("5. Estrategias de respuesta")+
+VS(["Amenazas",["<b>Escalar</b>: pasar a un nivel con autoridad","<b>Evitar</b>: eliminar la causa","<b>Transferir</b>: pasar el impacto a un tercero (seguro, contrato)","<b>Mitigar</b>: reducir probabilidad o impacto","<b>Aceptar</b>: activa (reserva) o pasiva"]],["Oportunidades",["<b>Escalar</b>","<b>Explotar</b>: asegurar que ocurra","<b>Compartir</b>: asociarse con quien lo aprovecha mejor","<b>Mejorar</b>: aumentar probabilidad o impacto","<b>Aceptar</b>"]])+
+CALL("ex","Un seguro <b>transfiere</b>; no elimina el riesgo. Y mitigar no es lo mismo que aceptar: <b>mitigar actúa</b>; aceptar pasiva solo documenta.")+
+H("6. Reservas")+
+P("La <b>reserva para contingencias</b> cubre riesgos conocidos y se incluye en la línea base de costos. La <b>reserva de gestión</b> cubre riesgos desconocidos y la controla la dirección. El director de proyecto usa la de contingencia con su autoridad; para la de gestión necesita aprobación.")+
+H("7. Riesgo en ágil")+
+P("El riesgo se reduce con <b>iteraciones cortas</b>, entregas frecuentes y retroalimentación. Se incluyen riesgos en el backlog, se priorizan según valor y se aborda lo más incierto primero (por ejemplo, con un <b>spike</b>).")+
+SUM(["Riesgo = evento incierto; problema = ya ocurrió.","Cualitativo prioriza; cuantitativo mide.","Amenazas: escalar, evitar, transferir, mitigar, aceptar.","Oportunidades: escalar, explotar, compartir, mejorar, aceptar.","Contingencia (conocidos) vs. gestión (desconocidos)."])},
+
+{id:"c8",n:8,ic:"🌐",t:"Calidad y entorno de negocio",ex:"Entorno de negocio (26%) y procesos",min:40,
+sub:"El dominio que más creció en el examen: valor, estrategia, cumplimiento, sostenibilidad y cambio.",
+b:()=>
+H("1. Calidad")+
+P("<b>Calidad</b> es el grado en que los entregables cumplen los requisitos. Se previene más que se corrige. Se gestiona en tres frentes: planificar, asegurar (gestionar) y controlar.")+
+CC([["🛡️","Costo de la conformidad","Prevención y evaluación (capacitación, pruebas, auditorías)."],["💥","Costo de la no conformidad","Fallas internas (retrabajo) y externas (garantías, reclamos)."],["📊","Diagrama de Pareto","El 20% de causas genera el 80% de problemas."],["🐟","Causa y efecto (Ishikawa)","Organiza causas posibles de un problema."],["📈","Gráfico de control","Detecta si un proceso está bajo control (regla de siete)."],["📐","Histograma","Distribución de frecuencias."]])+
+H("2. Valor y beneficios")+
+P("El proyecto existe para <b>entregar valor</b>. El director debe asegurar que el <b>plan de gestión de beneficios</b> tenga dueños y métricas, y que los beneficios se realicen aun después de cerrar el proyecto.")+
+CC([["🎯","Alineación estratégica","Cada proyecto se vincula a un objetivo."],["📉","Realización de beneficios","Los beneficios se miden tras la entrega."],["🧾","Caso de negocio","Debe revisarse si el contexto cambia."]])+
+H("3. Cumplimiento y regulación")+
+P("El proyecto debe respetar leyes, normas internas y estándares. Los <b>requisitos de cumplimiento</b> (por ejemplo, protección de datos, seguridad, ambientales) se identifican desde el inicio, se incluyen en el alcance y se auditan. Un incumplimiento puede detener el proyecto.")+
+H("4. Cambio organizacional")+
+CC([["🔄","ADKAR","Conciencia, Deseo, Conocimiento, Habilidad, Refuerzo."],["🏔️","Kotter","8 pasos: urgencia, coalición, visión, comunicar, remover obstáculos, victorias, consolidar, anclar."],["🧱","Lewin","Descongelar, cambiar, recongelar."]])+
+CALL("tip","El proyecto produce un cambio, pero el <b>cambio lo realizan las personas</b>. Planificar la comunicación, la capacitación y el apoyo a los usuarios es parte del valor.")+
+H("5. Sostenibilidad e inteligencia artificial")+
+P("El PMBOK 8 incorpora la <b>sostenibilidad</b> como principio: considerar impactos ambientales, sociales y económicos en alcance, adquisiciones, calidad y entregables. También destaca la <b>IA</b>: puede ayudar con estimaciones, análisis de riesgos, resumen de reportes y detección de desvíos, pero exige validar los datos, proteger la información y mantener la responsabilidad humana.")+
+CALL("eg","Un equipo usa IA para resumir actas y proyectar atrasos. El director verifica los datos, evita compartir información confidencial y decide él mismo; la herramienta apoya, no reemplaza el criterio.")+
+H("6. Entorno externo")+
+P("Factores como <b>mercado</b>, <b>competencia</b>, <b>tecnología</b>, <b>economía</b> y <b>regulación</b> pueden cambiar la viabilidad del proyecto. Se monitorean y, si es necesario, se ajusta el plan o se evalúa detener el proyecto.")+
+SUM(["Prevenir cuesta menos que corregir.","El valor se mide por los beneficios realizados.","Incluye el cumplimiento desde el inicio.","El cambio organizacional exige gestionar a las personas.","Sostenibilidad e IA son temas nuevos del PMBOK 8."])},
+
+{id:"c9",n:9,ic:"🔁",t:"Ágil e híbrido",ex:"Procesos y Personas · enfoque adaptativo",min:45,
+sub:"Valores, principios y marcos ágiles. Una parte importante del examen actual.",
+b:()=>
+H("1. El Manifiesto Ágil")+
+CC([["👥","Individuos e interacciones","Sobre procesos y herramientas."],["💻","Software funcionando","Sobre documentación exhaustiva."],["🤝","Colaboración con el cliente","Sobre negociación contractual."],["🔄","Respuesta al cambio","Sobre seguir un plan."]])+
+P("No se descarta lo de la derecha; se valora <b>más</b> lo de la izquierda. Los 12 principios incluyen entregar valor con frecuencia, aceptar cambios, trabajar juntos, mantener un ritmo sostenible y reflexionar para mejorar.")+
+H("2. Scrum")+DG.scrum()+
+CC([["🧑‍💼","Product Owner","Maximiza el valor; gestiona y prioriza el backlog."],["🛎️","Scrum Master","Facilita Scrum, remueve impedimentos y entrena al equipo."],["🧑‍💻","Desarrolladores","Equipo autoorganizado que construye el incremento."]])+
+CC([["🗓️","Planificación del Sprint","Define el objetivo del Sprint y el trabajo."],["☀️","Scrum diario","Reunión de 15 minutos para sincronizar y ajustar."],["📣","Revisión del Sprint","Se presenta el incremento y se recibe retroalimentación."],["🔍","Retrospectiva","El equipo mejora su forma de trabajar."]])+
+CC([["📚","Backlog del producto","Lista priorizada de todo lo necesario."],["📋","Backlog del Sprint","Lo que se hará en el Sprint."],["📦","Incremento","Resultado utilizable que cumple la definición de terminado."],["✅","Definición de terminado","Criterios compartidos para considerar el trabajo completo."]])+
+H("3. Kanban y otras prácticas")+
+CC([["🧱","Límite de trabajo en curso (WIP)","Limita lo que se hace a la vez para fluir mejor."],["⏱️","Tiempo de ciclo","Desde que empieza hasta que termina una tarea."],["🕰️","Lead time","Desde que se solicita hasta que se entrega."],["📈","Diagrama de flujo acumulado","Detecta cuellos de botella."],["🧪","XP (Extreme Programming)","Programación en pares, pruebas primero, integración continua."]])+
+H("4. Historias de usuario y estimación")+
+P("Una <b>historia de usuario</b> se escribe como “Como [rol], quiero [funcionalidad] para [beneficio]”. El criterio <b>INVEST</b> indica que debe ser Independiente, Negociable, Valiosa, Estimable, Pequeña (Small) y Verificable (Testable). Se estima en <b>puntos de historia</b> (por ejemplo, con la secuencia de Fibonacci y <i>planning poker</i>).")+
+CALL("eg","Si un equipo completa 20, 24 y 22 puntos en tres Sprints, su velocidad promedio es 22. Con un backlog de 110 puntos, se necesitan unos 5 Sprints.")+
+H("5. Liderazgo y roles en ágil")+
+P("El director de proyecto actúa como <b>líder servicial</b>: facilita, protege al equipo, elimina impedimentos y apoya la mejora. Los equipos <b>se autoorganizan</b>; los directivos no asignan tareas de forma individual. El patrocinador y el Product Owner priorizan según valor de negocio.")+
+H("6. Híbrido y elección del enfoque")+
+P("Se evalúan: <b>incertidumbre de requisitos</b>, <b>riesgo</b>, <b>regulación</b>, <b>cultura</b>, <b>disponibilidad del cliente</b> y <b>tamaño del equipo</b>. Un enfoque híbrido puede usar una estructura predictiva para el alcance general y ciclos ágiles para componentes inciertos. Lo importante es <b>justificar</b> la elección y mantener la gobernanza.")+
+CALL("ex","Ante un equipo ágil con impedimentos externos, la respuesta correcta es que el <b>Scrum Master (o el líder servicial)</b> los remueva, no que el equipo los ignore ni que se cambie el alcance sin consultar al Product Owner.")+
+SUM(["El Manifiesto Ágil valora personas, producto funcionando, colaboración y respuesta al cambio.","Scrum: tres roles, cuatro eventos principales y tres artefactos.","Kanban visualiza el flujo y limita el trabajo en curso.","La velocidad sirve para proyectar el trabajo restante.","El líder es servicial y el equipo se autoorganiza."])}
+];
+
+const Q=[
+["c0","¿Cuántos procesos tiene el PMBOK Guide 6.ª edición?",["40","49","12","8"],1,"5 grupos de procesos × 10 áreas de conocimiento = 49 procesos."],
+["c0","El PMBOK 7.ª edición se organiza en:",["49 procesos","12 principios y 8 dominios de desempeño","6 principios y 7 dominios","5 grupos de procesos"],1,"La 7.ª dejó el enfoque de procesos por principios y dominios."],
+["c0","El PMBOK 8.ª edición incluye:",["12 principios y 8 dominios","6 principios, 7 dominios y 40 procesos","10 áreas de conocimiento","Solo procesos ágiles"],1,"Combina principios, dominios y procesos no prescriptivos."],
+["c0","¿Qué dominio del examen PMP aumentó más su peso en 2026?",["Personas","Procesos","Entorno de negocio","Ninguno"],2,"Entorno de negocio pasó de 8% a 26%."],
+["c0","Distribución de dominios del examen PMP vigente:",["Personas 42, Procesos 50, Negocio 8","Personas 33, Procesos 41, Negocio 26","Personas 25, Procesos 50, Negocio 25","Personas 40, Procesos 40, Negocio 20"],1,"33% Personas, 41% Procesos, 26% Entorno de negocio."],
+["c0","¿Cuánto dura el examen PMP vigente (según PMI)?",["180 min","230 min","240 min","300 min"],2,"240 minutos, con dos descansos de 10 minutos."],
+["c0","En el PMBOK 8, la sostenibilidad aparece como:",["Un proceso de calidad","Un principio","Un dominio","No aparece"],1,"“Integra la sostenibilidad en todas las áreas” es uno de los principios."],
+["c0","Para el examen conviene estudiar:",["Solo procesos","Solo principios","Procesos y principios, con énfasis en adaptar según el contexto","Solo ágil"],2,"El examen mezcla ambas lógicas."],
+["c1","¿Quién autoriza formalmente el proyecto y otorga autoridad al director?",["El acta de constitución emitida por el patrocinador","El equipo","El cliente final","El cronograma"],0,"El acta formaliza la autorización."],
+["c1","En una estructura funcional, el director de proyecto suele tener:",["Autoridad total","Poca autoridad","Control del presupuesto","Autoridad sobre todos los gerentes"],1,"La autoridad está en el gerente funcional."],
+["c1","¿Qué estructura da más autoridad al director de proyecto?",["Funcional","Matricial débil","Orientada a proyectos","Ninguna"],2,"En la estructura orientada a proyectos controla los recursos."],
+["c1","El caso de negocio sirve para:",["Planificar tareas","Justificar la inversión","Cerrar el proyecto","Controlar calidad"],1,"Presenta problema, opciones y análisis costo-beneficio."],
+["c1","Un proyecto con requisitos estables y alto control regulatorio suele usar un enfoque:",["Ágil puro","Predictivo","Sin plan","Caótico"],1,"Los requisitos estables favorecen lo predictivo."],
+["c1","Un proyecto con mucha incertidumbre y usuarios disponibles conviene gestionarlo con enfoque:",["Predictivo","Ágil o adaptativo","Sin gobernanza","Solo contratos de precio fijo"],1,"Lo adaptativo gestiona la incertidumbre."],
+["c1","El director de proyecto detecta que no existe acta. Lo correcto es:",["Empezar de todos modos","Solicitar al patrocinador que se emita","Ignorar","Cancelar el proyecto"],1,"No se avanza sin autorización formal."],
+["c1","Los factores ambientales de la empresa (EEF) son:",["Plantillas","Condiciones internas o externas que influyen en el proyecto","Lecciones aprendidas","Presupuesto"],1,"Cultura, normas, mercado, infraestructura."],
+["c1","Los activos de los procesos de la organización (OPA) incluyen:",["Regulaciones","Plantillas, políticas y lecciones aprendidas","Condiciones del mercado","Cultura"],1,"Son recursos reutilizables de la organización."],
+["c1","Un cambio supera el umbral de gobernanza del proyecto. El director debe:",["Aprobarlo solo","Llevarlo a la instancia con autoridad","Ignorarlo","Esconderlo"],1,"La gobernanza define quién decide."],
+["c1","Una operación se diferencia de un proyecto en que es:",["Temporal","Continua y repetitiva","Única","Con fecha fin"],1,"Las operaciones son continuas."],
+["c2","El enunciado del alcance incluye:",["Solo el presupuesto","Entregables, criterios de aceptación, exclusiones y supuestos","Solo el cronograma","Solo riesgos"],1,"Describe qué se hará y qué no."],
+["c2","La regla del 100% de la EDT indica que:",["El trabajo debe completarse al 100%","La EDT incluye todo el trabajo y solo ese trabajo","El costo es 100%","Se aprueba al 100%"],1,"Ni más ni menos trabajo."],
+["c2","La línea base del alcance se compone de:",["EDT y cronograma","Enunciado del alcance, EDT y diccionario de la EDT","Presupuesto y riesgos","Acta y plan"],1,"Enunciado + EDT + diccionario."],
+["c2","Validar el alcance es:",["Verificar calidad interna","Obtener la aceptación formal de los entregables","Escribir requisitos","Controlar costos"],1,"Lo hace el cliente o patrocinador."],
+["c2","Crecimiento no controlado del alcance se llama:",["Gold plating","Scope creep","Tailoring","Crashing"],1,"Scope creep."],
+["c2","Un miembro del equipo agrega una función extra sin que nadie la pidió. Esto es:",["Mejora aprobada","Gold plating","Validación","Buena práctica"],1,"Agregar extras sin autorización."],
+["c2","Un interesado solicita un cambio de alcance. ¿Qué haces primero?",["Aceptarlo","Rechazarlo","Registrar la solicitud y evaluar su impacto","Ignorarlo"],2,"Se evalúa el impacto y se sigue el control de cambios."],
+["c2","La matriz de trazabilidad de requisitos sirve para:",["Calcular costos","Vincular cada requisito con su origen y su entregable","Asignar tareas","Evaluar riesgos"],1,"Permite seguirlos hasta su cumplimiento."],
+["c2","En ágil, el alcance se gestiona principalmente en:",["La EDT","El backlog del producto priorizado","El acta","El contrato"],1,"El backlog se refina continuamente."],
+["c3","Si la actividad A dura 3, B 5, C 2, D 4, con A→B→D y A→C→D, la ruta crítica es:",["A-C-D","A-B-D","B-D","A-C"],1,"A+B+D = 12 días, la ruta más larga."],
+["c3","La holgura de una actividad crítica es:",["Positiva","Cero","Negativa siempre","Infinita"],1,"Holgura cero."],
+["c3","Con O=4, M=6, P=14, la estimación PERT es:",["6","7","8","10"],1,"(4 + 24 + 14)/6 = 7."],
+["c3","La desviación estándar PERT con O=4 y P=14 es:",["1","1,67","2","10"],1,"(P − O)/6 = 1,67."],
+["c3","Agregar recursos para acortar el cronograma, aumentando el costo, se llama:",["Fast tracking","Crashing","Nivelación","Suavizado"],1,"Compresión (crashing)."],
+["c3","Hacer en paralelo actividades que iban en secuencia, aumentando el riesgo, es:",["Crashing","Fast tracking","Nivelación","Reserva"],1,"Ejecución rápida."],
+["c3","Una espera obligatoria entre dos actividades es:",["Adelanto (lead)","Retraso (lag)","Holgura","Hito"],1,"Retraso (lag)."],
+["c3","La dependencia más común es:",["Inicio a inicio","Fin a fin","Fin a inicio","Inicio a fin"],2,"FS."],
+["c3","La nivelación de recursos puede:",["Acortar siempre el cronograma","Alargar el cronograma","No cambiar nada","Reducir el alcance"],1,"Resuelve sobreasignación y puede extender el plazo."],
+["c3","Un atraso en una actividad con 5 días de holgura que se atrasa 3 días:",["Atrasa el proyecto","No atrasa el proyecto","Cambia la ruta","Cancela la actividad"],1,"Aún tiene 2 días de holgura."],
+["c3","En ágil, la velocidad es:",["Costo por Sprint","Puntos de historia completados por iteración","Horas trabajadas","Tamaño del equipo"],1,"Sirve para proyectar el trabajo restante."],
+["c3","Un gráfico burndown muestra:",["Trabajo restante en el tiempo","Costos acumulados","Riesgos","Calidad"],0,"El trabajo pendiente a lo largo del tiempo."],
+["c4","Si EV=300 y AC=450, el CV es:",["150","-150","750","0"],1,"CV = EV − AC = −150."],
+["c4","Si EV=300 y PV=400, el SPI es:",["0,67","0,75","1,33","1,5"],1,"300/400 = 0,75."],
+["c4","Si BAC=1000 y CPI=0,8 con tendencia, el EAC es:",["800","1000","1250","1500"],2,"1000/0,8 = 1250."],
+["c4","Si el desvío fue atípico, EAC =",["BAC/CPI","AC + (BAC − EV)","BAC × CPI","EV + AC"],1,"Se asume que el problema no se repetirá."],
+["c4","ETC se calcula como:",["EAC − AC","BAC − EAC","EV − AC","EAC + AC"],0,"Estimación hasta la conclusión."],
+["c4","VAC =",["EAC − BAC","BAC − EAC","EV − AC","AC − EV"],1,"Variación a la conclusión."],
+["c4","Un CPI mayor a 1 indica:",["Sobre costo","Bajo costo","Atraso","Adelanto"],1,"Se obtiene más valor por cada unidad gastada."],
+["c4","La reserva de gestión es para:",["Riesgos identificados","Riesgos desconocidos","Cambios de alcance","Salarios"],1,"Cubre riesgos no identificados y no forma parte de la línea base."],
+["c4","La reserva para contingencias cubre:",["Riesgos conocidos","Riesgos desconocidos","Cualquier gasto","Mejoras"],0,"Se incluye en la línea base de costos."],
+["c4","En un contrato de precio fijo, el riesgo de sobrecosto lo asume:",["El comprador","El vendedor","Ambos por igual","Nadie"],1,"El vendedor."],
+["c4","En costo reembolsable, el riesgo principal lo asume:",["El vendedor","El comprador","Ambos","Nadie"],1,"El comprador paga los costos reales."],
+["c4","El costo hundido:",["Debe influir en continuar","No debe influir en la decisión","Se suma al VAN","Se ignora siempre"],1,"Lo ya gastado no se recupera."],
+["c4","El proyecto con mayor VAN positivo es, en general:",["El de menor","El que más valor crea","El más largo","El más barato"],1,"Se elige el de mayor valor presente neto."],
+["c4","La estimación más precisa pero laboriosa es:",["Análoga","Paramétrica","Ascendente","Juicio experto"],2,"Estimación bottom-up."],
+["c5","¿Cuántos canales de comunicación hay con 6 personas?",["6","12","15","30"],2,"6×5/2 = 15."],
+["c5","Interesado con alto poder y bajo interés se debe:",["Ignorar","Mantener satisfecho","Gestionar de cerca","Solo informar"],1,"Poder alto / interés bajo."],
+["c5","Un interesado conoce el proyecto, ni lo apoya ni se opone. Su nivel es:",["Desconocedor","Resistente","Neutral","Líder"],2,"Neutral."],
+["c5","Un portal donde los usuarios consultan información es comunicación:",["Push","Pull","Interactiva","Formal"],1,"El receptor accede cuando quiere."],
+["c5","El modelo de prominencia considera:",["Poder, urgencia y legitimidad","Poder, interés y actitud","Costo, tiempo y alcance","Riesgo y valor"],0,"Poder, urgencia y legitimidad."],
+["c5","Un interesado clave se opone al proyecto. La mejor acción es:",["Ignorarlo","Reunirse con él para entender sus preocupaciones","Escalar de inmediato","Cambiar el alcance"],1,"Dialogar primero."],
+["c5","El registro de interesados se debe actualizar:",["Solo al inicio","Durante todo el proyecto","Solo al cierre","Nunca"],1,"Los interesados cambian."],
+["c5","La comunicación más eficaz para evitar malentendidos es:",["Correo","Interactiva (cara a cara)","Informe","Mensaje de texto"],1,"Permite ida y vuelta."],
+["c5","El nivel deseado de compromiso se compara con:",["El presupuesto","El nivel actual","El riesgo","El plan"],1,"Para identificar brechas."],
+["c6","El orden de las etapas de Tuckman es:",["Formación, normalización, tormenta, desempeño","Formación, tormenta, normalización, desempeño","Tormenta, formación, desempeño, normalización","Desempeño, formación, tormenta, normalización"],1,"Forming, Storming, Norming, Performing."],
+["c6","Según Herzberg, los factores higiénicos:",["Motivan mucho","Evitan insatisfacción pero no motivan","No importan","Son lo único que motiva"],1,"Los motivadores sí motivan."],
+["c6","La técnica de conflicto preferida es:",["Forzar","Evitar","Colaborar","Suavizar"],2,"Resolver el problema."],
+["c6","Teoría Y de McGregor asume que las personas:",["Evitan el trabajo","Buscan responsabilidad","Solo quieren dinero","Necesitan control"],1,"Se autodirigen."],
+["c6","Dos miembros del equipo tienen un conflicto. El director primero:",["Los despide","Los reúne para que lo resuelvan entre ellos","Escala al patrocinador","Ignora"],1,"Se intenta colaborar antes de escalar."],
+["c6","El poder del director basado en el respeto y la admiración es:",["Formal","Experto","Referente","De castigo"],2,"Poder referente."],
+["c6","La matriz RACI sirve para:",["Calcular costos","Asignar responsabilidades","Estimar riesgos","Controlar calidad"],1,"Responsable, Aprobador, Consultado, Informado."],
+["c6","El acta del equipo define:",["El presupuesto","Normas y valores del equipo","El alcance","El riesgo"],1,"Se crea de forma colaborativa."],
+["c6","Una RFP se usa cuando:",["Solo importa el precio","Importan más que el precio (propuesta técnica)","No hay proveedores","Se cierra el contrato"],1,"RFQ es para precio."],
+["c6","El enunciado del trabajo de adquisiciones se llama:",["WBS","SOW","RACI","KPI"],1,"Statement of Work."],
+["c6","Un líder que remueve impedimentos y apoya al equipo ejerce liderazgo:",["Autocrático","Servicial","Burocrático","Transaccional"],1,"Liderazgo servicial."],
+["c6","El histograma de recursos muestra:",["Costos","La carga de recursos por periodo","Riesgos","Calidad"],1,"Detecta sobreasignación."],
+["c7","El EMV de un riesgo con 20% de probabilidad y USD 100.000 de impacto es:",["-20.000","-80.000","-100.000","-5.000"],0,"0,2 × 100.000 = 20.000 (negativo si es amenaza)."],
+["c7","Un seguro es una estrategia de:",["Evitar","Transferir","Mitigar","Aceptar"],1,"Transfiere el impacto."],
+["c7","Para oportunidades, “explotar” significa:",["Esperar","Asegurar que ocurra","Transferir","Ignorar"],1,"Se actúa para que la oportunidad se materialice."],
+["c7","La reserva para contingencias está destinada a:",["Riesgos desconocidos","Riesgos identificados","Mejoras","Cambios"],1,"Riesgos conocidos."],
+["c7","Un riesgo que se materializó es:",["Un supuesto","Un problema (issue)","Un riesgo residual","Una restricción"],1,"Pasa a ser un issue."],
+["c7","El riesgo que queda tras aplicar una respuesta es:",["Secundario","Residual","Latente","Nuevo"],1,"Residual."],
+["c7","Un riesgo nuevo que surge de una respuesta es:",["Residual","Secundario","Cero","Aceptado"],1,"Secundario."],
+["c7","La simulación Monte Carlo se usa para:",["Priorizar cualitativamente","Estimar probabilidades de cumplir plazos o costos","Registrar riesgos","Asignar equipos"],1,"Análisis cuantitativo."],
+["c7","El diagrama de tornado muestra:",["Sensibilidad de variables","Tiempos","Costos","Calidad"],0,"La variable más influyente va arriba."],
+["c7","Si no puedes eliminar un riesgo pero puedes reducir su probabilidad:",["Evitar","Mitigar","Transferir","Aceptar"],1,"Mitigar."],
+["c7","El análisis cualitativo prioriza por:",["Costo","Probabilidad e impacto","Alcance","Cronograma"],1,"Matriz de probabilidad e impacto."],
+["c7","Un riesgo con impacto alto que supera la autoridad del director se:",["Acepta","Escala","Evita","Ignora"],1,"Escalar."],
+["c8","El costo de la no conformidad incluye:",["Capacitación","Retrabajo y garantías","Auditorías preventivas","Pruebas"],1,"Fallas internas y externas."],
+["c8","El diagrama de Pareto muestra:",["Causas y efectos","Pocas causas generan la mayoría de problemas","Costos","Riesgos"],1,"Regla 80/20."],
+["c8","La regla de siete en un gráfico de control indica:",["Un problema aleatorio","Una causa asignable","Calidad perfecta","Fin del proyecto"],1,"Siete puntos de un mismo lado."],
+["c8","Los beneficios del proyecto se miden:",["Solo al cierre","También después del cierre","Nunca","Solo en la planificación"],1,"La realización de beneficios suele ocurrir después."],
+["c8","ADKAR significa:",["Conciencia, deseo, conocimiento, habilidad, refuerzo","Alcance, diseño, control, acción, revisión","Agilidad, datos, calidad, acción, riesgo","Ninguna"],0,"Modelo de cambio individual."],
+["c8","Un requisito de cumplimiento regulatorio debe:",["Ignorarse","Incluirse desde el inicio en el alcance","Dejarse al final","Delegarse al cliente"],1,"Se identifica y se planifica."],
+["c8","La sostenibilidad en el PMBOK 8 se refiere a impactos:",["Solo ambientales","Ambientales, sociales y económicos","Solo económicos","Solo legales"],1,"Es un principio."],
+["c8","El uso de IA en proyectos debe:",["Reemplazar al director","Apoyar y validarse con criterio humano","Evitar siempre","Usarse sin revisar datos"],1,"Responsabilidad humana."],
+["c8","Un proyecto sigue en marcha pero el mercado cambió y ya no es viable. Lo correcto es:",["Continuar","Evaluar la viabilidad y proponer ajustes o cierre","Ocultarlo","Aumentar presupuesto"],1,"Revisar el caso de negocio."],
+["c8","El costo de la conformidad incluye:",["Retrabajo","Prevención y evaluación","Reclamos","Garantías"],1,"Lo que se invierte para evitar defectos."],
+["c9","¿Cuál es uno de los valores del Manifiesto Ágil?",["Procesos sobre individuos","Software funcionando sobre documentación exhaustiva","Planes sobre cambios","Contratos sobre colaboración"],1,"Se valora más el software funcionando."],
+["c9","En Scrum, quien ordena el backlog del producto es:",["Scrum Master","Product Owner","Desarrolladores","Patrocinador"],1,"El Product Owner."],
+["c9","El Scrum Master:",["Asigna tareas","Facilita y remueve impedimentos","Prioriza el backlog","Aprueba el presupuesto"],1,"Es un facilitador."],
+["c9","Duración recomendada del Scrum diario:",["15 minutos","1 hora","2 horas","Sin límite"],0,"15 minutos."],
+["c9","La retrospectiva sirve para:",["Presentar al cliente","Mejorar el proceso del equipo","Planificar costos","Aprobar el backlog"],1,"Mejora continua."],
+["c9","El límite de trabajo en curso (WIP) es una práctica de:",["Scrum","Kanban","Predictivo","PERT"],1,"Kanban."],
+["c9","Si la velocidad promedio es 20 y quedan 100 puntos, se necesitan:",["2 sprints","5 sprints","10 sprints","20 sprints"],1,"100/20 = 5."],
+["c9","INVEST describe:",["Una buena historia de usuario","Un proceso de riesgo","Una técnica de costos","Un tipo de contrato"],0,"Independiente, Negociable, Valiosa, Estimable, Pequeña, Verificable."],
+["c9","Un equipo ágil tiene un impedimento externo. ¿Quién lo gestiona?",["El equipo en silencio","El Scrum Master / líder servicial","El cliente","Se ignora"],1,"Removerlo es parte de su rol."],
+["c9","Un enfoque híbrido:",["Mezcla enfoques según las necesidades","Es siempre predictivo","No necesita gobernanza","Es solo Scrum"],0,"Se adapta al contexto."],
+["c9","El incremento de Scrum debe:",["Estar incompleto","Ser utilizable y cumplir la definición de terminado","Presentarse sin pruebas","Esperar al final"],1,"Cumple la DoD."],
+["c9","¿Quién prioriza el trabajo en un equipo ágil?",["El Scrum Master","El Product Owner con base en valor","El jefe técnico","Los desarrolladores solos"],1,"El Product Owner."]
+];
+const CARDS=[
+["c0","PMBOK 6","5 grupos de procesos × 10 áreas = 49 procesos."],
+["c0","PMBOK 7","12 principios y 8 dominios de desempeño; sin procesos."],
+["c0","PMBOK 8","6 principios, 7 dominios de desempeño y 40 procesos."],
+["c0","Dominios del examen PMP","Personas 33% · Procesos 41% · Entorno de negocio 26%."],
+["c0","Formato del examen","180 preguntas, 240 minutos, dos descansos de 10 min."],
+["c1","Proyecto","Esfuerzo temporal para crear un resultado único."],
+["c1","Acta de constitución","Autoriza el proyecto y otorga autoridad al director."],
+["c1","Caso de negocio","Justifica la inversión."],
+["c1","EEF","Factores ambientales de la empresa: condiciones que influyen."],
+["c1","OPA","Activos de los procesos de la organización: plantillas, políticas, lecciones."],
+["c1","Estructura matricial","Autoridad compartida entre gerente funcional y director."],
+["c1","Tailoring","Adaptar procesos y gobernanza al proyecto."],
+["c2","EDT / WBS","Descomposición del trabajo en entregables y paquetes."],
+["c2","Regla del 100%","La EDT incluye todo el trabajo y solo ese."],
+["c2","Línea base del alcance","Enunciado + EDT + diccionario."],
+["c2","Validar el alcance","Aceptación formal del cliente."],
+["c2","Scope creep","Crecimiento no controlado del alcance."],
+["c2","Gold plating","Agregar extras no autorizados."],
+["c2","Matriz de trazabilidad","Vincula requisitos con su origen y entregable."],
+["c3","Ruta crítica","Secuencia más larga; determina la duración mínima; holgura cero."],
+["c3","PERT","E = (O + 4M + P)/6; σ = (P − O)/6."],
+["c3","Crashing","Agregar recursos para acortar; sube el costo."],
+["c3","Fast tracking","Paralelizar actividades; sube el riesgo."],
+["c3","Holgura total","LS − ES o LF − EF."],
+["c3","Velocidad","Puntos de historia completados por iteración."],
+["c3","Nivelación de recursos","Resuelve sobreasignación; puede alargar el plazo."],
+["c4","CV y SV","CV = EV − AC; SV = EV − PV."],
+["c4","CPI y SPI","CPI = EV/AC; SPI = EV/PV."],
+["c4","EAC (tendencia)","BAC / CPI."],
+["c4","EAC (atípico)","AC + (BAC − EV)."],
+["c4","ETC y VAC","ETC = EAC − AC; VAC = BAC − EAC."],
+["c4","TCPI","(BAC − EV)/(BAC − AC)."],
+["c4","Reserva de contingencia","Para riesgos conocidos; dentro de la línea base."],
+["c4","Reserva de gestión","Para riesgos desconocidos; fuera de la línea base."],
+["c4","FFP","Precio fijo; riesgo para el vendedor."],
+["c4","CPFF","Costo más tarifa fija; riesgo para el comprador."],
+["c5","Canales de comunicación","n(n − 1)/2."],
+["c5","Niveles de compromiso","Desconocedor, resistente, neutral, partidario, líder."],
+["c5","Push / Pull / Interactiva","Enviar, consultar y comunicación en tiempo real."],
+["c5","Modelo de prominencia","Poder, urgencia y legitimidad."],
+["c6","Etapas de Tuckman","Formación, tormenta, normalización, desempeño, disolución."],
+["c6","Herzberg","Higiénicos evitan insatisfacción; motivadores generan satisfacción."],
+["c6","Técnicas de conflicto","Colaborar, comprometer, suavizar, forzar, evitar."],
+["c6","Teoría X / Y","X: evitan el trabajo; Y: buscan responsabilidad."],
+["c6","Liderazgo servicial","Remueve obstáculos y apoya al equipo."],
+["c6","RACI","Responsable, Aprobador, Consultado, Informado."],
+["c7","Respuestas a amenazas","Escalar, evitar, transferir, mitigar, aceptar."],
+["c7","Respuestas a oportunidades","Escalar, explotar, compartir, mejorar, aceptar."],
+["c7","EMV","Probabilidad × impacto."],
+["c7","Riesgo residual vs. secundario","Residual: queda tras la respuesta; secundario: nace de la respuesta."],
+["c7","Monte Carlo","Simulación para estimar probabilidad de cumplir plazo o costo."],
+["c8","Costo de la conformidad","Prevención y evaluación."],
+["c8","Costo de la no conformidad","Fallas internas y externas."],
+["c8","Pareto","Pocas causas generan la mayoría de problemas."],
+["c8","ADKAR","Conciencia, deseo, conocimiento, habilidad, refuerzo."],
+["c8","Realización de beneficios","Los beneficios se miden después de la entrega."],
+["c9","Manifiesto Ágil","Individuos, software funcionando, colaboración con el cliente, respuesta al cambio."],
+["c9","Roles de Scrum","Product Owner, Scrum Master, Desarrolladores."],
+["c9","Eventos de Scrum","Sprint, planificación, scrum diario, revisión, retrospectiva."],
+["c9","Artefactos de Scrum","Backlog del producto, backlog del Sprint, incremento."],
+["c9","WIP","Límite de trabajo en curso de Kanban."],
+["c9","INVEST","Independiente, Negociable, Valiosa, Estimable, Pequeña, Verificable."]
+];
+/* ============ ESTADO ============ */
+const KEY="portal_pmp_v1";
+const BOX_DAYS=[0,1,2,4,8,16];
+let S;
+function load(){try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){S=null}
+ if(!S||typeof S!=="object")S={};
+ S.lessons=S.lessons||{};S.cards=S.cards||{};S.stats=S.stats||{};S.exams=S.exams||[];S.seen=S.seen||{};S.visits=(S.visits||0);}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+load();
+const day=86400000;
+const $=s=>document.querySelector(s);
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const chOf=id=>CH.find(c=>c.id===id);
+function rec(c,ok){const s=S.stats[c]=S.stats[c]||{ok:0,t:0};s.t++;if(ok)s.ok++;save()}
+function pct(c){const s=S.stats[c];return s&&s.t?Math.round(100*s.ok/s.t):null}
+function bar(p,cls){return `<div class="bar ${cls||""}"><i style="width:${p||0}%"></i></div>`}
+function ring(p,label){const r=34,c=2*Math.PI*r;return `<div class="rg"><svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="${r}" class="rb"/><circle cx="40" cy="40" r="${r}" class="rf" stroke-dasharray="${c}" stroke-dashoffset="${c*(1-p/100)}" transform="rotate(-90 40 40)"/></svg><b>${p}%</b></div>`}
+
+/* preferir preguntas que se han visto menos; azar en el desempate */
+function pickQ(pool,n){return shuf(pool).sort((a,b)=>(S.seen[a]||0)-(S.seen[b]||0)).slice(0,n)}
+
+/* ============ NAVEGACIÓN ============ */
+const VIEWS={inicio:"Inicio",capitulos:"Capítulos",tarjetas:"Tarjetas",practica:"Práctica",simulacro:"Simulacro",progreso:"Progreso",fuentes:"Fuentes"};
+let view="inicio",tmr=null,qz=null;
+function nav(v,arg){clearInterval(tmr);view=v;qz=null;
+ $("#nav").innerHTML=Object.entries(VIEWS).map(([k,n])=>`<button class="${k===v||(v==="capitulo"&&k==="capitulos")?"on":""}" onclick="nav('${k}')">${n}</button>`).join("");
+ R[v](arg);window.scrollTo(0,0)}
+const R={};
+
+/* ---- Inicio ---- */
+R.inicio=()=>{
+ const done=Object.keys(S.lessons).length,tot=CH.length;
+ const due=CARDS.filter((c,i)=>!S.cards[i]||S.cards[i].due<=Date.now()).length;
+ const weak=weakest();
+ const next=CH.find(c=>!S.lessons[c.id])||CH[0];
+ $("#app").innerHTML=`<div class="aviso"><b>📌 Aviso importante</b><p>Este portal es <b>material de estudio independiente</b>, de carácter <b>únicamente informativo y educativo</b>, creado para ayudarte a prepararte para una certificación. Su contenido está redactado con palabras propias a partir de información pública y no reproduce material oficial.</p><p>No está afiliado, patrocinado ni respaldado por PMI®. PMI, PMP, PMBOK, PMI-RMP y PMI-PMOCP son marcas de sus respectivos titulares y se mencionan solo para indicar a qué certificación se orienta el estudio. No sustituye las guías oficiales ni garantiza resultados en el examen: confirma siempre requisitos y contenidos en pmi.org.</p></div><section class="hero"><div><h1>Prepárate para la certificación en dirección de proyectos</h1><p>Estudia capítulo por capítulo con el PMBOK 8, practica con preguntas al azar y mide tu avance.</p>
+ <div class="row"><button class="btn big" onclick="nav('capitulo','${next.id}')">${done?"Continuar: ":"Empezar: "}Cap. ${next.n}</button><button class="btn ghost" onclick="nav('simulacro')">Simulacro</button></div></div><div class="hr">🎓</div></section>
+ <div class="grid">
+  <div class="card stat"><span class="mu">Capítulos leídos</span><div class="bigx">${done}/${tot}</div>${bar(100*done/tot,"g")}</div>
+  <div class="card stat"><span class="mu">Tarjetas por repasar hoy</span><div class="bigx">${due}</div><button class="btn sec" onclick="nav('tarjetas')">Repasar</button></div>
+  <div class="card stat"><span class="mu">Tema más débil</span><div class="bigx s">${weak?esc(chOf(weak.k).t.split(":")[0]):"Sin datos"}</div>${weak?`<span class="mu">${weak.p}% de acierto</span>`:""}</div>
+ </div>
+ <h2>🎲 Reto rápido <span class="mu">(5 preguntas al azar distintas cada vez que entras)</span></h2>
+ <div id="qbox"></div>
+ <h2>Cómo estudiar</h2>
+ <div class="cc"><div class="cx"><div class="ic">1</div><b>Lee un capítulo</b><span>Con calma, mirando los gráficos y tarjetas.</span></div><div class="cx"><div class="ic">2</div><b>Repasa tarjetas</b><span>Repetición espaciada: lo que fallas vuelve antes.</span></div><div class="cx"><div class="ic">3</div><b>Practica el tema</b><span>Preguntas al azar con explicación inmediata.</span></div><div class="cx"><div class="ic">4</div><b>Haz simulacros</b><span>Cronometrados, sin ayuda, para medir tu nivel.</span></div></div>
+ <h2>Requisitos para obtener la certificación PMP®</h2><div class="card reqc"><ul><li><b>Educación y experiencia (una opción):</b> secundaria + 5 años dirigiendo proyectos; título técnico + 4 años; licenciatura + 3 años; o título de un programa GAC + 2 años.</li><li><b>Formación:</b> 35 horas de formación en dirección de proyectos, o CAPM vigente.</li><li><b>Examen:</b> 180 preguntas, 240 minutos, con dos descansos de 10 minutos. Dominios: Personas 33%, Procesos 41%, Entorno de negocio 26%.</li><li><b>Modalidad:</b> centro Pearson VUE (recomendado) o en línea. Disponible en 15 idiomas, incluido el español.</li><li><b>Reintentos:</b> hasta 3 veces dentro de un año.</li><li><b>Tarifas:</b> consúltalas en pmi.org.</li></ul><div class="mu">Información basada en las páginas públicas de PMI. Puede cambiar con el tiempo; verifícala en <a href="#" onclick="nav('fuentes');return false">Fuentes</a>, donde están los enlaces oficiales.</div></div>`;
+ startQuiz(null,5,false,{target:"#qbox",embed:true})};
+function weakest(){let b=null;for(const c of CH){const p=pct(c.id);if(p!==null&&(!b||p<b.p))b={k:c.id,p}}return b}
+
+/* ---- Capítulos ---- */
+R.capitulos=()=>{
+ $("#app").innerHTML=`<h1>Capítulos</h1><p class="mu">Sigue el orden: el capítulo 0 compara el PMBOK 6, 7 y 8 y explica el examen; luego, un capítulo por dominio de conocimiento.</p>
+ <div class="chgrid">${CH.map(c=>{const p=pct(c.id);return `<div class="chc ${S.lessons[c.id]?"done":""}" onclick="nav('capitulo','${c.id}')"><div class="cn">${c.ic}<small>Cap. ${c.n}</small></div><h3>${c.t}</h3><p class="mu">${c.sub}</p><div class="meta"><span class="tag">⏱ ${c.min} min</span>${S.lessons[c.id]?`<span class="tag ok">✔ leído</span>`:""}${p!==null?`<span class="tag">${p}% acierto</span>`:""}</div></div>`}).join("")}</div>
+ <h2>Cómo se conecta con los 3 dominios del examen</h2>
+ <div class="card"><table><tr><th>Dominio del examen</th><th>Peso</th><th>Capítulos</th></tr>
+ <tr><td>Personas</td><td>33%</td><td>5 · 6 · 9</td></tr>
+ <tr><td>Procesos</td><td>41%</td><td>1 · 2 · 3 · 4 · 7 · 9</td></tr>
+ <tr><td>Entorno de negocio</td><td>26%</td><td>0 · 1 · 8</td></tr></table>
+ <p class="mu">Relación orientativa hecha por mí; no es el mapeo oficial.</p></div>`};
+
+R.capitulo=id=>{
+ const c=chOf(id),i=CH.indexOf(c),prev=CH[i-1],nx=CH[i+1];
+ $("#app").innerHTML=`<div class="crumb"><a href="#" onclick="nav('capitulos');return false">← Capítulos</a></div>
+ <article class="lesson"><header class="lh"><div class="ic2">${c.ic}</div><div><span class="tag">Capítulo ${c.n}</span><span class="tag">⏱ ${c.min} min</span><h1>${c.t}</h1><p class="mu">${c.ex}</p></div></header>
+ <div class="lead">${c.sub}</div><div id="toc"></div>${c.b()}
+ <div class="row end"><button class="btn" onclick="markLesson('${c.id}')">${S.lessons[c.id]?"✔ Capítulo completado":"Marcar como leído"}</button><button class="btn sec" onclick="startQuiz('${c.id}',10)">Practicar este capítulo</button><button class="btn sec" onclick="nav('tarjetas','${c.id}')">Tarjetas</button></div>
+ <div class="row sp">${prev?`<button class="btn sec" onclick="nav('capitulo','${prev.id}')">← Cap. ${prev.n}</button>`:"<span></span>"}${nx?`<button class="btn sec" onclick="nav('capitulo','${nx.id}')">Cap. ${nx.n} →</button>`:""}</div></article>`;buildToc()};
+function buildToc(){const hs=[...document.querySelectorAll(".lesson h2")];if(!hs.length)return;
+ hs.forEach((h,i)=>h.id="s"+i);
+ $("#toc").innerHTML=`<div class="toc"><b>En este capítulo:</b>${hs.map((h,i)=>`<a href="#s${i}" onclick="document.getElementById('s${i}').scrollIntoView({behavior:'smooth'});return false">${h.textContent.replace(/^\d+\.\s*/,"")}</a>`).join("")}</div>`}
+function markLesson(id){S.lessons[id]=Date.now();save();R.capitulo(id)}
+
+/* ---- Tarjetas (Leitner) ---- */
+let deck=[],ci=0,flip=false,deckCh=null;
+R.tarjetas=c=>{deckCh=c||null;const now=Date.now();
+ deck=shuf(CARDS.map((x,i)=>i).filter(i=>(!deckCh||CARDS[i][0]===deckCh)&&(!S.cards[i]||S.cards[i].due<=now)));ci=0;flip=false;drawCard()};
+function drawCard(){
+ const filt=`<select onchange="R.tarjetas(this.value||null)"><option value="">Todos los capítulos</option>${CH.map(c=>`<option value="${c.id}" ${c.id===deckCh?"selected":""}>Cap. ${c.n}: ${esc(c.t.slice(0,40))}</option>`).join("")}</select>`;
+ if(ci>=deck.length){$("#app").innerHTML=`<h1>Tarjetas</h1>${filt}<div class="card" style="margin-top:12px">🎉 No quedan tarjetas pendientes por ahora. Las que fallaste vuelven pronto; las que sabías, en días.</div>`;return}
+ const i=deck[ci],c=CARDS[i];
+ $("#app").innerHTML=`<h1>Tarjetas</h1>${filt}<p class="mu">${ci+1} de ${deck.length} · Cap. ${chOf(c[0]).n}</p>
+ <div class="flash ${flip?"back":""}" onclick="flip=!flip;drawCard()"><span class="mu">${flip?"Respuesta":"Concepto"}</span><div>${flip?esc(c[2]):"<b>"+esc(c[1])+"</b>"}</div></div>
+ ${flip?`<div class="row"><button class="btn bad" onclick="grade(${i},false)">No lo sabía</button><button class="btn good" onclick="grade(${i},true)">Lo sabía</button></div>`:`<div class="mu">Intenta recordar la respuesta y luego toca la tarjeta.</div>`}`}
+function grade(i,ok){const s=S.cards[i]||{box:0};s.box=ok?Math.min(5,s.box+1):1;
+ s.due=ok?Date.now()+BOX_DAYS[s.box]*day:Date.now()+10*60000;
+ S.cards[i]=s;rec(CARDS[i][0],ok);ci++;flip=false;drawCard()}
+
+/* ---- Práctica ---- */
+R.practica=()=>{
+ $("#app").innerHTML=`<h1>Práctica</h1><p class="mu">Cada vez se eligen preguntas al azar; se priorizan las que has visto menos.</p><div class="grid">`+
+ CH.map(c=>`<div class="card"><b>${c.ic} Cap. ${c.n}</b><div class="mu">${esc(c.t)}</div><div class="mu">${Q.filter(q=>q[0]===c.id).length} preguntas · acierto ${pct(c.id)===null?"–":pct(c.id)+"%"}</div><div class="row"><button class="btn" onclick="startQuiz('${c.id}',10)">Practicar</button></div></div>`).join("")+
+ `</div><div class="card"><b>🎲 Mixto</b><div class="mu">20 preguntas al azar de todos los capítulos</div><div class="row"><button class="btn" onclick="startQuiz(null,20)">Practicar mixto</button></div></div>`};
+
+/* ---- Cuestionario ---- */
+function startQuiz(ch,n,exam,opt){
+ opt=opt||{};
+ let pool=Q.map((q,i)=>i).filter(i=>!ch||Q[i][0]===ch);
+ pool=pickQ(pool,n||pool.length);
+ clearInterval(tmr);
+ qz={items:pool.map(i=>({i,order:shuf([0,1,2,3]),sel:null})),pos:0,exam:!!exam,ch,n,target:opt.target||"#app",embed:!!opt.embed};
+ drawQ()}
+function drawQ(){
+ const it=qz.items[qz.pos],q=Q[it.i],ans=it.sel!==null,box=$(qz.target);
+ const last=qz.pos===qz.items.length-1;
+ box.innerHTML=`<div class="qh"><span class="mu">Pregunta ${qz.pos+1} de ${qz.items.length} · Cap. ${chOf(q[0]).n}</span>${qz.exam?`<b id="clk"></b>`:""}</div>${bar(100*(qz.pos+(ans?1:0))/qz.items.length)}
+ <div class="card q"><h3 style="margin-top:0">${esc(q[1])}</h3>
+ ${it.order.map((oi,k)=>{let c="opt";if(!qz.exam&&ans){if(oi===q[3])c+=" ok";else if(oi===it.sel)c+=" ko"}else if(it.sel===oi)c+=" sel";
+  return `<button class="${c}" ${(ans&&!qz.exam)?"disabled":""} onclick="pick(${oi})"><i>${"ABCD"[k]}</i>${esc(q[2][oi])}</button>`}).join("")}
+ ${ans&&!qz.exam?`<div class="exp"><b>${it.sel===q[3]?"✔ Correcto":"✘ Incorrecto"}.</b> ${esc(q[4])}</div>`:""}
+ <div class="row"><button class="btn sec" ${qz.pos===0?"disabled":""} onclick="qz.pos--;drawQ()">Anterior</button>
+ <button class="btn" ${!ans&&!qz.exam?"disabled":""} onclick="${last?"finishQuiz()":"qz.pos++;drawQ()"}">${last?"Terminar":"Siguiente"}</button></div></div>`;
+ if(qz.exam)tick()}
+function pick(oi){const it=qz.items[qz.pos];if(!qz.exam&&it.sel!==null)return;it.sel=oi;
+ if(!qz.exam){S.seen[it.i]=(S.seen[it.i]||0)+1;rec(Q[it.i][0],oi===Q[it.i][3])}drawQ()}
+function finishQuiz(){clearInterval(tmr);
+ let ok=0;const by={};
+ qz.items.forEach(it=>{const q=Q[it.i],good=it.sel===q[3];if(good)ok++;
+  if(qz.exam){S.seen[it.i]=(S.seen[it.i]||0)+1;rec(q[0],good)}
+  by[q[0]]=by[q[0]]||{ok:0,t:0};by[q[0]].t++;if(good)by[q[0]].ok++});
+ const n=qz.items.length,p=Math.round(100*ok/n);
+ if(qz.exam){S.exams.push({d:Date.now(),ok,n});save()}
+ const wrong=qz.items.filter(it=>it.sel!==Q[it.i][3]),embed=qz.embed,box=$(qz.target);
+ box.innerHTML=`<div class="card res">${ring(p)}<div><h2 style="margin:0">Resultado: ${ok}/${n}</h2><div class="mu">${p>=75?"¡Muy bien!":p>=60?"Vas bien, sigue practicando.":"Repasa el capítulo y vuelve a intentarlo."}</div>
+ <div class="row"><button class="btn" onclick="${embed?"startQuiz(null,5,false,{target:'#qbox',embed:true})":"nav('practica')"}">${embed?"🎲 Otro reto":"Volver a práctica"}</button></div></div></div>
+ ${!embed?`<div class="card">${Object.entries(by).map(([k,v])=>`<div>Cap. ${chOf(k).n} · ${esc(chOf(k).t)} <span class="mu">${v.ok}/${v.t}</span>${bar(100*v.ok/v.t,v.ok/v.t>=.7?"g":"r")}</div>`).join("<br>")}</div>`:""}
+ ${wrong.length?`<h3>Revisa lo que fallaste (${wrong.length})</h3>`+wrong.map(it=>{const q=Q[it.i];return `<div class="card"><b>${esc(q[1])}</b><div class="mu">Tu respuesta: ${it.sel===null?"sin responder":esc(q[2][it.sel])}</div><div class="okt">Correcta: ${esc(q[2][q[3]])}</div><div class="exp">${esc(q[4])}</div></div>`}).join(""):`<div class="card">🎉 Sin errores.</div>`}`;
+ save()}
+
+/* ---- Simulacro ---- */
+R.simulacro=()=>{
+ const hist=S.exams.slice(-5).reverse().map(e=>`<tr><td>${new Date(e.d).toLocaleDateString()}</td><td>${e.ok}/${e.n}</td><td>${Math.round(100*e.ok/e.n)}%</td></tr>`).join("");
+ const nmax=Q.length;
+ $("#app").innerHTML=`<h1>Simulacro de examen</h1>
+ <div class="card">Preguntas al azar de todos los capítulos, <b>sin retroalimentación hasta el final</b> y con cronómetro. Puedes ir y volver entre preguntas.
+ <div class="mu">El examen real: 120 preguntas en 165 min (≈1,4 min por pregunta). Aquí se mantiene la misma proporción.</div>
+ <div class="row"><select id="nq"><option value="30">30 preguntas · 41 min</option><option value="60" selected>60 preguntas · 83 min</option><option value="${nmax}">Todas (${nmax}) · ${Math.round(nmax*165/120)} min</option></select>
+ <button class="btn" onclick="startExam()">Iniciar simulacro</button></div></div>
+ ${hist?`<div class="card"><b>Últimos intentos</b><table><tr><th>Fecha</th><th>Aciertos</th><th>%</th></tr>${hist}</table></div>`:""}`};
+let endAt=0;
+function startExam(){const n=Math.min(Q.length,+$("#nq").value);endAt=Date.now()+n*165/120*60000;startQuiz(null,n,true)}
+function tick(){clearInterval(tmr);
+ const f=()=>{const e=$("#clk");if(!e||!qz||!qz.exam){clearInterval(tmr);return}
+  const left=endAt-Date.now();if(left<=0){clearInterval(tmr);finishQuiz();return}
+  const m=Math.floor(left/60000),s=Math.floor(left%60000/1000);e.textContent="⏱ "+m+":"+String(s).padStart(2,"0")};
+ f();tmr=setInterval(f,1000)}
+
+/* ---- Progreso ---- */
+R.progreso=()=>{
+ const rows=CH.map(c=>{const p=pct(c.id),s=S.stats[c.id];
+  return `<tr><td>${c.ic} Cap. ${c.n}: ${esc(c.t)}</td><td style="width:34%">${bar(p,p===null?"":p>=75?"g":p>=60?"y":"r")}</td><td>${p===null?"–":p+"% ("+s.ok+"/"+s.t+")"}</td></tr>`}).join("");
+ const weak=CH.filter(c=>pct(c.id)!==null&&pct(c.id)<70);
+ const learned=Object.values(S.cards).filter(c=>c.box>=3).length;
+ const seen=Object.keys(S.seen).length;
+ $("#app").innerHTML=`<h1>Progreso</h1>
+ <div class="grid"><div class="card stat"><span class="mu">Capítulos leídos</span><div class="bigx">${Object.keys(S.lessons).length}/${CH.length}</div></div>
+ <div class="card stat"><span class="mu">Tarjetas dominadas</span><div class="bigx">${learned}/${CARDS.length}</div></div>
+ <div class="card stat"><span class="mu">Preguntas vistas</span><div class="bigx">${seen}/${Q.length}</div></div>
+ <div class="card stat"><span class="mu">Simulacros</span><div class="bigx">${S.exams.length}</div></div></div>
+ <div class="card"><b>Acierto por capítulo</b><table>${rows}</table></div>
+ <div class="card"><b>Áreas débiles (menos de 70%)</b><div>${weak.length?weak.map(c=>`<div>• Cap. ${c.n} ${esc(c.t)} (${pct(c.id)}%) <a href="#" onclick="startQuiz('${c.id}',10);return false">practicar</a> · <a href="#" onclick="nav('capitulo','${c.id}');return false">releer</a></div>`).join(""):"<span class='mu'>Ninguna detectada aún. Practica para generar datos.</span>"}</div></div>
+ <div class="row"><button class="btn sec" onclick="if(confirm('¿Borrar todo el progreso?')){try{localStorage.removeItem(KEY)}catch(e){}load();nav('inicio')}">Reiniciar progreso</button></div>`};
+
+
+/* ---- Fuentes ---- */
+const OFICIAL=[["Página oficial de la certificación PMP", "https://www.pmi.org/certifications/project-management-pmp"], ["PMBOK Guide 8.ª edición (PMI Bookstore)", "https://pmi.bookstore.ipgbook.com/a-guide-to-the-project-management-body-of-knowledge--pmbok---guide------eighth-edition-and-the-standard-for-project-management-products-9781628258295.php"]];
+const YTQ="PMP PMBOK 8";
+const yt=q=>"https://www.youtube.com/results?search_query="+encodeURIComponent(q);
+R.fuentes=()=>{
+ $("#app").innerHTML=`<h1>Fuentes</h1><p class="mu">Enlaces para profundizar. Se abren en una pestaña nueva y requieren internet.</p>
+ <h2>🏛️ Páginas oficiales de PMI</h2><div class="card">${OFICIAL.map(([t,u])=>`<div class="lk"><a href="${u}" target="_blank" rel="noopener">${esc(t)}</a><span class="mu">${u.replace(/^https?:\/\//,"").slice(0,60)}</span></div>`).join("")}</div>
+ <h2>▶️ Videos de YouTube por capítulo</h2><p class="mu">Son <b>búsquedas</b> en YouTube con palabras clave del capítulo: ordena por “relevancia” o “vistas” para ver los videos más destacados. No recomiendo un canal específico porque no los verifiqué uno por uno.</p>
+ <div class="chgrid">${CH.map(c=>`<div class="card lkc"><b>${c.ic} Cap. ${c.n}</b><div class="mu">${esc(c.t)}</div><div class="row"><a class="btn sec" href="${yt(YTQ+" "+c.t.split(":")[0])}" target="_blank" rel="noopener">▶ Buscar en YouTube</a><a class="btn sec" href="${yt(YTQ+" "+c.t.split(":")[0]+" español")}" target="_blank" rel="noopener">En español</a></div></div>`).join("")}</div>
+`};
+nav("inicio");
+if("serviceWorker" in navigator&&location.protocol.indexOf("http")===0){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))}
+</script>
+</body>
+</html>

@@ -1,0 +1,797 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="theme-color" content="#101c2a">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VIAControl Estudio: Gestión de Riesgos</title>
+<style>
+:root{--bg:#f4f6fb;--card:#fff;--tx:#1b2333;--mu:#667085;--pr:#2457d6;--pr2:#e8eefc;--ok:#157f4b;--okb:#e3f6ec;--ko:#b42318;--kob:#fde8e6;--wa:#b54708;--wab:#fff3e0;--bd:#e2e6ef;--a1:#dbe6ff;--a2:#d9f2e6;--a3:#ffe9cf;--a4:#f0e2ff;--sh:0 2px 8px rgba(20,35,80,.07)}
+@media(prefers-color-scheme:dark){:root{--bg:#0f131b;--card:#1a202c;--tx:#e8ecf4;--mu:#97a1b5;--pr:#7ea3ff;--pr2:#222d49;--ok:#5fd39a;--okb:#14352a;--ko:#ff8a80;--kob:#3a1c1a;--wa:#f5a85c;--wab:#3a2a15;--bd:#2c3547;--a1:#233559;--a2:#16392c;--a3:#4a3317;--a4:#35244f;--sh:none}}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.65 system-ui,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--tx)}
+header{background:var(--card);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:5}
+.top{max-width:1000px;margin:auto;padding:8px 16px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.logo{font-weight:800;margin-right:auto;font-size:18px}
+nav{display:flex;flex-wrap:wrap;gap:4px}
+nav button{border:0;background:none;color:var(--mu);padding:7px 11px;border-radius:8px;font:inherit;font-size:14px;cursor:pointer}
+nav button.on{background:var(--pr2);color:var(--pr);font-weight:700}
+main{max-width:1000px;margin:auto;padding:18px 16px 70px}
+h1{font-size:26px;margin:.2em 0 .4em;line-height:1.25}h2{font-size:21px;margin:1.5em 0 .4em}h3{font-size:17px;margin:.8em 0 .3em}
+p{margin:.5em 0}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:var(--sh)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mu{color:var(--mu);font-size:14px}
+.btn{background:var(--pr);color:#fff;border:0;border-radius:10px;padding:10px 18px;font:inherit;font-weight:600;cursor:pointer}
+.btn.sec{background:var(--pr2);color:var(--pr)}.btn:disabled{opacity:.45;cursor:default}
+.btn.big{padding:13px 22px;font-size:17px;background:#fff;color:#1d3fa1}.btn.ghost{background:rgba(255,255,255,.18);color:#fff}
+.btn.good{background:var(--ok);color:#fff}.btn.bad{background:var(--ko);color:#fff}
+.bar{height:9px;background:var(--pr2);border-radius:6px;overflow:hidden;margin:6px 0}.bar i{display:block;height:100%;background:var(--pr);transition:width .3s}
+.bar.g i{background:var(--ok)}.bar.r i{background:var(--ko)}.bar.y i{background:var(--wa)}
+.tag{display:inline-block;font-size:12px;padding:2px 9px;border-radius:10px;background:var(--pr2);color:var(--pr);margin:0 4px 4px 0;font-weight:600}.tag.ok{background:var(--okb);color:var(--ok)}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.row.end{margin-top:26px}.row.sp{justify-content:space-between}
+select{font:inherit;padding:9px;border-radius:9px;border:1px solid var(--bd);background:var(--card);color:var(--tx);max-width:100%}
+table{border-collapse:collapse;width:100%;font-size:15px}td,th{border-bottom:1px solid var(--bd);padding:8px 6px;text-align:left}
+.hero{background:linear-gradient(135deg,#1d3fa1,#4a7bff 60%,#7a5cff);color:#fff;border-radius:18px;padding:26px;display:flex;gap:16px;align-items:center;justify-content:space-between;margin-bottom:16px}
+.hero h1{margin:0 0 6px;font-size:30px}.hero p{margin:0 0 6px;opacity:.95;max-width:520px}.hr{font-size:78px}
+.stat .bigx{font-size:32px;font-weight:800;line-height:1.2}.stat .bigx.s{font-size:17px;line-height:1.35}
+.chgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
+.chc{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:16px;cursor:pointer;box-shadow:var(--sh);transition:transform .12s}
+.chc:hover{transform:translateY(-3px);border-color:var(--pr)}.chc.done{border-color:var(--ok)}
+.cn{font-size:30px;display:flex;align-items:center;gap:8px}.cn small{font-size:13px;color:var(--mu);font-weight:700}
+.chc h3{margin:.3em 0}.meta{margin-top:8px}
+/* lectura */
+.crumb{margin-bottom:8px}.crumb a{color:var(--pr);text-decoration:none}
+.lesson{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:22px 24px;box-shadow:var(--sh)}
+.lh{display:flex;gap:14px;align-items:flex-start;margin-bottom:8px}.ic2{font-size:44px;line-height:1}
+.lead{background:var(--pr2);border-radius:12px;padding:12px 14px;margin:6px 0 4px;font-size:17px}
+.lesson h2{border-bottom:2px solid var(--pr2);padding-bottom:5px}
+.cc{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin:12px 0}
+.cx{background:var(--pr2);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:4px}
+.cx:nth-child(4n+2){background:var(--a2)}.cx:nth-child(4n+3){background:var(--a3)}.cx:nth-child(4n+4){background:var(--a4)}
+.cx .ic{font-size:26px;font-weight:800;line-height:1.1}.cx span{font-size:14px;color:var(--mu)}
+.call{border-radius:12px;padding:12px 14px;margin:14px 0;border-left:5px solid var(--pr);background:var(--pr2)}
+.call.ex{border-color:var(--ok);background:var(--okb)}.call.wa{border-color:var(--wa);background:var(--wab)}.call.eg{border-color:#8a5cf5;background:var(--a4)}
+.call>b{display:block;margin-bottom:3px}
+.vs{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;margin:14px 0}
+.vc{background:var(--a1);border-radius:12px;padding:12px 16px}.vc.alt{background:var(--a3)}.vc h3{margin-top:0}.vc ul{margin:0;padding-left:18px}.vc li{margin:4px 0}
+.steps{display:grid;gap:8px;margin:12px 0}.st{display:flex;gap:12px;align-items:flex-start;background:var(--pr2);border-radius:12px;padding:10px 12px}
+.st i{flex:none;width:30px;height:30px;border-radius:50%;background:var(--pr);color:#fff;font-style:normal;font-weight:800;display:flex;align-items:center;justify-content:center}
+.st span{display:block;color:var(--mu);font-size:14.5px}
+.sum{background:linear-gradient(135deg,var(--okb),var(--pr2));border-radius:14px;padding:12px 18px;margin-top:22px}.sum ul{margin:6px 0 0;padding-left:20px}
+.fig{margin:16px 0;background:var(--bg);border-radius:14px;padding:10px}.fig svg{width:100%;height:auto;display:block}
+svg .t{font-size:12.5px;fill:var(--tx)}svg .tb{font-size:13.5px;font-weight:700;fill:var(--tx)}svg .tm{font-size:12px;fill:var(--mu)}
+svg .s0{fill:var(--a4);stroke:#8a5cf5;stroke-width:1.5}svg .s1{fill:var(--a1);stroke:var(--pr);stroke-width:1.5}svg .s2{fill:var(--a2);stroke:var(--ok);stroke-width:1.5}svg .s3{fill:var(--a3);stroke:var(--wa);stroke-width:1.5}
+svg .ln{stroke:var(--mu);stroke-width:1.6;fill:none}svg .ax{stroke:var(--mu);stroke-width:1.5}
+svg .dot{fill:var(--card);stroke:var(--pr);stroke-width:3}svg .ring{fill:none;stroke:var(--bd);stroke-width:3;stroke-dasharray:6 6}
+svg .nd{stroke-width:2}
+svg .pv{fill:none;stroke:var(--pr);stroke-width:3}svg .ev{fill:none;stroke:var(--ok);stroke-width:3}svg .ac{fill:none;stroke:var(--ko);stroke-width:3}
+details.cx summary,details.st summary{list-style:none;cursor:pointer;display:flex;flex-direction:column;gap:4px}
+details.st summary{flex-direction:row;gap:12px;align-items:flex-start}
+details summary::-webkit-details-marker{display:none}
+details.cx{padding:12px}details.cx[open]{grid-column:1/-1}
+.cx em,.st em{font-style:normal;font-size:12px;font-weight:700;color:var(--pr);margin-top:2px}
+details[open]>summary em{display:none}
+.dt{margin-top:10px;padding-top:10px;border-top:1px dashed var(--bd);font-size:15.5px;line-height:1.65}
+details.st{flex-direction:column;align-items:stretch;gap:0}
+details.st .dt{margin-left:42px}
+details.cx:hover,details.st:hover{box-shadow:0 0 0 2px var(--pr2)}
+.toc{background:var(--bg);border-radius:12px;padding:10px 14px;margin:12px 0;display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font-size:14px}
+.toc a{color:var(--pr);text-decoration:none;font-weight:600}.toc a:hover{text-decoration:underline}
+.lesson p{font-size:16.5px}
+/* flash y cuestionario */
+.flash{min-height:190px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-size:21px;cursor:pointer;user-select:none;background:linear-gradient(135deg,var(--pr2),var(--a4));border-radius:18px;padding:22px;margin:12px 0;box-shadow:var(--sh)}
+.flash.back{background:linear-gradient(135deg,var(--okb),var(--a1))}
+.qh{display:flex;justify-content:space-between;align-items:center}
+.opt{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;border:1.5px solid var(--bd);background:var(--card);color:var(--tx);padding:11px 12px;border-radius:11px;margin:8px 0;font:inherit;cursor:pointer}
+.opt i{flex:none;width:26px;height:26px;border-radius:7px;background:var(--pr2);color:var(--pr);font-style:normal;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:13px}
+.opt:hover:not(:disabled){border-color:var(--pr)}.opt.sel{border-color:var(--pr);background:var(--pr2)}
+.opt.ok{background:var(--okb);border-color:var(--ok)}.opt.ko{background:var(--kob);border-color:var(--ko)}
+.exp{background:var(--pr2);border-radius:10px;padding:10px 12px;margin-top:8px;font-size:15px}
+.okt{color:var(--ok)}
+.res{display:flex;gap:18px;align-items:center}.rg{position:relative;width:96px;height:96px;flex:none}.rg b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:20px}
+.rb{fill:none;stroke:var(--pr2);stroke-width:8}.rf{fill:none;stroke:var(--ok);stroke-width:8;stroke-linecap:round}
+.card{overflow-x:auto}.reqc ul{margin:0 0 8px;padding-left:20px}.reqc li{margin:6px 0}.lk{display:flex;flex-direction:column;padding:8px 0;border-bottom:1px solid var(--bd)}.lk a{color:var(--pr);font-weight:600;text-decoration:none;word-break:break-word}.lkc .row{margin-top:8px}.lkc a.btn{text-decoration:none;font-size:14px}@media(max-width:560px){td,th{font-size:13.5px;padding:6px 4px}.hero{flex-direction:column;align-items:flex-start}.hr{display:none}.lesson{padding:16px}}
+</style>
+<style id="tema">/* ===== Tema VIAControl ===== */
+:root{--bg:#f4f5f7;--card:#fff;--tx:#101c2a;--mu:#5a6470;--pr:#1d3250;--pr2:#e8ecf2;--ac:#c98a3d;--acb:#f8eedf;--bd:#dfe3ea;--wa:#9a6218;--wab:#fbf0dc;--a1:#e8ecf2;--a2:#f8eedf;--a3:#edf0f4;--a4:#f3e6d0;--btn:#101c2a;--btn-tx:#fff;--sh:0 2px 10px rgba(16,28,42,.07)}
+@media(prefers-color-scheme:dark){:root{--bg:#0b141f;--card:#132033;--tx:#e9eef5;--mu:#93a1b3;--pr:#e2b06a;--pr2:#1d2c43;--ac:#d99b4c;--acb:#34291a;--bd:#28374d;--wa:#e2b06a;--wab:#34291a;--a1:#1b2b42;--a2:#3a2d1a;--a3:#203049;--a4:#33291b;--btn:#d99b4c;--btn-tx:#101c2a;--sh:none}}
+body{background:var(--bg);color:var(--tx);letter-spacing:.005em}
+header{border-bottom:0;box-shadow:0 3px 0 var(--ac),0 6px 16px rgba(16,28,42,.06)}
+.top{padding:8px 16px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;color:var(--tx)}
+.logo img{height:34px;width:auto;background:#fff;padding:4px 10px;border-radius:9px;display:block}
+.logo span{font-size:14px;font-weight:700;color:var(--mu);border-left:2px solid var(--ac);padding-left:10px}
+nav button{font-weight:600}
+nav button.on{background:var(--pr2);color:var(--pr);box-shadow:inset 0 -3px 0 var(--ac)}
+h1{letter-spacing:-.01em}
+.btn{background:var(--btn);color:var(--btn-tx);box-shadow:0 1px 0 rgba(0,0,0,.08)}
+.btn.sec{background:var(--pr2);color:var(--pr);box-shadow:none}
+.btn.big{background:var(--ac);color:#101c2a}.btn.ghost{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.35)}
+.btn.good{background:var(--ok);color:#fff}.btn.bad{background:var(--ko);color:#fff}
+.bar{background:var(--pr2)}.bar i{background:var(--ac)}.bar.g i{background:var(--ok)}.bar.r i{background:var(--ko)}.bar.y i{background:var(--wa)}
+.tag{background:var(--pr2);color:var(--pr)}.tag.ok{background:var(--okb);color:var(--ok)}
+.hero{background-image:radial-gradient(circle at 92% -10%,rgba(201,138,61,.45),transparent 52%),linear-gradient(135deg,#101c2a,#344456);border-bottom:4px solid var(--ac);box-shadow:0 8px 24px rgba(16,28,42,.18)}
+.hero h1{letter-spacing:-.02em}
+.stat{border-top:3px solid var(--ac)}
+.chc:hover{border-color:var(--ac)}.chc.done{border-color:var(--ok)}
+.lesson h2{border-bottom:2px solid var(--ac);display:inline-block;padding-right:18px}
+.lead{background:var(--acb);border-left:5px solid var(--ac)}
+.call{background:var(--pr2);border-left-color:var(--pr)}.call.eg{background:var(--acb);border-left-color:var(--ac)}
+.cx .ic{color:var(--pr)}
+.st i{background:var(--btn);color:var(--btn-tx)}
+.vc{background:var(--a1)}.vc.alt{background:var(--a2)}
+.sum{background:linear-gradient(135deg,var(--okb),var(--acb))}
+.fig{background:var(--bg)}
+svg .s0{fill:var(--a4);stroke:var(--ac)}svg .s1{fill:var(--a1);stroke:var(--pr)}svg .s2{fill:var(--a3);stroke:var(--mu)}svg .s3{fill:var(--a2);stroke:#a56a1f}
+svg .dot{stroke:var(--ac)}
+.flash{background:linear-gradient(135deg,var(--pr2),var(--acb));border:1px solid var(--bd)}.flash.back{background:linear-gradient(135deg,var(--okb),var(--a1))}
+.opt i{background:var(--pr2);color:var(--pr)}.opt:hover:not(:disabled){border-color:var(--ac)}.opt.sel{border-color:var(--ac);background:var(--acb)}
+.exp{background:var(--pr2)}
+.toc a{color:var(--pr)}
+.crumb a{color:var(--pr)}
+.lk a{color:var(--pr)}
+details.cx:hover,details.st:hover{box-shadow:0 0 0 2px var(--ac)}
+.cx em,.st em{color:var(--ac)}
+::selection{background:var(--ac);color:#101c2a}
+@media(max-width:560px){.logo span{display:none}.logo img{height:30px}}
+</style>
+<style>.aviso{background:var(--acb);border:1px solid var(--ac);border-left:6px solid var(--ac);border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:14.5px;line-height:1.55}.aviso p{margin:6px 0 0}.foot{max-width:1000px;margin:0 auto;padding:0 16px 40px;color:var(--mu);font-size:12.5px;text-align:center}</style>
+</head>
+<body>
+<header><div class="top"><div class="logo"><img alt="VIAControl" src="data:image/png;base64,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"><span>Gestión de Riesgos</span></div><nav id="nav"></nav></div></header>
+<main id="app"></main>
+<footer class="foot">Material de estudio independiente, solo informativo. No afiliado ni respaldado por PMI®. Marcas de sus respectivos titulares.</footer>
+<script>
+const DETAILS={
+"Riesgo":"Evento o condición incierta que, si ocurre, tiene efecto positivo o negativo sobre los objetivos. Siempre tiene dos elementos: <b>incertidumbre</b> (puede o no ocurrir) y <b>efecto</b> (en alcance, cronograma, costo, calidad, reputación, etc.).",
+"Problema (issue)":"Un riesgo que ya ocurrió o una situación actual que necesita acción. A diferencia del riesgo, <b>no hay incertidumbre sobre si ocurrió</b>. Se gestiona en un registro de problemas.",
+"Supuesto":"Algo que se considera cierto, real o seguro sin comprobarlo. Si el supuesto resulta falso, puede convertirse en riesgo. Por eso se registran y se validan periódicamente.",
+"Restricción":"Limitación impuesta al proyecto (fecha fija, presupuesto máximo, norma legal). No es un riesgo, pero puede generar riesgos al limitar las opciones.",
+"Incertidumbre":"Falta de conocimiento sobre eventos o resultados. Incluye ambigüedad (no se entiende), complejidad, volatilidad y riesgo. El riesgo es la incertidumbre que puede tener efecto sobre los objetivos.",
+"Resiliencia":"Capacidad de absorber el impacto, adaptarse y recuperarse rápido. Un proyecto resiliente tiene planes de contingencia, reservas y equipos capaces de reaccionar.",
+"Preguntas":"<b>115 preguntas</b> según PMI. Fuentes de terceros indican que 15 son de prueba y no puntúan; verifícalo en pmi.org.",
+"Duración":"<b>150 minutos</b> en total (2 horas y 30 minutos). Practica con el simulacro para manejar el tiempo.",
+"Dominios":"Estrategia y planificación del riesgo 22%, Identificación 23%, Análisis 23%, Respuesta 13%, Monitoreo y cierre 19%.",
+"Requisitos":"PMI publica tres combinaciones de educación, experiencia en gestión de riesgos (dentro de los últimos 5 años) y horas de formación. Confirma las cifras exactas en pmi.org, porque pueden actualizarse.",
+"Apetito al riesgo":"Nivel general de riesgo que la organización está dispuesta a asumir para lograr sus objetivos. Lo define la alta dirección. Ejemplo: “bajo apetito para riesgos de seguridad; alto apetito para innovación”.",
+"Tolerancia al riesgo":"Variación aceptable respecto de un objetivo. Ejemplo: se tolera un sobrecosto de hasta 10% del presupuesto. Es más específica que el apetito.",
+"Umbral de riesgo":"Nivel específico de exposición en el cual se debe actuar o escalar. Ejemplo: cualquier riesgo con puntaje mayor a 12 se escala al comité.",
+"Actitud ante el riesgo":"Postura individual o grupal: aversa (evita), neutral (decide por valor esperado) o buscadora (acepta por mayor retorno). Influye en cómo se perciben y califican los riesgos.",
+"Roles y responsabilidades":"Define quién identifica, analiza, responde, aprueba y reporta. Incluye al <b>dueño del riesgo</b> y al <b>responsable de las acciones</b>. Sin esto, nadie actúa.",
+"Metodología":"Define técnicas, herramientas y fuentes de datos usadas para la gestión del riesgo.",
+"Escalas de probabilidad e impacto":"Definen qué significa cada nivel. Ejemplo: probabilidad alta = más de 60%; impacto alto en costo = más de USD 100 mil. Evitan interpretaciones distintas entre personas.",
+"Estructura de desglose de riesgos (RBS)":"Clasificación jerárquica de las fuentes de riesgo: técnico, externo, organizacional y de gestión del proyecto, con subcategorías. Ayuda a identificar y agrupar riesgos.",
+"Umbrales y apetito":"Se documentan los niveles que activan el escalamiento y las decisiones de apetito.",
+"Frecuencia y formato de revisión":"Cuándo se revisan los riesgos (por ejemplo, semanalmente) y cómo se reportan (informe, tablero).",
+"Presupuesto y reservas":"Fondos para actividades de gestión del riesgo y reservas para contingencias.",
+"Lluvia de ideas":"Técnica de grupo para generar muchas ideas. Reglas: no criticar al inicio, buscar cantidad y construir sobre las ideas de otros. Después se agrupan y priorizan.",
+"Entrevistas":"Conversaciones con expertos e interesados. Pueden revelar riesgos que no surgen en grupo.",
+"Listas de verificación":"Basadas en proyectos anteriores y en la RBS. Son rápidas, pero no deben limitar la búsqueda a lo conocido.",
+"Técnica Delphi":"Expertos responden cuestionarios de forma anónima; se resumen y se repiten rondas hasta lograr consenso. Reduce el sesgo de grupo y la influencia de personas dominantes.",
+"Análisis FODA":"Fortalezas, Oportunidades, Debilidades y Amenazas. Ayuda a identificar riesgos y oportunidades desde dentro y fuera.",
+"Análisis de causa raíz":"Encontrar la causa de fondo con técnicas como los 5 porqués o diagrama de Ishikawa. Permite ver riesgos comunes y ataca el origen.",
+"Análisis de supuestos y restricciones":"Se revisa si los supuestos son válidos y qué pasa si no lo son. También si las restricciones generan riesgos.",
+"Revisión de documentos":"Se estudian el plan, requisitos, contratos, estimaciones y cronogramas para encontrar inconsistencias y riesgos.",
+"Análisis de lecciones aprendidas":"Se utilizan datos de proyectos anteriores para identificar riesgos que ya ocurrieron.",
+"Identificador y enunciado":"Un código único y el enunciado en formato causa → evento → efecto.",
+"Categoría":"Según la RBS: técnico, externo, organizacional, de gestión.",
+"Probabilidad e impacto":"Calificación inicial en las escalas definidas.",
+"Dueño del riesgo":"Persona con autoridad y conocimiento para monitorear el riesgo y asegurar que la respuesta se ejecute.",
+"Respuesta":"Estrategia elegida y acciones concretas, con responsable y fecha.",
+"Disparadores":"Señales tempranas de que el riesgo está por ocurrir (por ejemplo, retraso del proveedor en un hito intermedio). Se monitorean y activan planes de contingencia.",
+"Estado y fecha":"Abierto, en tratamiento, ocurrido o cerrado, con fecha de la última revisión.",
+"Anclaje":"Aferrarse a la primera información recibida. Ejemplo: la primera estimación de un experto condiciona el resto.",
+"Optimismo":"Tendencia a subestimar la probabilidad de problemas y a sobrestimar la capacidad propia.",
+"Confirmación":"Buscar y recordar solo información que confirma lo que ya se cree.",
+"Pensamiento de grupo":"El deseo de armonía lleva a no cuestionar la opinión mayoritaria. Se combate con técnicas anónimas y el rol de abogado del diablo.",
+"Falacia de planificación":"Subestimar sistemáticamente tiempos y costos pese a la experiencia previa. Se combate con datos históricos.",
+"Proximidad":"Qué tan pronto podría ocurrir el riesgo. Un riesgo próximo suele priorizarse.",
+"Urgencia":"Qué tan rápido hay que responder: depende de la proximidad, la ventana de respuesta y los disparadores.",
+"Detectabilidad":"Qué tan fácil es detectar que el riesgo está por ocurrir. Un riesgo difícil de detectar aumenta la prioridad.",
+"Dependencia":"Relación entre riesgos: uno puede disparar o agravar otro.",
+"Velocidad de impacto":"Qué tan rápido se siente el efecto cuando ocurre. Un impacto muy veloz deja poco tiempo para reaccionar.",
+"Propincuidad (cercanía)":"Qué tan cerca percibe el equipo el riesgo. Algo que parece lejano puede subestimarse.",
+"Matriz":"Combina probabilidad e impacto para clasificar el riesgo (por ejemplo, alto, medio, bajo).",
+"Gráfico de burbujas":"Agrega una tercera dimensión (por ejemplo detectabilidad) al tamaño de la burbuja.",
+"Mapa de calor":"Visualiza con colores dónde se concentran los riesgos más importantes.",
+"Distribución triangular":"Se define con mínimo, más probable y máximo. Simple y muy usada.",
+"Distribución beta (PERT)":"Similar a la triangular pero da más peso al valor más probable.",
+"Distribución normal":"En forma de campana, simétrica alrededor de la media. Se usa cuando las desviaciones son similares a ambos lados.",
+"Iteraciones":"Cada iteración selecciona un valor de cada variable al azar. Se hacen miles para estimar la distribución.",
+"Modelado de escenarios":"Se analizan casos distintos (mejor, base y peor) para entender el rango de resultados.",
+"Análisis de la ruta crítica con riesgo":"Estima con qué frecuencia cada actividad está en la ruta crítica durante la simulación (índice de criticidad).",
+"Riesgo general (exposición)":"Efecto combinado de todas las fuentes de incertidumbre sobre un objetivo.",
+"Escalar":"Cuando la amenaza escapa a la autoridad del proyecto o afecta a otros, se informa a un nivel superior con autoridad para decidir. El dueño del riesgo en ese nivel lo asume.",
+"Evitar":"Eliminar la amenaza o protegerse de su impacto. Ejemplo: cambiar el proveedor por uno más confiable o eliminar una funcionalidad de alto riesgo. Puede requerir cambiar el plan.",
+"Transferir":"Se pasa el impacto (y la responsabilidad de respuesta) a un tercero, normalmente con un pago o una prima. Ejemplos: seguros, garantías, contratos de precio fijo. <b>No elimina el riesgo</b>.",
+"Mitigar":"Reducir la probabilidad y/o el impacto. Ejemplo: hacer prototipos para reducir el riesgo técnico, o agregar pruebas para reducir fallas. Es una acción proactiva.",
+"Aceptar":"Reconocer el riesgo y no actuar, o planificar una respuesta si ocurre. <b>Activa</b>: se establece una reserva o un plan de contingencia. <b>Pasiva</b>: solo se documenta y se monitorea.",
+"Escalar ":"Se informa a un nivel superior que pueda aprovechar mejor la oportunidad.",
+"Explotar":"Se asegura que la oportunidad ocurra. Ejemplo: asignar a los mejores recursos para terminar antes y obtener un bono.",
+"Compartir":"Se asocia con un tercero mejor capacitado para aprovechar la oportunidad. Ejemplo: una alianza o empresa conjunta.",
+"Mejorar":"Se aumenta la probabilidad y/o el impacto positivo. Ejemplo: agregar recursos para terminar antes.",
+"Aceptar ":"Estar dispuesto a aprovechar la oportunidad si ocurre, sin buscarla activamente.",
+"Riesgo residual":"El que queda después de aplicar una respuesta. Se acepta o se vuelve a tratar; se registra.",
+"Riesgo secundario":"Un riesgo nuevo que nace de la propia respuesta. Se analiza antes de aprobar la respuesta.",
+"Solución de emergencia (workaround)":"Respuesta no planificada a un riesgo que ocurrió y no tenía plan. No debe confundirse con el plan de contingencia, que sí se prepara de antemano.",
+"Primera línea":"Los gerentes y equipos que poseen y gestionan el riesgo a diario.",
+"Segunda línea":"Funciones de riesgo y cumplimiento que definen políticas, supervisan y asesoran a la primera línea.",
+"Tercera línea":"Auditoría interna: da aseguramiento independiente a la dirección sobre la efectividad de la gestión de riesgos.",
+"Iteraciones cortas":"Ciclos breves con entregas frecuentes permiten descubrir problemas rápido y corregirlos con poco costo.",
+"Riesgos en el backlog":"Los riesgos se convierten en elementos del backlog (por ejemplo, tareas de mitigación) y se priorizan según valor y exposición.",
+"Spike":"Investigación acotada en el tiempo para reducir la incertidumbre técnica o de diseño antes de comprometerse.",
+"Burndown de riesgo":"Gráfico que muestra cómo disminuye la exposición total al riesgo con el avance de las iteraciones.",
+"Retrospectivas":"Se revisan los riesgos aparecidos y las respuestas que funcionaron para mejorar el proceso.",
+"Auditorías de riesgos":"Revisión independiente de cómo se está gestionando el riesgo y de la efectividad de las respuestas. Producen recomendaciones.",
+"Revisiones de riesgos":"Reuniones periódicas para actualizar el registro, revisar disparadores y decidir cierres.",
+"Análisis de variación y tendencias":"Compara el plan con el real (por ejemplo, valor ganado) para detectar desvíos que indican riesgos materializados o próximos.",
+"Análisis del desempeño técnico":"Compara los logros técnicos con el plan; una desviación puede revelar riesgos técnicos.",
+"Análisis de reservas":"Compara la reserva restante con el riesgo restante para decidir si es suficiente.",
+"Indicadores clave de riesgo (KRI)":"Métricas que anticipan que la exposición aumenta (por ejemplo, rotación del equipo, retraso acumulado, defectos abiertos).",
+"Lecciones aprendidas":"Qué riesgos ocurrieron, qué respuestas funcionaron y cuáles no. Se archivan para proyectos futuros.",
+"Archivo del registro":"El registro de riesgos queda como fuente histórica para listas de verificación y estimaciones.",
+"Cierre de riesgos":"Los riesgos se cierran cuando ocurren (y pasan a ser problemas) o dejan de aplicar.",
+"Transferencia":"Los riesgos que persisten después del cierre se traspasan a operaciones.",
+"Aversión":"Prefiere evitar la incertidumbre aun si el retorno esperado es menor.",
+"Neutralidad":"Decide según el valor esperado.",
+"Búsqueda de riesgo":"Acepta incertidumbre por mayor retorno potencial.",
+"Diferencias culturales":"La percepción del riesgo varía por cultura, experiencia y entorno; hay que preguntar y no asumir.",
+"Ejecutivos y comité":"Necesitan pocos riesgos clave, su efecto en objetivos y decisiones requeridas.",
+"Equipo de proyecto":"Necesita acciones concretas, responsables y fechas.",
+"Clientes y proveedores":"Lo que les afecta y lo que se espera de ellos.",
+"Reguladores":"Información según la normativa aplicable.",
+"Responsabilidad":"Reportar riesgos conocidos y asumir las decisiones tomadas.",
+"Respeto":"Escuchar todas las opiniones, incluso las discrepantes.",
+"Equidad":"Decidir sin conflictos de interés ni favoritismos.",
+"Honestidad":"No ocultar ni minimizar riesgos."
+};
+const STEPDET={
+"Entender el contexto":"Estrategia, cultura, entorno regulatorio, restricciones y objetivos del proyecto. De aquí salen las escalas y los umbrales.",
+"Involucrar a los interesados":"Se acuerda con ellos el apetito, las tolerancias y los criterios de decisión.",
+"Definir escalas":"Se establecen definiciones concretas por nivel para costo, plazo, alcance y calidad.",
+"Asignar roles":"Dueños de riesgo, responsables de acciones, comité y canales de escalamiento.",
+"Adaptar el enfoque":"Se ajusta el nivel de detalle y la frecuencia según el tamaño, la complejidad y el ciclo de vida del proyecto.",
+"Aprobar y comunicar":"El plan se aprueba y se comunica a todos los interesados.",
+"Evaluar la exposición":"Probabilidad × impacto y comparación con el apetito y los umbrales.",
+"Considerar costo-beneficio":"La respuesta no debe costar más que el riesgo que evita (salvo por razones de seguridad o cumplimiento).",
+"Verificar viabilidad":"Que sea realista, técnica y organizacionalmente posible, y aceptada por los interesados.",
+"Analizar efectos secundarios":"Se buscan riesgos secundarios que la respuesta pueda causar.",
+"Asignar dueño y acciones":"Se nombra al responsable, las acciones, las fechas y los recursos.",
+"Actualizar plan y registro":"Se actualizan cronograma, costos, reservas y registro de riesgos.",
+"Ejecución de respuestas":"Se confirma si las acciones se ejecutaron y si lograron el efecto esperado.",
+"Disparadores":"Se vigilan las señales de alerta que activan planes de contingencia.",
+"Riesgos residuales y secundarios":"Se registran, se analizan y, si es necesario, se tratan.",
+"Riesgos nuevos":"Aparecen durante el proyecto por cambios, errores o eventos externos.",
+"Reservas":"Se verifica si alcanzan para los riesgos restantes.",
+"Efectividad del proceso":"Se evalúa si el proceso de gestión del riesgo está funcionando."
+};
+/* ============ AYUDAS DE DISEÑO ============ */
+const H=t=>`<h2>${t}</h2>`;
+const P=t=>`<p>${t}</p>`;
+const CC=a=>`<div class="cc">${a.map(([i,t,x])=>DETAILS[t]?`<details class="cx"><summary><span class="ic">${i}</span><b>${t}</b><span>${x}</span><em>Ver explicación</em></summary><div class="dt">${DETAILS[t]}</div></details>`:`<div class="cx"><div class="ic">${i}</div><b>${t}</b><span>${x}</span></div>`).join("")}</div>`;
+const CALL=(k,t)=>`<div class="call ${k}"><b>${{tip:"💡 Idea clave",ex:"🎯 Para el examen",wa:"⚠️ Ojo",eg:"📌 Ejemplo"}[k]}</b><div>${t}</div></div>`;
+const VS=(a,b)=>`<div class="vs"><div class="vc"><h3>${a[0]}</h3><ul>${a[1].map(x=>`<li>${x}</li>`).join("")}</ul></div><div class="vc alt"><h3>${b[0]}</h3><ul>${b[1].map(x=>`<li>${x}</li>`).join("")}</ul></div></div>`;
+const STEPS=a=>`<div class="steps">${a.map(([t,x],i)=>STEPDET[t]?`<details class="st"><summary><i>${i+1}</i><div><b>${t}</b><span>${x}</span><em>Ver explicación</em></div></summary><div class="dt">${STEPDET[t]}</div></details>`:`<div class="st"><i>${i+1}</i><div><b>${t}</b><span>${x}</span></div></div>`).join("")}</div>`;
+const SUM=a=>`<div class="sum"><b>Resumen del capítulo</b><ul>${a.map(x=>`<li>${x}</li>`).join("")}</ul></div>`;
+
+/* ============ DIAGRAMAS (SVG) ============ */
+const SV=(w,h,inner)=>`<figure class="fig"><svg viewBox="0 0 ${w} ${h}" role="img">${inner}</svg></figure>`;
+const T=(x,y,t,c,a)=>`<text x="${x}" y="${y}" text-anchor="${a||"middle"}" class="${c||"t"}">${t}</text>`;
+const DEEP=()=>"";
+const DG={
+ciclo:()=>{const L=["Estrategia y planificación","Identificación","Análisis","Respuesta","Monitoreo y cierre"];const cx=320,cy=130,r=90;let o=`<circle cx="${cx}" cy="${cy}" r="${r}" class="ring"/>${T(cx,cy-2,"Gestión","tb")}${T(cx,cy+16,"del riesgo","tb")}`;
+L.forEach((n,i)=>{const a=-Math.PI/2+i*2*Math.PI/5,x=cx+r*Math.cos(a),y=cy+r*Math.sin(a);o+=`<circle cx="${x}" cy="${y}" r="21" class="s${i%3+1} nd"/>${T(x,y+5,i+1,"tb")}`;const P2=[[320,18,"middle"],[438,107,"start"],[395,238,"start"],[245,238,"end"],[202,107,"end"]][i];o+=T(P2[0],P2[1],n,"tb",P2[2])});return SV(640,270,o)},
+matriz:()=>{const lv=["Baja","Media","Alta"];let o="";const col=(p,i)=>{const s=p*i;return s>=6?"var(--kob)":s>=3?"var(--wab)":"var(--okb)"};
+for(let r=0;r<3;r++)for(let c=0;c<3;c++){const p=3-r,i=c+1;o+=`<rect x="${110+c*140}" y="${20+r*62}" width="136" height="58" rx="8" fill="${col(p,i)}" stroke="var(--bd)"/>${T(178+c*140,55+r*62,p*i,"tb")}`}
+lv.forEach((l,c)=>o+=T(178+c*140,225,l,"tm"));[...lv].reverse().forEach((l,r)=>o+=T(100,55+r*62,l,"tm","end"));
+return SV(560,260,o+T(320,248,"Impacto →","tb")+T(34,110,"Prob.","tb"))},
+tornado:()=>{const rows=[["Precio del acero",160,120],["Productividad",110,100],["Tipo de cambio",80,50],["Clima",40,30]];let o=`<line x1="320" y1="14" x2="320" y2="220" class="ax"/>`;
+rows.forEach(([n,l,r],i)=>{const y=24+i*48;o+=`<rect x="${320-l}" y="${y}" width="${l}" height="32" class="s3"/><rect x="320" y="${y}" width="${r}" height="32" class="s1"/>${T(14,y+21,n,"tb","start")}`});
+return SV(640,236,o+T(320,232,"Efecto sobre el costo total (menor ← → mayor)","tm"))},
+arbol:()=>SV(640,250,`
+<rect class="s0" x="20" y="100" width="110" height="46" rx="10"/>${T(75,128,"Decisión","tb")}
+<rect class="s1" x="250" y="30" width="150" height="56" rx="10"/>${T(325,54,"Opción A: mitigar","tb")}${T(325,73,"costo USD 20 mil","tm")}
+<rect class="s2" x="250" y="160" width="150" height="56" rx="10"/>${T(325,184,"Opción B: aceptar","tb")}${T(325,203,"sin costo","tm")}
+<line x1="130" y1="115" x2="248" y2="62" class="ln"/><line x1="130" y1="130" x2="248" y2="188" class="ln"/>
+<rect class="s3" x="470" y="30" width="160" height="56" rx="10"/>${T(550,54,"20 mil + riesgo residual 10 mil","tb")}${T(550,73,"= −30 mil","tm")}
+<rect class="s3" x="470" y="160" width="160" height="56" rx="10"/>${T(550,184,"40% × −100 mil","tb")}${T(550,203,"= −40 mil","tm")}
+<line x1="400" y1="58" x2="468" y2="58" class="ln"/><line x1="400" y1="188" x2="468" y2="188" class="ln"/>`),
+curvaS:()=>SV(640,250,`
+<line x1="60" y1="210" x2="610" y2="210" class="ax"/><line x1="60" y1="210" x2="60" y2="20" class="ax"/>
+<path d="M60 210 C180 205 240 150 330 110 S 520 40 600 30" class="pv"/>
+<line x1="60" y1="130" x2="330" y2="130" class="ln" stroke-dasharray="4 4"/><line x1="330" y1="130" x2="330" y2="210" class="ln" stroke-dasharray="4 4"/>
+<line x1="60" y1="75" x2="445" y2="75" class="ln" stroke-dasharray="4 4"/><line x1="445" y1="75" x2="445" y2="210" class="ln" stroke-dasharray="4 4"/>
+${T(330,228,"P50: 110 días","tb")}${T(445,228,"P80: 125 días","tb")}${T(34,22,"Prob.","tm")}${T(40,134,"50%","tm")}${T(40,79,"80%","tm")}
+${T(600,160,"Probabilidad acumulada de terminar antes de cada fecha","tm","end")}`),
+};
+
+const CH=[
+{id:"c0",n:0,ic:"🧭",t:"Panorama: riesgo en la dirección de proyectos y el examen PMI-RMP",ex:"Base de todos los dominios",min:30,
+sub:"Qué es el riesgo, cómo se gestiona en PMI, cómo evolucionó en el PMBOK 6, 7 y 8, y cómo es el examen.",
+b:()=>
+H("1. ¿Qué es un riesgo?")+
+P("Un <b>riesgo</b> es un evento o condición incierta que, de ocurrir, tiene un efecto sobre uno o más objetivos. Puede ser una <b>amenaza</b> (efecto negativo) o una <b>oportunidad</b> (efecto positivo). La <b>gestión del riesgo</b> busca aumentar la probabilidad e impacto de las oportunidades y reducir las de las amenazas.")+
+CC([["❓","Riesgo","Evento incierto con efecto en los objetivos."],["🔥","Problema (issue)","Riesgo que ya ocurrió o situación actual."],["📦","Supuesto","Se considera verdadero sin pruebas."],["🔒","Restricción","Limitación que condiciona el proyecto."],["🌫️","Incertidumbre","Falta de conocimiento sobre eventos o resultados."],["🔁","Resiliencia","Capacidad de absorber y recuperarse de impactos."]])+
+H("2. Riesgo individual y riesgo general del proyecto")+
+VS(["Riesgo individual",["Un evento o condición específica","Se registra en el <b>registro de riesgos</b> con dueño y respuesta","Ejemplo: el proveedor entrega tarde el servidor"]],["Riesgo general del proyecto",["Efecto acumulado de todas las fuentes de incertidumbre","Se evalúa como exposición total del proyecto","Ejemplo: 35% de probabilidad de terminar dentro del presupuesto"]])+
+H("3. Ciclo de gestión del riesgo")+DG.ciclo()+
+P("Los cinco dominios del examen coinciden con el ciclo: <b>planificar la estrategia</b>, <b>identificar</b>, <b>analizar</b>, <b>responder</b> y <b>monitorear y cerrar</b>. Cada capítulo del portal corresponde a una de estas etapas.")+
+H("4. El riesgo en el PMBOK 6, 7 y 8")+
+VS(["PMBOK 6.ª edición",["Área de conocimiento <b>Riesgos</b> con <b>7 procesos</b>: planificar la gestión, identificar, análisis cualitativo, análisis cuantitativo, planificar respuestas, implementar respuestas y monitorear","Es la estructura clásica que sirve de mapa para el examen"]],["PMBOK 7.ª y 8.ª ediciones",["La 7.ª integra el riesgo en el dominio de desempeño <b>incertidumbre</b>, junto con ambigüedad, complejidad y volatilidad","La 8.ª tiene un dominio de <b>riesgo</b> con <b>6 procesos</b>","El enfoque se vuelve más adaptable (predictivo, ágil, híbrido)"]])+
+CALL("wa","Los detalles de las 7.ª y 8.ª ediciones provienen de la lista de dominios publicada por PMI y de resúmenes de terceros; contrasta los nombres exactos con tu ejemplar. PMI también publica un estándar específico sobre gestión de riesgos en portafolios, programas y proyectos; verifica qué edición recomienda el examen vigente.")+
+H("5. El examen PMI-RMP")+
+CC([["📝","Preguntas","115 preguntas (según PMI)."],["⏱️","Duración","150 minutos."],["📊","Dominios","Estrategia y planificación 22% · Identificación 23% · Análisis 23% · Respuesta 13% · Monitoreo y cierre 19%."],["🎓","Requisitos","Tres combinaciones de educación, experiencia en riesgos (dentro de 5 años) y horas de formación."]])+
+CALL("wa","<b>Dato por confirmar:</b> PMI publica 115 preguntas y 150 minutos. Fuentes de terceros indican que 15 no se califican y mencionan una tarifa de USD 520 (miembros) y 670 (no miembros); no lo verifiqué en PMI. Confirma requisitos, fechas y tarifas en pmi.org antes de inscribirte.")+
+CALL("ex","El examen mide <b>criterio</b>: elegir la técnica correcta en cada situación, interpretar números simples (EMV, reservas) y actuar con ética. Dedica la mitad de tu estudio a escenarios.")+
+SUM(["Riesgo = evento incierto con efecto positivo o negativo.","Hay riesgos individuales y riesgo general del proyecto.","Los cinco dominios del examen siguen el ciclo de gestión del riesgo.","PMBOK 6: 7 procesos de riesgo; PMBOK 8: dominio de riesgo con 6 procesos.","115 preguntas, 150 minutos."])},
+
+{id:"c1",n:1,ic:"🗺️",t:"Estrategia y planificación del riesgo",ex:"Dominio Risk Strategy and Planning (22%)",min:40,
+sub:"Cómo se decide cuánto riesgo aceptar y cómo se organiza la gestión antes de empezar.",
+b:()=>
+H("1. Apetito, tolerancia y umbral")+
+P("Antes de gestionar riesgos hay que saber <b>cuánto riesgo está dispuesta a aceptar la organización</b>. Estos tres conceptos se confunden con frecuencia:")+
+CC([["🎯","Apetito al riesgo","Nivel general de riesgo que la organización está dispuesta a buscar para lograr sus objetivos."],["📏","Tolerancia al riesgo","Variación aceptable respecto a un objetivo (por ejemplo, ±10% del costo)."],["🚦","Umbral de riesgo","Nivel específico de exposición por encima del cual se actúa o se escala."],["🧠","Actitud ante el riesgo","Postura de personas o grupos: aversa, neutral o buscadora."]])+
+CALL("eg","Una empresa tiene bajo apetito en seguridad, pero alto apetito en innovación. Su tolerancia para sobrecosto es 10% y su umbral de escalamiento es “cualquier riesgo con puntaje mayor a 12”. Un riesgo con puntaje 15 se escala al comité.")+
+H("2. El plan de gestión del riesgo")+
+CC([["👥","Roles y responsabilidades","Quién identifica, analiza, responde y aprueba."],["📚","Metodología","Técnicas, herramientas y fuentes de datos."],["📐","Escalas de probabilidad e impacto","Definiciones comunes por nivel."],["🧱","Estructura de desglose de riesgos (RBS)","Clasificación jerárquica de fuentes de riesgo."],["🚦","Umbrales y apetito","Cuándo actuar y quién decide."],["📅","Frecuencia y formato de revisión","Cuándo se revisan y se reportan."],["💵","Presupuesto y reservas","Fondos para gestionar y responder."]])+
+H("3. Pasos para planificar")+
+STEPS([["Entender el contexto","Estrategia, cultura, ambiente regulatorio, restricciones y objetivos del proyecto."],["Involucrar a los interesados","Acordar apetito, tolerancias y criterios de decisión."],["Definir escalas","Definir qué significa probabilidad “alta” e impacto “muy alto” en costo, plazo, alcance y calidad."],["Asignar roles","Dueños de riesgo, responsables de acciones, comité."],["Adaptar el enfoque","Predictivo, ágil o híbrido; proyecto grande o pequeño."],["Aprobar y comunicar","El plan se aprueba y se comunica a los interesados."]])+
+CALL("tip","Un plan sin <b>escalas definidas</b> produce clasificaciones subjetivas: “alta” significa cosas distintas para cada persona.")+
+H("4. Escalas y matriz")+DG.matriz()+
+P("Las escalas pueden ser <b>ordinales</b> (muy baja a muy alta) o <b>cardinales</b> (porcentajes y montos). Ejemplo: impacto en costo “alto” = más de USD 100 mil; probabilidad “alta” = más de 60%. La matriz multiplica (o combina) probabilidad e impacto para clasificar.")+
+H("5. Reservas y financiamiento")+
+VS(["Reserva para contingencias",["Para riesgos <b>identificados</b> (aceptados activamente)","Forma parte de la línea base de costos o cronograma","La usa el director de proyecto"]],["Reserva de gestión",["Para riesgos <b>no identificados</b> (desconocidos)","Está fuera de la línea base","Requiere aprobación de la dirección"]])+
+H("6. Adaptar al enfoque")+
+P("En proyectos <b>predictivos</b> se hace un análisis profundo al inicio y revisiones periódicas. En <b>ágiles</b>, el riesgo se gestiona en cada iteración: se incluyen riesgos en el backlog, se priorizan junto al valor y se revisan en la planificación y retrospectiva. En <b>híbridos</b> se combinan ambos.")+
+CALL("ex","Cuando una pregunta dice que el proyecto es ágil, la respuesta correcta incluye <b>revisión iterativa del riesgo</b> y <b>riesgos visibles en el backlog</b>, no un plan inmutable de 50 páginas.")+
+SUM(["Apetito = disposición general; tolerancia = variación aceptable; umbral = nivel de actuación.","El plan define roles, escalas, umbrales, frecuencia y presupuesto.","Define escalas claras para evitar subjetividad.","Contingencia: riesgos conocidos; gestión: desconocidos.","Adapta el enfoque al ciclo de vida del proyecto."])},
+
+{id:"c2",n:2,ic:"🔎",t:"Identificación de riesgos",ex:"Dominio Risk Identification (23%)",min:40,
+sub:"Descubrir, describir y registrar los riesgos de forma clara y útil.",
+b:()=>
+H("1. Técnicas de identificación")+
+CC([["🧠","Lluvia de ideas","Genera muchas ideas en grupo sin críticas iniciales."],["🎤","Entrevistas","Preguntas a expertos e interesados."],["📋","Listas de verificación","Basadas en proyectos anteriores."],["🔮","Técnica Delphi","Expertos anónimos con rondas hasta lograr consenso."],["⚖️","Análisis FODA","Fortalezas, oportunidades, debilidades y amenazas."],["🪜","Análisis de causa raíz","Encontrar la causa de fondo."],["📐","Análisis de supuestos y restricciones","Revisar si los supuestos son válidos."],["📄","Revisión de documentos","Plan, requisitos, contratos."],["🧪","Análisis de lecciones aprendidas","Riesgos que ocurrieron antes."]])+
+H("2. Cómo escribir un buen riesgo")+
+P("Un riesgo mal escrito es una preocupación vaga (“el proveedor podría fallar”). Uno bien escrito sigue el patrón <b>causa → evento → efecto</b>:")+
+CALL("eg","<b>Debido a</b> que el proveedor único tiene problemas de capacidad (causa), <b>puede ocurrir</b> que entregue el equipo con 6 semanas de atraso (evento), <b>lo que provocaría</b> un retraso del hito de puesta en marcha y multas contractuales (efecto).")+
+CALL("tip","Un buen enunciado separa causa, evento y efecto. Así se puede diseñar una respuesta que ataque la causa (preventiva) o el efecto (correctiva).")+
+H("3. Fuentes y categorías (RBS)")+
+P("Una <b>estructura de desglose de riesgos</b> ordena las fuentes en categorías: técnico, externo, organizacional y de gestión del proyecto, con subcategorías (por ejemplo, requisitos, tecnología, proveedores, regulación, recursos, estimaciones). Sirve como lista de verificación estructurada.")+
+H("4. Registro de riesgos")+
+CC([["🆔","Identificador y enunciado","Un código y la descripción causa-evento-efecto."],["🏷️","Categoría","Según la RBS."],["📊","Probabilidad e impacto","Calificación inicial."],["👤","Dueño del riesgo","Persona responsable de monitorearlo."],["🛠️","Respuesta","Estrategia y acciones."],["🚨","Disparadores","Señales de alerta de que el riesgo está por ocurrir."],["📅","Estado y fecha","Abierto, en tratamiento, cerrado."]])+
+CALL("wa","Cada riesgo debe tener <b>un dueño</b>. Un riesgo sin dueño es un riesgo sin gestionar.")+
+H("5. Sesgos que distorsionan la identificación")+
+CC([["⚓","Anclaje","Quedarse con el primer dato o estimación."],["😀","Optimismo","Subestimar la probabilidad de problemas."],["🧩","Confirmación","Buscar solo información que confirme lo creído."],["🐑","Pensamiento de grupo","Evitar discrepar para mantener la armonía."],["📏","Falacia de planificación","Subestimar el tiempo y costo de las tareas."]])+
+P("Para reducirlos: involucrar a perspectivas diversas, usar técnicas anónimas (Delphi), pedir a alguien que haga de “abogado del diablo” y apoyarse en datos históricos.")+
+H("6. Identificar oportunidades")+
+P("No todo riesgo es amenaza. Identificar oportunidades (por ejemplo, un nuevo proveedor más barato, una tecnología que acelera el trabajo) puede generar ahorro o beneficios. Se registran y se gestionan igual que las amenazas, con estrategias de respuesta propias.")+
+CALL("ex","Si la pregunta menciona que el equipo identifica riesgos solo en una reunión inicial, la mejor práctica es <b>identificar de forma continua</b> y revisar el registro periódicamente.")+
+SUM(["Combina varias técnicas: no hay una única mejor.","Escribe riesgos con la estructura causa → evento → efecto.","Usa una RBS como lista de verificación.","Cada riesgo tiene un dueño y disparadores.","Cuida los sesgos y busca también oportunidades."])},
+
+{id:"c3",n:3,ic:"📊",t:"Análisis cualitativo",ex:"Dominio Risk Analysis (23%)",min:35,
+sub:"Priorizar riesgos de forma rápida según qué tan probables y graves son.",
+b:()=>
+H("1. ¿Para qué sirve?")+
+P("El <b>análisis cualitativo</b> prioriza los riesgos individuales para decidir a cuáles dedicar más atención y análisis. Es rápido y barato. Es un paso previo al análisis cuantitativo, que solo se hace para los riesgos más relevantes.")+
+H("2. Probabilidad e impacto")+DG.matriz()+
+P("<b>Probabilidad</b>: qué tan posible es que ocurra. <b>Impacto</b>: qué tan grande es el efecto sobre costo, cronograma, alcance o calidad. La <b>matriz de probabilidad e impacto</b> asigna un puntaje: los de zona roja se tratan primero. Puntaje = probabilidad × impacto.")+
+H("3. Otras dimensiones de evaluación")+
+CC([["🕒","Proximidad","Qué tan pronto podría ocurrir."],["⚡","Urgencia","Qué tan rápido se debe responder."],["🔍","Detectabilidad","Qué tan fácil es notar que está por ocurrir."],["🔗","Dependencia","Relación con otros riesgos."],["📈","Velocidad de impacto","Qué tan rápido se siente el efecto una vez ocurrido."],["🌱","Propincuidad (cercanía)","Qué tan cerca está el riesgo del equipo o proyecto."]])+
+H("4. Evaluación de la calidad de los datos")+
+P("Si la información es poco confiable, el análisis también. Se evalúa <b>qué tan buenos</b> son los datos: grado de comprensión del riesgo, disponibilidad de datos, calidad, fiabilidad e integridad. Una probabilidad “alta” basada en una opinión sin evidencia vale menos que una basada en datos históricos.")+
+H("5. Categorización")+
+P("Se agrupan riesgos por <b>fuente</b> (RBS), <b>área afectada</b> o <b>fase</b> para identificar causas comunes. Si muchos riesgos vienen de un mismo origen, vale la pena atacar la causa.")+
+H("6. Representaciones")+
+CC([["🗂️","Matriz","Clasifica por probabilidad e impacto."],["🫧","Gráfico de burbujas","Agrega una tercera dimensión (por ejemplo, detectabilidad)."],["🌡️","Mapa de calor","Visualiza la concentración de riesgos."]])+
+CALL("ex","El análisis cualitativo <b>no calcula montos</b>. Si la pregunta pide un número en dólares o una probabilidad de cumplir una fecha, es análisis cuantitativo.")+
+CALL("eg","Un riesgo tiene probabilidad alta (3) e impacto medio (2): puntaje 6, zona roja. Otro tiene probabilidad baja (1) e impacto alto (3): puntaje 3, zona amarilla. Aun así, si el impacto sería catastrófico, se puede decidir actuar con el segundo (decisión del apetito).")+
+SUM(["Prioriza con rapidez usando la matriz de probabilidad e impacto.","Considera proximidad, urgencia y detectabilidad.","Evalúa la calidad de los datos.","Categoriza para encontrar causas comunes.","No calcula dinero: eso es cuantitativo."])},
+
+{id:"c4",n:4,ic:"🎲",t:"Análisis cuantitativo",ex:"Dominio Risk Analysis (23%)",min:45,
+sub:"Convertir la incertidumbre en números: EMV, árboles, simulación y sensibilidad.",
+b:()=>
+H("1. ¿Cuándo usarlo?")+
+P("Se usa para los riesgos más importantes o cuando se necesita estimar el efecto <b>combinado</b> de todos los riesgos sobre cronograma y costo. Requiere datos de calidad y más esfuerzo; no siempre se justifica en proyectos pequeños.")+
+H("2. Valor monetario esperado (EMV)")+
+P("<b>EMV = probabilidad × impacto</b>. Las amenazas son negativas y las oportunidades positivas. Ejemplo: 30% de que ocurra un sobrecosto de USD 50.000 → EMV = −15.000. Una oportunidad con 40% y ahorro de USD 20.000 → EMV = +8.000. Para riesgos independientes se pueden sumar para estimar la reserva.")+
+CALL("eg","Riesgo A: 20% × −100.000 = −20.000. Riesgo B: 50% × −30.000 = −15.000. Oportunidad C: 10% × +80.000 = +8.000. EMV total = −27.000 → una referencia para la reserva de contingencia (se complementa con otros análisis).")+
+H("3. Árbol de decisión")+DG.arbol()+
+P("Compara opciones sumando el costo de cada opción más el EMV del riesgo remanente. Se elige la opción con el mejor valor esperado. En el ejemplo, la opción A (−30.000) es mejor que aceptar (−40.000).")+
+H("4. Análisis de sensibilidad (tornado)")+DG.tornado()+
+P("Muestra <b>qué variable influye más</b> en el resultado cuando cada una varía dentro de su rango. Las barras más largas indican mayor sensibilidad: es donde conviene concentrar la gestión.")+
+H("5. Simulación Monte Carlo")+DG.curvaS()+
+P("Ejecuta miles de simulaciones con rangos o distribuciones de probabilidad para estimar duración o costo. Entrega una <b>curva de probabilidad acumulada</b> (curva S): permite decir, por ejemplo, “hay 50% de probabilidad de terminar en 110 días y 80% en 125 días”. La <b>reserva</b> puede fijarse según el nivel de confianza deseado (por ejemplo, P80 menos la estimación base).")+
+CC([["📐","Distribución triangular","Mínimo, más probable y máximo."],["🔔","Distribución beta (PERT)","Pesa más el valor más probable."],["📊","Distribución normal","Simétrica alrededor de la media."],["🎰","Iteraciones","Número de simulaciones; miles."]])+
+H("6. Otras técnicas")+
+CC([["🌳","Modelado de escenarios","Mejor caso, caso base y peor caso."],["🧮","Análisis de la ruta crítica con riesgo","Evalúa índice de criticidad de las actividades."],["📈","Riesgo general (exposición)","Combina todas las fuentes de incertidumbre."]])+
+CALL("ex","<b>Cuantitativo</b> = números (dólares, días, probabilidad de cumplir una fecha). <b>Cualitativo</b> = prioridad. Si no hay datos fiables, primero mejora los datos.")+
+SUM(["EMV = probabilidad × impacto; amenazas negativas, oportunidades positivas.","El árbol de decisión compara opciones por valor esperado.","El tornado muestra la sensibilidad de cada variable.","Monte Carlo entrega curvas S y niveles de confianza (P50, P80).","El análisis cuantitativo requiere datos de calidad."])},
+
+{id:"c5",n:5,ic:"🛡️",t:"Respuesta a los riesgos",ex:"Dominio Risk Response (13%)",min:40,
+sub:"Qué hacer con cada riesgo: estrategias, planes, reservas y efectos secundarios.",
+b:()=>
+H("1. Estrategias para amenazas")+
+CC([["⬆️","Escalar","Pasar el riesgo a un nivel con autoridad (fuera del alcance del proyecto)."],["🚫","Evitar","Eliminar la causa o cambiar el plan para que el riesgo no ocurra."],["📤","Transferir","Pasar el impacto a un tercero (seguros, garantías, contratos de precio fijo)."],["🔻","Mitigar","Reducir probabilidad y/o impacto."],["✅","Aceptar","Reconocer el riesgo; activa (con reserva o plan) o pasiva."]])+
+H("2. Estrategias para oportunidades")+
+CC([["⬆️","Escalar ","Pasar la oportunidad a quien pueda aprovecharla."],["🚀","Explotar","Asegurar que ocurra."],["🤝","Compartir","Asociarse con un tercero mejor posicionado."],["🔺","Mejorar","Aumentar probabilidad o impacto positivo."],["✅","Aceptar ","Estar dispuesto a aprovecharla si ocurre."]])+
+H("3. Planes de contingencia y alternativos")+
+VS(["Respuesta contingente (plan B)",["Se activa <b>solo si ocurre un disparador</b>","Ejemplo: si el proveedor A no entrega el día 30, se activa el proveedor B","Se acompaña de una reserva"]],["Plan de reserva (fallback)",["Se usa si la respuesta principal no funciona","Se prepara con anticipación","Aumenta la resiliencia"]])+
+H("4. Riesgos residuales, secundarios y soluciones de emergencia")+
+CC([["🌱","Riesgo residual","Queda después de aplicar la respuesta."],["🔁","Riesgo secundario","Aparece como consecuencia de la respuesta."],["🩹","Solución de emergencia (workaround)","Respuesta no planificada a un riesgo que ocurrió y no tenía plan."]])+
+H("5. Elegir una respuesta")+
+STEPS([["Evaluar la exposición","Probabilidad × impacto y apetito."],["Considerar costo-beneficio","La respuesta no debe costar más que el riesgo."],["Verificar viabilidad","Que sea realista y aceptada por los interesados."],["Analizar efectos secundarios","¿Genera riesgos nuevos?"],["Asignar dueño y acciones","Quién, qué y cuándo."],["Actualizar plan y registro","Documentar costo, cronograma y reservas."]])+
+CALL("ex","La respuesta debe ser <b>proporcional</b>: si el costo de mitigar supera el EMV del riesgo, generalmente se acepta. Y un seguro <b>transfiere</b>, no elimina.")+
+H("6. Respuestas al riesgo general del proyecto")+
+P("Las estrategias aplican también al conjunto: <b>evitar</b> (cancelar o cambiar el alcance), <b>explotar</b> (aprovechar la incertidumbre positiva), <b>transferir o compartir</b> (contratos, alianzas), <b>mitigar o mejorar</b> (reducir la incertidumbre total) y <b>aceptar</b>.")+
+CALL("eg","El proyecto tiene 35% de probabilidad de terminar dentro del presupuesto. La dirección decide fijar una reserva en el nivel P80 y trasladar parte del riesgo a un proveedor con contrato de precio máximo garantizado.")+
+SUM(["Amenazas: escalar, evitar, transferir, mitigar, aceptar.","Oportunidades: escalar, explotar, compartir, mejorar, aceptar.","Contingente: se activa con disparador; fallback: respaldo.","Residual (queda) vs. secundario (nace de la respuesta).","La respuesta debe ser proporcional y tener dueño."])},
+
+{id:"c6",n:6,ic:"📈",t:"Monitoreo, control y cierre de riesgos",ex:"Dominio Monitor and Close Risks (19%)",min:35,
+sub:"Mantener vivo el análisis, verificar que las respuestas funcionan y cerrar aprendiendo.",
+b:()=>
+H("1. Qué se monitorea")+
+STEPS([["Ejecución de respuestas","¿Se hicieron las acciones? ¿Funcionaron?"],["Disparadores","Señales de alerta de riesgos que podrían ocurrir."],["Riesgos residuales y secundarios","Se registran y se tratan."],["Riesgos nuevos","Aparecen durante el proyecto."],["Reservas","¿Alcanzan? ¿Se están usando según lo previsto?"],["Efectividad del proceso","¿Se está gestionando bien el riesgo?"]])+
+H("2. Técnicas de monitoreo")+
+CC([["🔍","Auditorías de riesgos","Evalúan la efectividad del proceso y de las respuestas."],["📅","Revisiones de riesgos","Reuniones periódicas para actualizar el registro."],["📊","Análisis de variación y tendencias","Compara plan y real; detecta desvíos."],["📐","Análisis del desempeño técnico","Compara logros técnicos con lo planificado."],["💵","Análisis de reservas","Compara reserva restante con riesgo restante."],["📉","Indicadores clave de riesgo (KRI)","Señales cuantificables de que la exposición aumenta."]])+
+H("3. Gestión de reservas")+
+P("Se compara la <b>reserva de contingencia restante</b> con la <b>exposición al riesgo restante</b>. Si la reserva es insuficiente, se pide más fondos o se ajusta el alcance. Si sobra mucha, se evalúa liberarla. Se registra cada uso de la reserva con el riesgo asociado.")+
+CALL("eg","Reserva restante: USD 40.000. Riesgos abiertos con EMV total: USD 55.000. Hay una brecha de USD 15.000: el director lleva el tema al patrocinador con opciones (ampliar la reserva, reducir alcance o aplicar respuestas adicionales).")+
+H("4. Informes de riesgo")+
+P("Un <b>informe de riesgos</b> resume la exposición general, los principales riesgos individuales, el estado de las respuestas y las tendencias. Debe ser corto y orientado a decisiones. Se adapta a la audiencia: el comité ejecutivo necesita pocos riesgos con acciones; el equipo necesita detalle.")+
+H("5. Cierre")+
+CC([["📝","Lecciones aprendidas","Qué riesgos ocurrieron, qué funcionó y qué no."],["🗃️","Archivo del registro","Datos históricos para proyectos futuros."],["🔚","Cierre de riesgos","Los riesgos se marcan como cerrados (ocurrieron o ya no aplican)."],["📤","Transferencia","Riesgos que persisten se traspasan a operaciones."]])+
+CALL("ex","Cerrar un proyecto sin registrar lecciones sobre riesgos es un error. El conocimiento de riesgos mejora las estimaciones y listas de verificación futuras.")+
+SUM(["Monitorea respuestas, disparadores, riesgos nuevos y reservas.","Técnicas: auditorías, revisiones, variación y tendencias, análisis de reservas, KRI.","Compara reserva restante con exposición restante.","Los informes deben ser breves y accionables.","Al cierre se capturan lecciones y se archiva el registro."])},
+
+{id:"c7",n:7,ic:"🏢",t:"Riesgo en ágil, programas, portafolios y empresa",ex:"Todos los dominios · adaptación al contexto",min:40,
+sub:"Cómo cambia la gestión del riesgo según el enfoque y el nivel organizacional.",
+b:()=>
+H("1. Riesgo en entornos ágiles")+
+CC([["🔁","Iteraciones cortas","Reducen la incertidumbre con retroalimentación frecuente."],["📚","Riesgos en el backlog","Se priorizan junto con el valor."],["🧪","Spike","Investigación breve para reducir incertidumbre técnica."],["📉","Burndown de riesgo","Muestra cómo disminuye la exposición."],["🔍","Retrospectivas","Revisan riesgos y mejoras."]])+
+P("En ágil, el riesgo se aborda con <b>transparencia</b>, <b>inspección</b> y <b>adaptación</b>. Se priorizan primero los elementos más inciertos o de mayor valor y riesgo para aprender cuanto antes.")+
+H("2. Riesgo a nivel de programa y portafolio")+
+VS(["Programa",["Riesgos que afectan a varios proyectos o a los beneficios del programa","Dependencias entre proyectos","Riesgos de integración y de beneficios"]],["Portafolio",["Riesgos que afectan a la estrategia y al retorno global","Concentración (muchos proyectos con el mismo proveedor)","Equilibrio entre iniciativas de alto y bajo riesgo"]])+
+H("3. Gestión de riesgos empresariales (ERM)")+
+P("La <b>gestión de riesgos empresariales</b> trata el riesgo de toda la organización: estratégico, operacional, financiero, de cumplimiento y reputacional. El riesgo de proyectos debe <b>alimentar</b> y <b>alinearse</b> con ese marco, por ejemplo usando las mismas escalas, el mismo apetito y los mismos canales de escalamiento.")+
+CALL("tip","Los riesgos se <b>escalan</b> cuando superan la autoridad del proyecto o afectan a otros proyectos o a la organización. Escalar no es un fracaso: es la ruta correcta.")+
+H("4. Modelos de tres líneas")+
+CC([["1️⃣","Primera línea","La gerencia y los equipos que gestionan el riesgo diariamente."],["2️⃣","Segunda línea","Funciones de riesgo y cumplimiento que supervisan y asesoran."],["3️⃣","Tercera línea","Auditoría interna que da aseguramiento independiente."]])+
+H("5. Riesgos emergentes y de nuevas tecnologías")+
+P("Temas actuales: <b>inteligencia artificial</b> (sesgos, privacidad, dependencia de proveedores), <b>ciberseguridad</b>, <b>cadena de suministro</b>, <b>cumplimiento regulatorio</b> y <b>sostenibilidad</b>. La IA puede ayudar a detectar patrones y anticipar riesgos, pero requiere datos de calidad y supervisión humana.")+
+CALL("ex","Cuando un riesgo pueda afectar a otros proyectos o requiera una decisión estratégica, la respuesta correcta es <b>escalar</b> a la instancia que tiene autoridad.")+
+SUM(["En ágil, el riesgo se gestiona en cada iteración y en el backlog.","En programas y portafolios, se agregan riesgos y se analizan dependencias.","El riesgo de proyectos se alinea con el ERM.","Escalar es una respuesta legítima.","IA, ciberseguridad y sostenibilidad son riesgos emergentes."])},
+
+{id:"c8",n:8,ic:"🤝",t:"Personas, comunicación y ética en la gestión de riesgos",ex:"Habilidades transversales a todos los dominios",min:30,
+sub:"Gestionar riesgos es gestionar personas: percepciones, cultura, comunicación y conducta ética.",
+b:()=>
+H("1. Cultura de riesgo")+
+P("La <b>cultura de riesgo</b> es la forma en que las personas piensan y actúan ante el riesgo. En una cultura sana, se habla de riesgos <b>sin miedo a castigos</b>, se escalan los problemas a tiempo y se aprende de los errores. En una cultura mala, los riesgos se ocultan hasta que son crisis.")+
+H("2. Percepción del riesgo")+
+CC([["😨","Aversión","Prefiere evitar la incertidumbre."],["⚖️","Neutralidad","Decide por valor esperado."],["🎰","Búsqueda de riesgo","Acepta incertidumbre por mayor retorno."],["👥","Diferencias culturales","La percepción varía entre personas y países."]])+
+H("3. Comunicación de riesgos")+
+CC([["🧑‍💼","Ejecutivos y comité","Pocos riesgos clave, efecto en objetivos y decisiones requeridas."],["🧑‍💻","Equipo de proyecto","Acciones, responsables y fechas."],["🏢","Clientes y proveedores","Lo que les afecta y lo que se espera de ellos."],["🏛️","Reguladores","Según las exigencias normativas."]])+
+CALL("tip","Comunica el riesgo con <b>números claros</b> y <b>opciones</b>: “hay 30% de probabilidad de retraso de 4 semanas; podemos reducirlo a 10% con un costo de USD 15.000”. Evita la ambigüedad de “podría haber problemas”.")+
+H("4. Facilitación y negociación")+
+P("Las sesiones de identificación y análisis requieren <b>facilitación</b>: dar la palabra a todos, evitar que una persona domine, mantener el foco y registrar acuerdos. La negociación ayuda a acordar umbrales, responsables y presupuestos de respuesta.")+
+H("5. Ética")+
+CC([["🛡️","Responsabilidad","Reportar riesgos conocidos y asumir decisiones."],["🙏","Respeto","Escuchar todas las opiniones, incluso las discrepantes."],["⚖️","Equidad","Evitar conflictos de interés."],["🔎","Honestidad","No ocultar ni minimizar riesgos."]])+
+CALL("ex","Si un directivo pide minimizar un riesgo en un informe para no preocupar al cliente, la conducta correcta es <b>mantener la honestidad</b>, informar con transparencia y escalar si hay presión.")+
+CALL("eg","Un analista detecta que una prueba crítica podría fallar y retrasar el lanzamiento. El director le pide no incluirlo en el informe. El analista documenta el riesgo, lo discute con el director y, si persiste la presión, lo escala al patrocinador o al comité de ética.")+
+SUM(["La cultura de riesgo determina si los riesgos salen a la luz.","Entiende cómo percibe el riesgo cada interesado.","Comunica con números, opciones y decisiones.","Facilita para obtener buena información y consenso.","Ética: responsabilidad, respeto, equidad y honestidad."])}
+];
+
+const Q=[
+["c0","Un riesgo es:",["Un problema que ya ocurrió","Un evento incierto que afecta los objetivos","Una restricción","Un cambio aprobado"],1,"Incertidumbre + efecto sobre los objetivos."],
+["c0","A diferencia de un riesgo, un problema (issue):",["Es incierto","Ya ocurrió","Es siempre positivo","No afecta objetivos"],1,"El issue es un riesgo materializado."],
+["c0","Un supuesto es:",["Una verdad comprobada","Algo que se considera cierto sin comprobarlo","Un riesgo","Una restricción"],1,"Debe validarse porque si falla puede ser un riesgo."],
+["c0","¿Cuántos procesos de riesgo tiene el PMBOK 6?",["5","7","10","12"],1,"Planificar, identificar, cualitativo, cuantitativo, planificar respuestas, implementar respuestas y monitorear."],
+["c0","El examen PMI-RMP tiene (según PMI):",["100 preguntas y 120 min","115 preguntas y 150 min","180 preguntas y 240 min","150 preguntas y 180 min"],1,"115 preguntas y 150 minutos."],
+["c0","El dominio de mayor peso individual en el PMI-RMP es:",["Respuesta","Identificación y Análisis (23% cada uno)","Monitoreo y cierre","Ninguno"],1,"Identificación 23% y Análisis 23%."],
+["c0","El riesgo general del proyecto es:",["Un riesgo específico","El efecto acumulado de toda la incertidumbre","Un problema","Una restricción"],1,"Es la exposición total."],
+["c0","Una oportunidad es:",["Un riesgo con efecto positivo","Una restricción","Un problema","Un supuesto"],0,"Riesgo positivo."],
+["c1","El apetito al riesgo lo define normalmente:",["El equipo de proyecto","La alta dirección","El proveedor","El cliente final"],1,"Es una decisión estratégica."],
+["c1","“Se tolera un sobrecosto de hasta 10%” es un ejemplo de:",["Apetito","Tolerancia","Umbral","Supuesto"],1,"Variación aceptable respecto a un objetivo."],
+["c1","“Todo riesgo con puntaje mayor a 12 se escala al comité” es un:",["Apetito","Umbral","Supuesto","Contrato"],1,"Nivel específico que activa la acción."],
+["c1","¿Qué define las escalas de probabilidad e impacto?",["El plan de gestión del riesgo","El registro de riesgos","El informe de riesgos","El plan de comunicaciones"],0,"Se acuerdan al planificar."],
+["c1","La RBS (estructura de desglose de riesgos) sirve para:",["Calcular costos","Clasificar las fuentes de riesgo","Estimar duración","Asignar equipos"],1,"Organiza y categoriza fuentes de riesgo."],
+["c1","La reserva para contingencias cubre:",["Riesgos desconocidos","Riesgos identificados aceptados activamente","Cambios de alcance","Salarios"],1,"La reserva de gestión cubre los desconocidos."],
+["c1","En un proyecto ágil, la gestión del riesgo:",["Se hace solo al inicio","Se revisa de forma iterativa","Se elimina","Se delega al cliente"],1,"Se revisa en cada iteración."],
+["c1","Si no hay escalas definidas, ocurre que:",["Todo es objetivo","Cada persona califica de forma distinta","El proyecto termina antes","No hay riesgos"],1,"Subjetividad."],
+["c1","Una persona aversa al riesgo tiende a:",["Buscar riesgo","Evitar incertidumbre","Ignorar riesgos","Aceptar todo"],1,"Aversión al riesgo."],
+["c1","Antes de definir umbrales, conviene:",["Comprar software","Acordarlos con los interesados clave","Ocultarlos","Copiarlos de otro proyecto"],1,"Dependen del apetito de la organización."],
+["c2","Un buen enunciado de riesgo sigue el patrón:",["Problema → solución","Causa → evento → efecto","Costo → plazo → alcance","Quién → cuándo → dónde"],1,"Separa causa, evento y efecto."],
+["c2","La técnica Delphi:",["Es una reunión abierta","Usa expertos anónimos con rondas","Se hace con un único experto","Es un análisis financiero"],1,"Reduce sesgos de grupo."],
+["c2","Cada riesgo del registro debe tener:",["Un dueño","Un presupuesto","Un contrato","Un cronograma"],0,"Sin dueño nadie lo gestiona."],
+["c2","Los disparadores de riesgo son:",["Causas","Señales tempranas de que el riesgo podría ocurrir","Respuestas","Reservas"],1,"Activan planes de contingencia."],
+["c2","El sesgo de anclaje consiste en:",["Aferrarse a la primera información recibida","Ser demasiado optimista","Evitar disentir","Subestimar tiempos"],0,"La primera cifra condiciona la estimación."],
+["c2","Para reducir el pensamiento de grupo conviene:",["Evitar la discusión","Usar técnicas anónimas y un abogado del diablo","Que hable solo el jefe","Reducir participantes a uno"],1,"Fomenta perspectivas distintas."],
+["c2","Identificar riesgos debe hacerse:",["Una sola vez al inicio","De forma continua durante el proyecto","Solo al cierre","Solo ante un incidente"],1,"Es iterativo."],
+["c2","Una lista de verificación de riesgos tiene como limitación:",["Es muy cara","Puede limitar la búsqueda a lo ya conocido","No usa datos","Solo sirve en ágil"],1,"No cubre riesgos nuevos."],
+["c2","Un riesgo con efecto positivo se registra:",["No se registra","Como oportunidad en el mismo registro","Como problema","Como supuesto"],1,"Se gestiona igual que las amenazas, con otras estrategias."],
+["c2","El análisis de causa raíz permite:",["Priorizar por costo","Identificar el origen del riesgo para atacarlo","Estimar probabilidad","Cerrar el riesgo"],1,"Ataca la causa."],
+["c3","El puntaje de un riesgo con probabilidad 3 e impacto 2 en una matriz multiplicativa es:",["5","6","3","9"],1,"3 × 2 = 6."],
+["c3","El análisis cualitativo sirve para:",["Calcular dólares","Priorizar riesgos individuales","Cerrar riesgos","Aprobar el presupuesto"],1,"Es rápido y prioriza."],
+["c3","La proximidad indica:",["Qué tan lejos está el riesgo del equipo","Qué tan pronto podría ocurrir","El costo","El dueño"],1,"Tiempo hasta que podría ocurrir."],
+["c3","La evaluación de la calidad de los datos analiza:",["Qué tan fiables son los datos del riesgo","Costos","Cronograma","Contratos"],0,"Datos poco fiables reducen la utilidad del análisis."],
+["c3","Un riesgo difícil de detectar suele tener:",["Menor prioridad","Mayor prioridad","Misma prioridad","Ninguna prioridad"],1,"La detectabilidad aumenta la prioridad."],
+["c3","Un mapa de calor sirve para:",["Calcular EMV","Visualizar la concentración de riesgos","Estimar costos","Medir equipo"],1,"Visualiza riesgos por nivel."],
+["c3","Categorizar riesgos por fuente permite:",["Ver causas comunes","Eliminar riesgos","Medir costos","Cerrar el proyecto"],0,"Atacar causas comunes."],
+["c3","Si muchos riesgos vienen de un mismo proveedor, conviene:",["Ignorarlo","Atacar la causa común","Aceptarlos todos","Cerrarlos"],1,"Una acción puede reducir varios riesgos."],
+["c4","EMV = ",["Probabilidad × impacto","Probabilidad + impacto","Impacto / probabilidad","Probabilidad − impacto"],0,"Valor monetario esperado."],
+["c4","El EMV de un riesgo con 30% y −USD 50.000 es:",["-15.000","-20.000","-150.000","-50.000"],0,"0,3 × (−50.000) = −15.000."],
+["c4","La oportunidad con 40% y +USD 20.000 tiene EMV:",["8.000","80.000","20.000","60.000"],0,"0,4 × 20.000 = 8.000."],
+["c4","En un árbol de decisión se elige la opción con:",["Mayor costo","Mejor valor esperado","Mayor riesgo","Menor tiempo siempre"],1,"EMV más favorable."],
+["c4","El diagrama de tornado muestra:",["Probabilidades","Sensibilidad de cada variable en el resultado","Costos","Duraciones"],1,"Las barras más largas son las variables más influyentes."],
+["c4","La simulación Monte Carlo entrega:",["Una única fecha","Una distribución de probabilidades de resultados","Un registro","Un contrato"],1,"Curva S de probabilidad acumulada."],
+["c4","Si P80 es 125 días y la estimación base es 110, la reserva para P80 es:",["15 días","125 días","110 días","235 días"],0,"125 − 110 = 15."],
+["c4","El análisis cuantitativo se hace:",["Para todos los riesgos siempre","Para los riesgos más importantes con datos de calidad","Solo al cierre","Nunca"],1,"Requiere esfuerzo y datos."],
+["c4","P50 significa:",["50% de probabilidad de lograrlo o mejorarlo","50 días","50 riesgos","50 iteraciones"],0,"Mediana de la distribución."],
+["c4","La distribución que pesa más el valor más probable es:",["Triangular","Beta (PERT)","Uniforme","Ninguna"],1,"Beta/PERT."],
+["c4","Dos riesgos independientes con EMV −20.000 y −15.000, y una oportunidad con +8.000: el EMV total es:",["-27.000","-43.000","-35.000","+8.000"],0,"−20.000 − 15.000 + 8.000 = −27.000."],
+["c5","Un seguro es una estrategia de:",["Evitar","Transferir","Mitigar","Aceptar"],1,"Transfiere el impacto."],
+["c5","Cambiar el plan para eliminar la causa del riesgo es:",["Mitigar","Evitar","Transferir","Escalar"],1,"Evitar."],
+["c5","Para una oportunidad, “explotar” significa:",["Esperar","Asegurar que ocurra","Pasar a un tercero","Ignorar"],1,"Hacerla realidad."],
+["c5","Asociarse con un socio mejor posicionado para aprovechar una oportunidad es:",["Mejorar","Compartir","Explotar","Aceptar"],1,"Compartir."],
+["c5","Un riesgo que queda después de aplicar una respuesta es:",["Secundario","Residual","Nuevo","Latente"],1,"Residual."],
+["c5","Un riesgo que nace de la respuesta es:",["Residual","Secundario","Cero","Ninguno"],1,"Secundario."],
+["c5","Una solución de emergencia (workaround) es:",["Un plan preparado de antemano","Respuesta no planificada a un riesgo ocurrido","Una reserva","Un supuesto"],1,"No tenía plan."],
+["c5","El plan de contingencia se activa:",["Siempre","Cuando ocurre el disparador","Al cierre","Al inicio"],1,"Es una respuesta condicionada."],
+["c5","Si mitigar cuesta más que el EMV del riesgo, lo más razonable es:",["Mitigar siempre","Considerar aceptar","Duplicar el costo","Transferir sin análisis"],1,"La respuesta debe ser proporcional."],
+["c5","Una amenaza que supera la autoridad del director se:",["Acepta","Escala","Evita siempre","Cierra"],1,"Escalar."],
+["c5","La aceptación activa implica:",["Documentar y no hacer nada","Establecer reserva o plan","Ocultar","Ignorar"],1,"Se prepara la respuesta."],
+["c5","El dueño de la respuesta debe ser:",["Alguien sin autoridad","Una persona con autoridad y responsabilidad","Nadie","Un proveedor externo siempre"],1,"Debe poder ejecutar."],
+["c6","Las auditorías de riesgos evalúan:",["Costos","La efectividad del proceso y de las respuestas","Alcance","Calidad"],1,"Son revisiones independientes."],
+["c6","El análisis de reservas compara:",["Plazo y costo","Reserva restante con riesgo restante","Equipo y recursos","Alcance y calidad"],1,"Para saber si alcanzan."],
+["c6","Los KRI son:",["Indicadores clave de riesgo","Planes","Contratos","Reservas"],0,"Métricas que anticipan aumento de exposición."],
+["c6","Cuando un riesgo ocurre sin respuesta planificada, se aplica:",["Un plan de contingencia","Una solución de emergencia","Una reserva","Una auditoría"],1,"Workaround."],
+["c6","Al cerrar el proyecto, los riesgos:",["Se borran","Se registran las lecciones y se archiva el registro","Se ignoran","Se pasan al cliente sin documentar"],1,"Conocimiento para el futuro."],
+["c6","Un informe de riesgos para la alta dirección debe ser:",["Largo y técnico","Breve, con riesgos clave y decisiones","Un listado completo","Sin números"],1,"Orientado a decisiones."],
+["c6","Si la reserva restante es menor que la exposición restante, el director debe:",["Ignorarlo","Llevar el tema al patrocinador con opciones","Cerrar el proyecto","Ocultarlo"],1,"Informar y proponer opciones."],
+["c6","El análisis de variación y tendencias sirve para:",["Detectar desvíos que revelan riesgos","Estimar riesgos nuevos solo","Cerrar riesgos","Asignar dueños"],0,"Compara el plan y lo real."],
+["c6","Las revisiones periódicas del riesgo sirven para:",["Cumplir un trámite","Actualizar el registro y revisar disparadores","Cerrar el proyecto","Reducir costos"],1,"Mantienen vivo el análisis."],
+["c7","En ágil, un spike sirve para:",["Cerrar el Sprint","Reducir la incertidumbre técnica","Aumentar costos","Registrar riesgos"],1,"Investigación acotada."],
+["c7","En ágil, los riesgos se gestionan:",["En el backlog junto al valor","Fuera del proceso","Solo al final","Por el cliente"],0,"Se priorizan junto con el valor."],
+["c7","Un riesgo que afecta a varios proyectos de un programa se gestiona:",["En cada proyecto por separado","A nivel de programa","No se gestiona","Solo por el proveedor"],1,"El programa agrega y coordina."],
+["c7","ERM significa:",["Gestión de riesgos empresariales","Evaluación de riesgos del mercado","Estimación de riesgo mensual","Equipo de respuesta"],0,"Enterprise Risk Management."],
+["c7","La segunda línea de defensa:",["Gestiona el riesgo a diario","Supervisa y asesora (riesgo y cumplimiento)","Da aseguramiento independiente","Ejecuta proyectos"],1,"La tercera es auditoría interna."],
+["c7","La tercera línea de defensa es:",["Auditoría interna","El equipo del proyecto","Los gerentes","El proveedor"],0,"Aseguramiento independiente."],
+["c7","Un riesgo de portafolio típico es:",["Un defecto de una tarea","Concentración excesiva en un proveedor","Un error en un formulario","Un retraso de un día"],1,"Afecta a varias iniciativas."],
+["c7","El uso de IA en la gestión de riesgos requiere:",["Datos de calidad y supervisión humana","Ninguna revisión","Solo velocidad","Eliminar el análisis humano"],0,"Responsabilidad humana."],
+["c7","Un burndown de riesgo muestra:",["La reducción de la exposición al riesgo en el tiempo","El costo","La calidad","La velocidad"],0,"Exposición vs. iteraciones."],
+["c8","Una cultura de riesgo sana se caracteriza por:",["Ocultar problemas","Hablar de los riesgos sin miedo","Castigar al que reporta","No documentar"],1,"Seguridad psicológica."],
+["c8","Ante presión para minimizar un riesgo en un informe, lo correcto es:",["Obedecer","Mantener la honestidad y escalar si persiste","Cambiar el informe","Renunciar sin avisar"],1,"Honestidad ante todo."],
+["c8","Al comunicar un riesgo a un ejecutivo, conviene:",["Dar mucho detalle técnico","Dar cifras claras, opciones y la decisión requerida","Usar términos vagos","Esperar a que pregunte"],1,"Comunicación orientada a decisión."],
+["c8","Una persona con actitud aversa al riesgo suele:",["Aceptar altos riesgos","Preferir opciones más seguras","Ignorar el riesgo","Evitar hablar"],1,"Prefiere menor incertidumbre."],
+["c8","Un facilitador de una sesión de riesgos debe:",["Dominar la conversación","Dar la palabra a todos y mantener el foco","Evitar discrepancias","Decidir solo"],1,"Facilita la participación."],
+["c8","El conflicto de interés se evita con:",["Ocultarlo","Declararlo y gestionarlo con transparencia","Ignorarlo","Delegarlo sin informar"],1,"Equidad."],
+["c8","Los valores éticos de PMI incluyen:",["Responsabilidad, respeto, equidad y honestidad","Velocidad y costo","Poder y estatus","Competencia y secreto"],0,"Código de ética."],
+["c8","El analista detecta un riesgo crítico que el director quiere omitir. Primero debería:",["Callar","Documentarlo y discutirlo con el director","Publicarlo en redes","Cambiar el registro"],1,"Se intenta resolver con transparencia y se escala si hace falta."]
+];
+const CARDS=[
+["c0","Riesgo","Evento incierto que, si ocurre, afecta los objetivos (para bien o para mal)."],
+["c0","Problema (issue)","Riesgo que ya ocurrió."],
+["c0","Supuesto","Se considera cierto sin comprobarlo."],
+["c0","Dominios PMI-RMP","Estrategia y planificación 22% · Identificación 23% · Análisis 23% · Respuesta 13% · Monitoreo y cierre 19%."],
+["c0","Formato del examen","115 preguntas, 150 minutos."],
+["c1","Apetito al riesgo","Nivel general de riesgo que la organización está dispuesta a asumir."],
+["c1","Tolerancia al riesgo","Variación aceptable respecto de un objetivo."],
+["c1","Umbral de riesgo","Nivel de exposición que activa una acción o escalamiento."],
+["c1","RBS","Estructura de desglose de riesgos: clasifica fuentes de riesgo."],
+["c1","Reserva de contingencia","Para riesgos identificados; dentro de la línea base."],
+["c1","Reserva de gestión","Para riesgos desconocidos; fuera de la línea base."],
+["c2","Enunciado del riesgo","Causa → evento → efecto."],
+["c2","Técnica Delphi","Expertos anónimos con rondas hasta consenso."],
+["c2","Disparador","Señal temprana de que un riesgo podría ocurrir."],
+["c2","Dueño del riesgo","Persona responsable de monitorear y responder."],
+["c2","Sesgo de anclaje","Aferrarse a la primera información recibida."],
+["c2","Pensamiento de grupo","Evitar discrepar para mantener la armonía."],
+["c3","Matriz de probabilidad e impacto","Clasifica riesgos con puntaje = probabilidad × impacto."],
+["c3","Proximidad","Qué tan pronto podría ocurrir el riesgo."],
+["c3","Detectabilidad","Qué tan fácil es notar que ocurrirá."],
+["c3","Calidad de los datos","Evalúa la fiabilidad de la información usada en el análisis."],
+["c4","EMV","Probabilidad × impacto."],
+["c4","Árbol de decisión","Compara opciones por su valor esperado."],
+["c4","Diagrama de tornado","Muestra la sensibilidad de las variables."],
+["c4","Monte Carlo","Simulación que entrega distribución y curva S."],
+["c4","P50 / P80","Niveles de confianza: 50% y 80% de probabilidad."],
+["c5","Respuestas a amenazas","Escalar, evitar, transferir, mitigar, aceptar."],
+["c5","Respuestas a oportunidades","Escalar, explotar, compartir, mejorar, aceptar."],
+["c5","Riesgo residual","Queda tras aplicar la respuesta."],
+["c5","Riesgo secundario","Nace de la propia respuesta."],
+["c5","Workaround","Respuesta no planificada a un riesgo ocurrido."],
+["c5","Plan de contingencia","Se activa con un disparador."],
+["c6","Auditoría de riesgos","Evalúa efectividad del proceso y las respuestas."],
+["c6","Análisis de reservas","Compara reserva restante con riesgo restante."],
+["c6","KRI","Indicador clave de riesgo: señal de que aumenta la exposición."],
+["c6","Cierre de riesgos","Lecciones aprendidas y archivo del registro."],
+["c7","Spike","Investigación acotada para reducir incertidumbre."],
+["c7","ERM","Gestión de riesgos empresariales."],
+["c7","Tres líneas","Primera: gestiona; segunda: supervisa; tercera: auditoría interna."],
+["c8","Cultura de riesgo","Forma en que las personas piensan y actúan ante el riesgo."],
+["c8","Ética PMI","Responsabilidad, respeto, equidad y honestidad."]
+];
+/* ============ ESTADO ============ */
+const KEY="portal_rmp_v1";
+const BOX_DAYS=[0,1,2,4,8,16];
+let S;
+function load(){try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){S=null}
+ if(!S||typeof S!=="object")S={};
+ S.lessons=S.lessons||{};S.cards=S.cards||{};S.stats=S.stats||{};S.exams=S.exams||[];S.seen=S.seen||{};S.visits=(S.visits||0);}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+load();
+const day=86400000;
+const $=s=>document.querySelector(s);
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const chOf=id=>CH.find(c=>c.id===id);
+function rec(c,ok){const s=S.stats[c]=S.stats[c]||{ok:0,t:0};s.t++;if(ok)s.ok++;save()}
+function pct(c){const s=S.stats[c];return s&&s.t?Math.round(100*s.ok/s.t):null}
+function bar(p,cls){return `<div class="bar ${cls||""}"><i style="width:${p||0}%"></i></div>`}
+function ring(p,label){const r=34,c=2*Math.PI*r;return `<div class="rg"><svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="${r}" class="rb"/><circle cx="40" cy="40" r="${r}" class="rf" stroke-dasharray="${c}" stroke-dashoffset="${c*(1-p/100)}" transform="rotate(-90 40 40)"/></svg><b>${p}%</b></div>`}
+
+/* preferir preguntas que se han visto menos; azar en el desempate */
+function pickQ(pool,n){return shuf(pool).sort((a,b)=>(S.seen[a]||0)-(S.seen[b]||0)).slice(0,n)}
+
+/* ============ NAVEGACIÓN ============ */
+const VIEWS={inicio:"Inicio",capitulos:"Capítulos",tarjetas:"Tarjetas",practica:"Práctica",simulacro:"Simulacro",progreso:"Progreso",fuentes:"Fuentes"};
+let view="inicio",tmr=null,qz=null;
+function nav(v,arg){clearInterval(tmr);view=v;qz=null;
+ $("#nav").innerHTML=Object.entries(VIEWS).map(([k,n])=>`<button class="${k===v||(v==="capitulo"&&k==="capitulos")?"on":""}" onclick="nav('${k}')">${n}</button>`).join("");
+ R[v](arg);window.scrollTo(0,0)}
+const R={};
+
+/* ---- Inicio ---- */
+R.inicio=()=>{
+ const done=Object.keys(S.lessons).length,tot=CH.length;
+ const due=CARDS.filter((c,i)=>!S.cards[i]||S.cards[i].due<=Date.now()).length;
+ const weak=weakest();
+ const next=CH.find(c=>!S.lessons[c.id])||CH[0];
+ $("#app").innerHTML=`<div class="aviso"><b>📌 Aviso importante</b><p>Este portal es <b>material de estudio independiente</b>, de carácter <b>únicamente informativo y educativo</b>, creado para ayudarte a prepararte para una certificación. Su contenido está redactado con palabras propias a partir de información pública y no reproduce material oficial.</p><p>No está afiliado, patrocinado ni respaldado por PMI®. PMI, PMP, PMBOK, PMI-RMP y PMI-PMOCP son marcas de sus respectivos titulares y se mencionan solo para indicar a qué certificación se orienta el estudio. No sustituye las guías oficiales ni garantiza resultados en el examen: confirma siempre requisitos y contenidos en pmi.org.</p></div><section class="hero"><div><h1>Prepárate para la certificación en gestión de riesgos</h1><p>Estudia gestión de riesgos capítulo por capítulo, practica con preguntas al azar y mide tu avance.</p>
+ <div class="row"><button class="btn big" onclick="nav('capitulo','${next.id}')">${done?"Continuar: ":"Empezar: "}Cap. ${next.n}</button><button class="btn ghost" onclick="nav('simulacro')">Simulacro</button></div></div><div class="hr">🎓</div></section>
+ <div class="grid">
+  <div class="card stat"><span class="mu">Capítulos leídos</span><div class="bigx">${done}/${tot}</div>${bar(100*done/tot,"g")}</div>
+  <div class="card stat"><span class="mu">Tarjetas por repasar hoy</span><div class="bigx">${due}</div><button class="btn sec" onclick="nav('tarjetas')">Repasar</button></div>
+  <div class="card stat"><span class="mu">Tema más débil</span><div class="bigx s">${weak?esc(chOf(weak.k).t.split(":")[0]):"Sin datos"}</div>${weak?`<span class="mu">${weak.p}% de acierto</span>`:""}</div>
+ </div>
+ <h2>🎲 Reto rápido <span class="mu">(5 preguntas al azar distintas cada vez que entras)</span></h2>
+ <div id="qbox"></div>
+ <h2>Cómo estudiar</h2>
+ <div class="cc"><div class="cx"><div class="ic">1</div><b>Lee un capítulo</b><span>Con calma, mirando los gráficos y tarjetas.</span></div><div class="cx"><div class="ic">2</div><b>Repasa tarjetas</b><span>Repetición espaciada: lo que fallas vuelve antes.</span></div><div class="cx"><div class="ic">3</div><b>Practica el tema</b><span>Preguntas al azar con explicación inmediata.</span></div><div class="cx"><div class="ic">4</div><b>Haz simulacros</b><span>Cronometrados, sin ayuda, para medir tu nivel.</span></div></div>
+ <h2>Requisitos para obtener la certificación PMI-RMP®</h2><div class="card reqc"><ul><li><b>Opción A:</b> secundaria + 36 meses de experiencia en gestión de riesgos (dentro de 5 años) + 40 horas de formación.</li><li><b>Opción B:</b> licenciatura + 24 meses de experiencia en riesgos (dentro de 5 años) + 30 horas de formación.</li><li><b>Opción C:</b> licenciatura de un programa GAC + 12 meses de experiencia en riesgos (dentro de 5 años) + 30 horas de formación.</li><li><b>Examen:</b> 115 preguntas, 150 minutos.</li><li><b>Reintentos:</b> hasta 3 veces al año.</li><li><b>Mantenimiento:</b> 30 PDUs cada 3 años.</li><li><b>Tarifas:</b> consúltalas en pmi.org.</li></ul><div class="mu">Información basada en las páginas públicas de PMI. Puede cambiar con el tiempo; verifícala en <a href="#" onclick="nav('fuentes');return false">Fuentes</a>, donde están los enlaces oficiales.</div></div>`;
+ startQuiz(null,5,false,{target:"#qbox",embed:true})};
+function weakest(){let b=null;for(const c of CH){const p=pct(c.id);if(p!==null&&(!b||p<b.p))b={k:c.id,p}}return b}
+
+/* ---- Capítulos ---- */
+R.capitulos=()=>{
+ $("#app").innerHTML=`<h1>Capítulos</h1><p class="mu">Sigue el orden: el capítulo 0 es el panorama; luego un capítulo por etapa del ciclo del riesgo, y al final contextos y personas.</p>
+ <div class="chgrid">${CH.map(c=>{const p=pct(c.id);return `<div class="chc ${S.lessons[c.id]?"done":""}" onclick="nav('capitulo','${c.id}')"><div class="cn">${c.ic}<small>Cap. ${c.n}</small></div><h3>${c.t}</h3><p class="mu">${c.sub}</p><div class="meta"><span class="tag">⏱ ${c.min} min</span>${S.lessons[c.id]?`<span class="tag ok">✔ leído</span>`:""}${p!==null?`<span class="tag">${p}% acierto</span>`:""}</div></div>`}).join("")}</div>
+ <h2>Cómo se conecta con los 5 dominios del examen</h2>
+ <div class="card"><table><tr><th>Dominio del examen</th><th>Peso</th><th>Capítulos</th></tr>
+ <tr><td>Estrategia y planificación del riesgo</td><td>22%</td><td>1</td></tr>
+ <tr><td>Identificación de riesgos</td><td>23%</td><td>2</td></tr>
+ <tr><td>Análisis de riesgos</td><td>23%</td><td>3 · 4</td></tr>
+ <tr><td>Respuesta a los riesgos</td><td>13%</td><td>5</td></tr>
+ <tr><td>Monitoreo y cierre</td><td>19%</td><td>6</td></tr></table>
+ <p class="mu">Los capítulos 0, 7 y 8 aplican a todos los dominios. Relación orientativa hecha por mí; no es el mapeo oficial.</p></div>`};
+
+R.capitulo=id=>{
+ const c=chOf(id),i=CH.indexOf(c),prev=CH[i-1],nx=CH[i+1];
+ $("#app").innerHTML=`<div class="crumb"><a href="#" onclick="nav('capitulos');return false">← Capítulos</a></div>
+ <article class="lesson"><header class="lh"><div class="ic2">${c.ic}</div><div><span class="tag">Capítulo ${c.n}</span><span class="tag">⏱ ${c.min} min</span><h1>${c.t}</h1><p class="mu">${c.ex}</p></div></header>
+ <div class="lead">${c.sub}</div><div id="toc"></div>${c.b()}
+ <div class="row end"><button class="btn" onclick="markLesson('${c.id}')">${S.lessons[c.id]?"✔ Capítulo completado":"Marcar como leído"}</button><button class="btn sec" onclick="startQuiz('${c.id}',10)">Practicar este capítulo</button><button class="btn sec" onclick="nav('tarjetas','${c.id}')">Tarjetas</button></div>
+ <div class="row sp">${prev?`<button class="btn sec" onclick="nav('capitulo','${prev.id}')">← Cap. ${prev.n}</button>`:"<span></span>"}${nx?`<button class="btn sec" onclick="nav('capitulo','${nx.id}')">Cap. ${nx.n} →</button>`:""}</div></article>`;buildToc()};
+function buildToc(){const hs=[...document.querySelectorAll(".lesson h2")];if(!hs.length)return;
+ hs.forEach((h,i)=>h.id="s"+i);
+ $("#toc").innerHTML=`<div class="toc"><b>En este capítulo:</b>${hs.map((h,i)=>`<a href="#s${i}" onclick="document.getElementById('s${i}').scrollIntoView({behavior:'smooth'});return false">${h.textContent.replace(/^\d+\.\s*/,"")}</a>`).join("")}</div>`}
+function markLesson(id){S.lessons[id]=Date.now();save();R.capitulo(id)}
+
+/* ---- Tarjetas (Leitner) ---- */
+let deck=[],ci=0,flip=false,deckCh=null;
+R.tarjetas=c=>{deckCh=c||null;const now=Date.now();
+ deck=shuf(CARDS.map((x,i)=>i).filter(i=>(!deckCh||CARDS[i][0]===deckCh)&&(!S.cards[i]||S.cards[i].due<=now)));ci=0;flip=false;drawCard()};
+function drawCard(){
+ const filt=`<select onchange="R.tarjetas(this.value||null)"><option value="">Todos los capítulos</option>${CH.map(c=>`<option value="${c.id}" ${c.id===deckCh?"selected":""}>Cap. ${c.n}: ${esc(c.t.slice(0,40))}</option>`).join("")}</select>`;
+ if(ci>=deck.length){$("#app").innerHTML=`<h1>Tarjetas</h1>${filt}<div class="card" style="margin-top:12px">🎉 No quedan tarjetas pendientes por ahora. Las que fallaste vuelven pronto; las que sabías, en días.</div>`;return}
+ const i=deck[ci],c=CARDS[i];
+ $("#app").innerHTML=`<h1>Tarjetas</h1>${filt}<p class="mu">${ci+1} de ${deck.length} · Cap. ${chOf(c[0]).n}</p>
+ <div class="flash ${flip?"back":""}" onclick="flip=!flip;drawCard()"><span class="mu">${flip?"Respuesta":"Concepto"}</span><div>${flip?esc(c[2]):"<b>"+esc(c[1])+"</b>"}</div></div>
+ ${flip?`<div class="row"><button class="btn bad" onclick="grade(${i},false)">No lo sabía</button><button class="btn good" onclick="grade(${i},true)">Lo sabía</button></div>`:`<div class="mu">Intenta recordar la respuesta y luego toca la tarjeta.</div>`}`}
+function grade(i,ok){const s=S.cards[i]||{box:0};s.box=ok?Math.min(5,s.box+1):1;
+ s.due=ok?Date.now()+BOX_DAYS[s.box]*day:Date.now()+10*60000;
+ S.cards[i]=s;rec(CARDS[i][0],ok);ci++;flip=false;drawCard()}
+
+/* ---- Práctica ---- */
+R.practica=()=>{
+ $("#app").innerHTML=`<h1>Práctica</h1><p class="mu">Cada vez se eligen preguntas al azar; se priorizan las que has visto menos.</p><div class="grid">`+
+ CH.map(c=>`<div class="card"><b>${c.ic} Cap. ${c.n}</b><div class="mu">${esc(c.t)}</div><div class="mu">${Q.filter(q=>q[0]===c.id).length} preguntas · acierto ${pct(c.id)===null?"–":pct(c.id)+"%"}</div><div class="row"><button class="btn" onclick="startQuiz('${c.id}',10)">Practicar</button></div></div>`).join("")+
+ `</div><div class="card"><b>🎲 Mixto</b><div class="mu">20 preguntas al azar de todos los capítulos</div><div class="row"><button class="btn" onclick="startQuiz(null,20)">Practicar mixto</button></div></div>`};
+
+/* ---- Cuestionario ---- */
+function startQuiz(ch,n,exam,opt){
+ opt=opt||{};
+ let pool=Q.map((q,i)=>i).filter(i=>!ch||Q[i][0]===ch);
+ pool=pickQ(pool,n||pool.length);
+ clearInterval(tmr);
+ qz={items:pool.map(i=>({i,order:shuf([0,1,2,3]),sel:null})),pos:0,exam:!!exam,ch,n,target:opt.target||"#app",embed:!!opt.embed};
+ drawQ()}
+function drawQ(){
+ const it=qz.items[qz.pos],q=Q[it.i],ans=it.sel!==null,box=$(qz.target);
+ const last=qz.pos===qz.items.length-1;
+ box.innerHTML=`<div class="qh"><span class="mu">Pregunta ${qz.pos+1} de ${qz.items.length} · Cap. ${chOf(q[0]).n}</span>${qz.exam?`<b id="clk"></b>`:""}</div>${bar(100*(qz.pos+(ans?1:0))/qz.items.length)}
+ <div class="card q"><h3 style="margin-top:0">${esc(q[1])}</h3>
+ ${it.order.map((oi,k)=>{let c="opt";if(!qz.exam&&ans){if(oi===q[3])c+=" ok";else if(oi===it.sel)c+=" ko"}else if(it.sel===oi)c+=" sel";
+  return `<button class="${c}" ${(ans&&!qz.exam)?"disabled":""} onclick="pick(${oi})"><i>${"ABCD"[k]}</i>${esc(q[2][oi])}</button>`}).join("")}
+ ${ans&&!qz.exam?`<div class="exp"><b>${it.sel===q[3]?"✔ Correcto":"✘ Incorrecto"}.</b> ${esc(q[4])}</div>`:""}
+ <div class="row"><button class="btn sec" ${qz.pos===0?"disabled":""} onclick="qz.pos--;drawQ()">Anterior</button>
+ <button class="btn" ${!ans&&!qz.exam?"disabled":""} onclick="${last?"finishQuiz()":"qz.pos++;drawQ()"}">${last?"Terminar":"Siguiente"}</button></div></div>`;
+ if(qz.exam)tick()}
+function pick(oi){const it=qz.items[qz.pos];if(!qz.exam&&it.sel!==null)return;it.sel=oi;
+ if(!qz.exam){S.seen[it.i]=(S.seen[it.i]||0)+1;rec(Q[it.i][0],oi===Q[it.i][3])}drawQ()}
+function finishQuiz(){clearInterval(tmr);
+ let ok=0;const by={};
+ qz.items.forEach(it=>{const q=Q[it.i],good=it.sel===q[3];if(good)ok++;
+  if(qz.exam){S.seen[it.i]=(S.seen[it.i]||0)+1;rec(q[0],good)}
+  by[q[0]]=by[q[0]]||{ok:0,t:0};by[q[0]].t++;if(good)by[q[0]].ok++});
+ const n=qz.items.length,p=Math.round(100*ok/n);
+ if(qz.exam){S.exams.push({d:Date.now(),ok,n});save()}
+ const wrong=qz.items.filter(it=>it.sel!==Q[it.i][3]),embed=qz.embed,box=$(qz.target);
+ box.innerHTML=`<div class="card res">${ring(p)}<div><h2 style="margin:0">Resultado: ${ok}/${n}</h2><div class="mu">${p>=75?"¡Muy bien!":p>=60?"Vas bien, sigue practicando.":"Repasa el capítulo y vuelve a intentarlo."}</div>
+ <div class="row"><button class="btn" onclick="${embed?"startQuiz(null,5,false,{target:'#qbox',embed:true})":"nav('practica')"}">${embed?"🎲 Otro reto":"Volver a práctica"}</button></div></div></div>
+ ${!embed?`<div class="card">${Object.entries(by).map(([k,v])=>`<div>Cap. ${chOf(k).n} · ${esc(chOf(k).t)} <span class="mu">${v.ok}/${v.t}</span>${bar(100*v.ok/v.t,v.ok/v.t>=.7?"g":"r")}</div>`).join("<br>")}</div>`:""}
+ ${wrong.length?`<h3>Revisa lo que fallaste (${wrong.length})</h3>`+wrong.map(it=>{const q=Q[it.i];return `<div class="card"><b>${esc(q[1])}</b><div class="mu">Tu respuesta: ${it.sel===null?"sin responder":esc(q[2][it.sel])}</div><div class="okt">Correcta: ${esc(q[2][q[3]])}</div><div class="exp">${esc(q[4])}</div></div>`}).join(""):`<div class="card">🎉 Sin errores.</div>`}`;
+ save()}
+
+/* ---- Simulacro ---- */
+R.simulacro=()=>{
+ const hist=S.exams.slice(-5).reverse().map(e=>`<tr><td>${new Date(e.d).toLocaleDateString()}</td><td>${e.ok}/${e.n}</td><td>${Math.round(100*e.ok/e.n)}%</td></tr>`).join("");
+ const nmax=Q.length;
+ $("#app").innerHTML=`<h1>Simulacro de examen</h1>
+ <div class="card">Preguntas al azar de todos los capítulos, <b>sin retroalimentación hasta el final</b> y con cronómetro. Puedes ir y volver entre preguntas.
+ <div class="mu">El examen real: 120 preguntas en 165 min (≈1,4 min por pregunta). Aquí se mantiene la misma proporción.</div>
+ <div class="row"><select id="nq"><option value="30">30 preguntas · 41 min</option><option value="60" selected>60 preguntas · 83 min</option><option value="${nmax}">Todas (${nmax}) · ${Math.round(nmax*165/120)} min</option></select>
+ <button class="btn" onclick="startExam()">Iniciar simulacro</button></div></div>
+ ${hist?`<div class="card"><b>Últimos intentos</b><table><tr><th>Fecha</th><th>Aciertos</th><th>%</th></tr>${hist}</table></div>`:""}`};
+let endAt=0;
+function startExam(){const n=Math.min(Q.length,+$("#nq").value);endAt=Date.now()+n*165/120*60000;startQuiz(null,n,true)}
+function tick(){clearInterval(tmr);
+ const f=()=>{const e=$("#clk");if(!e||!qz||!qz.exam){clearInterval(tmr);return}
+  const left=endAt-Date.now();if(left<=0){clearInterval(tmr);finishQuiz();return}
+  const m=Math.floor(left/60000),s=Math.floor(left%60000/1000);e.textContent="⏱ "+m+":"+String(s).padStart(2,"0")};
+ f();tmr=setInterval(f,1000)}
+
+/* ---- Progreso ---- */
+R.progreso=()=>{
+ const rows=CH.map(c=>{const p=pct(c.id),s=S.stats[c.id];
+  return `<tr><td>${c.ic} Cap. ${c.n}: ${esc(c.t)}</td><td style="width:34%">${bar(p,p===null?"":p>=75?"g":p>=60?"y":"r")}</td><td>${p===null?"–":p+"% ("+s.ok+"/"+s.t+")"}</td></tr>`}).join("");
+ const weak=CH.filter(c=>pct(c.id)!==null&&pct(c.id)<70);
+ const learned=Object.values(S.cards).filter(c=>c.box>=3).length;
+ const seen=Object.keys(S.seen).length;
+ $("#app").innerHTML=`<h1>Progreso</h1>
+ <div class="grid"><div class="card stat"><span class="mu">Capítulos leídos</span><div class="bigx">${Object.keys(S.lessons).length}/${CH.length}</div></div>
+ <div class="card stat"><span class="mu">Tarjetas dominadas</span><div class="bigx">${learned}/${CARDS.length}</div></div>
+ <div class="card stat"><span class="mu">Preguntas vistas</span><div class="bigx">${seen}/${Q.length}</div></div>
+ <div class="card stat"><span class="mu">Simulacros</span><div class="bigx">${S.exams.length}</div></div></div>
+ <div class="card"><b>Acierto por capítulo</b><table>${rows}</table></div>
+ <div class="card"><b>Áreas débiles (menos de 70%)</b><div>${weak.length?weak.map(c=>`<div>• Cap. ${c.n} ${esc(c.t)} (${pct(c.id)}%) <a href="#" onclick="startQuiz('${c.id}',10);return false">practicar</a> · <a href="#" onclick="nav('capitulo','${c.id}');return false">releer</a></div>`).join(""):"<span class='mu'>Ninguna detectada aún. Practica para generar datos.</span>"}</div></div>
+ <div class="row"><button class="btn sec" onclick="if(confirm('¿Borrar todo el progreso?')){try{localStorage.removeItem(KEY)}catch(e){}load();nav('inicio')}">Reiniciar progreso</button></div>`};
+
+
+/* ---- Fuentes ---- */
+const OFICIAL=[["Página oficial de la certificación PMI-RMP", "https://www.pmi.org/certifications/risk-management-rmp"], ["PMBOK Guide 8.ª edición (PMI Bookstore)", "https://pmi.bookstore.ipgbook.com/a-guide-to-the-project-management-body-of-knowledge--pmbok---guide------eighth-edition-and-the-standard-for-project-management-products-9781628258295.php"]];
+const YTQ="PMI-RMP risk management";
+const yt=q=>"https://www.youtube.com/results?search_query="+encodeURIComponent(q);
+R.fuentes=()=>{
+ $("#app").innerHTML=`<h1>Fuentes</h1><p class="mu">Enlaces para profundizar. Se abren en una pestaña nueva y requieren internet.</p>
+ <h2>🏛️ Páginas oficiales de PMI</h2><div class="card">${OFICIAL.map(([t,u])=>`<div class="lk"><a href="${u}" target="_blank" rel="noopener">${esc(t)}</a><span class="mu">${u.replace(/^https?:\/\//,"").slice(0,60)}</span></div>`).join("")}</div>
+ <h2>▶️ Videos de YouTube por capítulo</h2><p class="mu">Son <b>búsquedas</b> en YouTube con palabras clave del capítulo: ordena por “relevancia” o “vistas” para ver los videos más destacados. No recomiendo un canal específico porque no los verifiqué uno por uno.</p>
+ <div class="chgrid">${CH.map(c=>`<div class="card lkc"><b>${c.ic} Cap. ${c.n}</b><div class="mu">${esc(c.t)}</div><div class="row"><a class="btn sec" href="${yt(YTQ+" "+c.t.split(":")[0])}" target="_blank" rel="noopener">▶ Buscar en YouTube</a><a class="btn sec" href="${yt(YTQ+" "+c.t.split(":")[0]+" español")}" target="_blank" rel="noopener">En español</a></div></div>`).join("")}</div>
+`};
+nav("inicio");
+if("serviceWorker" in navigator&&location.protocol.indexOf("http")===0){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))}
+</script>
+</body>
+</html>
