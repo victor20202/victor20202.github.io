@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.viacontrol.estudio",
+        "sha256_cert_fingerprints": ["75:91:63:FB:97:AB:4A:DD:31:05:FB:05:AA:6A:78:D9:18:1A:6E:FC:98:52:CC:5D:79:8D:DF:DA:58:EB:79:26"]
+      }
+    }]
